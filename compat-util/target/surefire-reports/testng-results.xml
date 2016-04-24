@@ -1,0 +1,26 @@
+<testng-results>
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite" duration-ms="23" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+    <groups>
+      <group name="unit">
+        <method signature="com.neaterbits.gui.util.compat.StringUtilsTest.testSplit()" name="testSplit" class="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+        <method signature="com.neaterbits.gui.util.compat.StringUtilsTest.testTrim()" name="testTrim" class="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+        <method signature="com.neaterbits.gui.util.compat.StringUtilsTest.testTrimHead()" name="testTrimHead" class="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+        <method signature="com.neaterbits.gui.util.compat.StringUtilsTest.testTrimTail()" name="testTrimTail" class="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+      </group>
+    </groups>
+    <test name="Surefire test" duration-ms="23" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+      <class name="com.neaterbits.gui.util.compat.StringUtilsTest">
+        <test-method status="PASS" signature="testSplit()" name="testSplit" duration-ms="17" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+        </test-method>
+        <test-method status="PASS" signature="testTrim()" name="testTrim" duration-ms="0" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+        </test-method>
+        <test-method status="PASS" signature="testTrimHead()" name="testTrimHead" duration-ms="0" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+        </test-method>
+        <test-method status="PASS" signature="testTrimTail()" name="testTrimTail" duration-ms="1" started-at="2016-04-24T07:09:42Z" finished-at="2016-04-24T07:09:42Z">
+        </test-method>
+      </class>
+    </test>
+  </suite>
+</testng-results>

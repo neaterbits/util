@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="Surefire test" failures="0" tests="4" time="0.023" errors="0">
+  <properties/>
+  <testcase name="testSplit" time="0.017" classname="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+  <testcase name="testTrim" time="0.0" classname="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+  <testcase name="testTrimHead" time="0.0" classname="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+  <testcase name="testTrimTail" time="0.001" classname="com.neaterbits.gui.util.compat.StringUtilsTest"/>
+</testsuite>
