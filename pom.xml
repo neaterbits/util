@@ -31,6 +31,7 @@
 
 	<modules>
 		<module>compat-util</module>
+		<module>util</module>
 	</modules>
 
 	<build>
