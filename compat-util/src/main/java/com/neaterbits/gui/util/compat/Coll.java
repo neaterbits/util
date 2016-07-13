@@ -1,6 +1,7 @@
 package com.neaterbits.gui.util.compat;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
@@ -74,5 +75,27 @@ public class Coll {
 
 	public static <T> CStream<T> stream(Collection<T> coll) {
 		return null;
+	}
+	
+	public static <T> T [] arrayOfNonNulls(T ... args) {
+		
+		int nonNulls = 0;
+		
+		for (int i = 0; i < args.length; ++ i) {
+			if (args[i] != null) {
+				++ nonNulls;
+			}
+		}
+		
+		final T[] ret = Arrays.copyOf(args, nonNulls);
+
+		int dst = 0;
+		for (int i = 0; i < args.length; ++ i) {
+			if (args[i] != null) {
+				ret[dst ++] = args[i];
+			}
+		}
+		
+		return ret;
 	}
 }

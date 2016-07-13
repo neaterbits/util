@@ -119,4 +119,8 @@ public class StringUtils {
 		
 		return ret;
 	}
+	
+	public static boolean isBlank(String s) {
+		return s == null || s.isEmpty() || s.trim().isEmpty();
+	}
 }
