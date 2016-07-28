@@ -43,5 +43,17 @@ public class StringUtilsTest {
 	private void checkSplit(String str, char c, String ... expected) {
 		assertThat(StringUtils.split(str, c)).isEqualTo(expected);
 	}
+
+	@Test(groups={"unit"})
+	public void testToUpperFirst() {
+		assertThat(StringUtils.toUpperFirst("upperCase")).isEqualTo("UpperCase");
+		assertThat(StringUtils.toUpperFirst("UpperCase")).isEqualTo("UpperCase");
+	}
+
+	@Test(groups={"unit"})
+	public void testToLowerFirst() {
+		assertThat(StringUtils.toLowerFirst("LowerCase")).isEqualTo("lowerCase");
+		assertThat(StringUtils.toLowerFirst("lowerCase")).isEqualTo("lowerCase");
+	}
 }
 

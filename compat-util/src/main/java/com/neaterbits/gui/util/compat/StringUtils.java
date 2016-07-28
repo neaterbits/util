@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.neaterbits.gui.util.compat.function.CFunction;
+
 public class StringUtils {
 	
 	private static final String EMPTY = "";
@@ -103,23 +105,47 @@ public class StringUtils {
 		return strings.toArray(new String[strings.size()]);
 	}
 
+	private static final CFunction<Character, Character> toUpper = new CFunction<Character, Character>() {
+
+		@Override
+		public Character apply(Character t) {
+			return Character.toUpperCase(t);
+		}
+	};
+	
+	private static final CFunction<Character, Character> toLower = new CFunction<Character, Character>() {
+
+		@Override
+		public Character apply(Character t) {
+			return Character.toLowerCase(t);
+		}
+	};
+
 	public static String toUpperFirst(String s) {
+		return changeFirst(s, toUpper);
+	}
+	
+	public static String toLowerFirst(String s) {
+		return changeFirst(s, toLower);
+	}
+
+	private static String changeFirst(String s, CFunction<Character, Character> func) {
 		String ret;
 		
 		if (s == null || s.isEmpty()) {
 			ret = s;
 		}
 		else  {
-			ret = "" + Character.toUpperCase(s.charAt(0));
-			
+			ret = "" + func.apply(s.charAt(0));
+
 			if (s.length() > 1) {
 				ret += s.substring(1, s.length());
 			}
 		}
-		
+
 		return ret;
 	}
-	
+
 	public static boolean isBlank(String s) {
 		return s == null || s.isEmpty() || s.trim().isEmpty();
 	}
