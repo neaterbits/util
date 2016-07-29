@@ -1,6 +1,8 @@
-package com.neaterbits.gui.util.compat;
+package com.neaterbits.util;
 
 import org.testng.annotations.Test;
+
+import com.neaterbits.util.ArrayUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

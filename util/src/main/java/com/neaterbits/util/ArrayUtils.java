@@ -1,4 +1,4 @@
-package com.neaterbits.gui.util.compat;
+package com.neaterbits.util;
 
 import java.util.Arrays;
 
