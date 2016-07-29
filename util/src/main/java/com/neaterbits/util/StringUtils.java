@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.neaterbits.gui.util.compat.function.CFunction;
+import com.neaterbits.util.compat.function.CFunction;
 
 public class StringUtils {
 	
