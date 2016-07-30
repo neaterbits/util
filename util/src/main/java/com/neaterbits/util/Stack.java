@@ -28,4 +28,16 @@ public class Stack<T> {
 				
 		return ret;
 	}
+	
+	public final int size() {
+		return stack.size();
+	}
+
+	public final T top() {
+		return stack.get(stack.size() - 1);
+	}
+
+	public final T get(int idx) {
+		return stack.get(idx);
+	}
 }
