@@ -149,4 +149,38 @@ public class StringUtils {
 	public static boolean isBlank(String s) {
 		return s == null || s.isEmpty() || s.trim().isEmpty();
 	}
+	
+	public static boolean isAlphaNumeric(String s) {
+
+		final int len = s.length();
+		
+		for (int i = 0; i < len; ++ i) {
+			
+			final int codePoint = s.codePointAt(i);
+			
+			if (!Character.isAlphabetic(codePoint) && !Character.isDigit(codePoint)) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+
+	public static String removeBlanks(String s) {
+
+		final int len = s.length();
+		
+		final StringBuilder sb = new StringBuilder(len);
+		
+		for (int i = 0; i < len; ++ i) {
+			final char c = s.charAt(i);
+
+			if (!Character.isWhitespace(c)) {
+				sb.append(c);
+			}
+		}
+
+		return sb.toString();
+	}
+	
 }

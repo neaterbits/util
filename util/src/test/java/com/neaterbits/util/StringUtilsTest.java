@@ -55,5 +55,31 @@ public class StringUtilsTest {
 		assertThat(StringUtils.toLowerFirst("LowerCase")).isEqualTo("lowerCase");
 		assertThat(StringUtils.toLowerFirst("lowerCase")).isEqualTo("lowerCase");
 	}
+
+	@Test(groups={"unit"})
+	public void testIsAlphaNumeric() {
+		assertThat(StringUtils.isAlphaNumeric("1234")).isEqualTo(true);
+		assertThat(StringUtils.isAlphaNumeric("abcd")).isEqualTo(true);
+		assertThat(StringUtils.isAlphaNumeric("1a2b3c4d")).isEqualTo(true);
+
+		assertThat(StringUtils.isAlphaNumeric(" 1234")).isEqualTo(false);
+		assertThat(StringUtils.isAlphaNumeric("abcd ")).isEqualTo(false);
+		assertThat(StringUtils.isAlphaNumeric("1a2b 3c4d")).isEqualTo(false);
+
+		assertThat(StringUtils.isAlphaNumeric("1234_")).isEqualTo(false);
+		assertThat(StringUtils.isAlphaNumeric("_abcd")).isEqualTo(false);
+		assertThat(StringUtils.isAlphaNumeric("1a2b_3c4d")).isEqualTo(false);
+		
+	}
+
+	@Test(groups={"unit"})
+	public void testIsRemoveBlanks() {
+		assertThat(StringUtils.removeBlanks("")).isEqualTo("");
+		assertThat(StringUtils.removeBlanks("1234")).isEqualTo("1234");
+		assertThat(StringUtils.removeBlanks("1234 ")).isEqualTo("1234");
+		assertThat(StringUtils.removeBlanks("12 34 ")).isEqualTo("1234");
+		assertThat(StringUtils.removeBlanks(" 1234 ")).isEqualTo("1234");
+		assertThat(StringUtils.removeBlanks("  ")).isEqualTo("");
+	}
 }
 
