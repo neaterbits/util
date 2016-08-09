@@ -17,18 +17,19 @@ public class MultiTree<K, T> {
 	private final MapOfList<K, T> entitiesByParent;
 	private final MapOfList<K, T> parentsByEntity;
 	
-	public MultiTree(Collection<T> values, CFunction<T, K> keyFunction, CFunction<T, CStream<K>> recursor) {
-		makeEntitiesHierarchial(values, keyFunction, recursor);
+	public MultiTree(Iterable<T> values, CFunction<T, K> keyFunction, CFunction<T, CStream<K>> recursor) {
+		int size = makeEntitiesHierarchial(values, keyFunction, recursor);
 		
-		final int size = values.size();
 		this.entityById = new HashMap<K, T>(size);
 		this.entitiesByParent = new MapOfList<K, T>(size);
 		this.parentsByEntity = new MapOfList<K, T>(size);
 	}
 	
-	private void makeEntitiesHierarchial(Collection<T> entities,
+	private int makeEntitiesHierarchial(Iterable<T> entities,
 			final CFunction<T, K> keyFunction,
 			final CFunction<T, CStream<K>> recursor) {
+		
+		int size = 0;
 		
 		for (T t : entities) {
 			final K key = keyFunction.apply(t);
@@ -37,6 +38,8 @@ public class MultiTree<K, T> {
 			if (existing != null) {
 				throw new IllegalStateException("Multiple entities for key " + key);
 			}
+			
+			++ size;
 		}
 		
 				
@@ -62,6 +65,8 @@ public class MultiTree<K, T> {
 				sub.forEach(s);
 			}
 		}
+
+		return size;
 	}
 
 	public Collection<T> getRoots() {

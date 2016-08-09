@@ -73,7 +73,7 @@ public class Coll {
 		}
 	}
 
-	public static <T> CStream<T> stream(Collection<T> coll) {
+	public static <T> CStream<T> stream(Iterable<T> coll) {
 		return null;
 	}
 	
