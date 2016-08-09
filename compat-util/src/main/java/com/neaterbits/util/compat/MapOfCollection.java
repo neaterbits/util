@@ -50,6 +50,14 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 			existing.addAll(values);
 		}
 	}
+
+	public final int keyCount() {
+		return map.size();
+	}
+	
+	public final boolean isEmpty() {
+		return map.isEmpty();
+	}
 	
 	public final void add(K key, V value) {
 		C coll = map.get(key);
