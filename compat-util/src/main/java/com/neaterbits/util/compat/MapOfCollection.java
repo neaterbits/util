@@ -3,6 +3,7 @@ package com.neaterbits.util.compat;
 import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -90,6 +91,34 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		return map.containsKey(key);
 	}
 
+	public final boolean removeValueByIdentity(K key, V value) {
+		
+		boolean removed;
+		
+		final C c = map.get(key);
+		
+		if (c == null) {
+			removed = false;
+		}
+		else {
+			removed = false;
+			
+			final Iterator<V> iter = c.iterator();
+			
+			while (iter.hasNext()) {
+				final V v = iter.next();
+				
+				if (v == value) {
+					iter.remove();
+					removed = true;
+					break;
+				}
+			}
+		}
+
+		return removed;
+	}
+	
 	
 	protected static abstract class MapOfCollectionCollector<K, V, C extends Collection<V>, 
 			MOC extends MapOfCollection<K, V, C>, T>
