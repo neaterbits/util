@@ -31,8 +31,8 @@
 	</dependencies>
 
 	<modules>
-		<module>compat-util</module>
-		<module>util</module>
+		<module>util-base</module>
+		<module>util-compat</module>
 	</modules>
 
 	<build>

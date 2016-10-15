@@ -5,11 +5,11 @@
     <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>util</artifactId>
+  <artifactId>util-base</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.neaterbits.util</groupId>
-  		<artifactId>compat-util</artifactId>
+  		<artifactId>util-compat</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>

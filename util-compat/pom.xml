@@ -5,7 +5,7 @@
     <artifactId>root</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>compat-util</artifactId>
+  <artifactId>util-compat</artifactId>
 
 	<build>
 		<plugins>
