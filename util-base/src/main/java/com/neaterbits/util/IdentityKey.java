@@ -1,6 +1,6 @@
 package com.neaterbits.util;
 
-public class IdentityKey<T> {
+public final class IdentityKey<T> {
 
 	private final T obj;
 
@@ -12,14 +12,18 @@ public class IdentityKey<T> {
 		
 		this.obj = obj;
 	}
+	
+	public final T get() {
+		return obj;
+	}
 
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		return System.identityHashCode(obj);
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public final boolean equals(Object obj) {
 		return this.obj == obj;
 	}
 }
