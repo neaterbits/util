@@ -32,7 +32,10 @@
 
 	<modules>
 		<module>util-base</module>
+		<module>util-buffers</module>
 		<module>util-compat</module>
+		<module>util-io-strings</module>
+		<module>util-parse</module>
 	</modules>
 
 	<build>
@@ -42,8 +45,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
