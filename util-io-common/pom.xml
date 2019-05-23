@@ -5,8 +5,8 @@
     <artifactId>root</artifactId>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>util-io-strings</artifactId>
-  <name>String IO code</name>
+  <artifactId>util-io-common</artifactId>
+  <name>Common IO code</name>
   <packaging>jar</packaging>
   <dependencies>
 	
