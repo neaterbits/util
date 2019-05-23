@@ -17,8 +17,12 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	private final INPUT input;
 	private final TOKEN tokNone;
 	private final TOKEN tokEOF;
+
 	
 	private final StringBuilder cur;
+
+	// Scratch array for single token
+	private final TOKEN [] singleToken;
 	
 	// Scratch array for maintaining number of matching tokens at any given type
 	private final TOKEN [] possiblyMatchingTokens;
@@ -44,6 +48,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		
 		this.input = input;
 		
+		this.singleToken = createTokenArray(tokenClass, 1);
 		this.possiblyMatchingTokens = createTokenArray(tokenClass);
 		this.exactMatches = new boolean[tokenClass.getEnumConstants().length];
 		
@@ -63,9 +68,13 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		return input.getStringRef(tokenizerPos, input.getReadPos(), startPos, endSkip);
 	}
 
-	@SuppressWarnings("unchecked")
 	private TOKEN [] createTokenArray(Class<TOKEN> tokenClass) {
-		return (TOKEN[])Array.newInstance(tokenClass, tokenClass.getEnumConstants().length);
+		return createTokenArray(tokenClass, tokenClass.getEnumConstants().length);
+	}
+
+	@SuppressWarnings("unchecked")
+	private TOKEN [] createTokenArray(Class<TOKEN> tokenClass, int length) {
+		return (TOKEN[])Array.newInstance(tokenClass, length);
 	}
 	
 	// Helper class to return multiple values
@@ -100,11 +109,18 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		return lexed;
 	}
 
-	public TOKEN lex(@SuppressWarnings("unchecked") TOKEN ... inputTokens) throws IOException {
+	public TOKEN lex(TOKEN inputToken) throws IOException {
+		
+		this.singleToken[0] = inputToken;
+		
+		return lex(DEFAULT_MATCH, singleToken);
+	}
+
+	public TOKEN lex(TOKEN [] inputTokens) throws IOException {
 		return lex(DEFAULT_MATCH, inputTokens);
 	}
 	
-	public TOKEN lex(LexerMatch matchMethod, @SuppressWarnings("unchecked") TOKEN ... inputTokens) throws IOException {
+	public TOKEN lex(LexerMatch matchMethod, TOKEN [] inputTokens) throws IOException {
 		
 		if (hasDebugLevel(1)) {
 			debug("----");
@@ -180,7 +196,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			}
 			
 			for (int i = 0; i < numTokens; ++ i) {
-				// Check whether tokens match
+				// Check whether tokens matching
 				final TOKEN token = tokens[i];
 				
 				matchToken(token, c, tokenMatch);

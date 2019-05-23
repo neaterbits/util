@@ -1,6 +1,7 @@
 package com.neaterbits.util.parse;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.neaterbits.util.io.strings.CharInput;
 
@@ -37,5 +38,10 @@ public abstract class BaseParser<TOKEN extends Enum<TOKEN> & IToken, INPUT exten
 		}
 		
 		return token;
+	}
+	
+	@SafeVarargs
+	protected static <T extends IToken> T [] tokens(T ... tokens) {
+		return Arrays.copyOf(tokens, tokens.length);
 	}
 }
