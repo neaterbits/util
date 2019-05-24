@@ -4,7 +4,9 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Objects;
 
+import com.neaterbits.util.ArrayUtils;
 import com.neaterbits.util.Value;
 import com.neaterbits.util.io.strings.CharInput;
 
@@ -24,6 +26,13 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	// Scratch array for single token
 	private final TOKEN [] singleToken;
 	
+	private	final TOKEN [] wsTokens;
+	private final int numWSTokens;
+	
+	private final TOKEN [] wsAndCommentsToken;
+	private final int numWSAndCommentTokens;
+
+	
 	// Scratch array for maintaining number of matching tokens at any given type
 	private final TOKEN [] possiblyMatchingTokens;
 	private final boolean [] exactMatches;
@@ -36,7 +45,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	// For debug
 	private TOKEN lastToken;
 	
-	public Lexer(INPUT input, Class<TOKEN> tokenClass, TOKEN tokNone, TOKEN tokEOF) {
+	public Lexer(INPUT input, Class<TOKEN> tokenClass, TOKEN tokNone, TOKEN tokEOF, TOKEN [] wsTokens, TOKEN [] commentTokens) {
 		
 		if (input == null) {
 			throw new IllegalArgumentException("inputStream == null");
@@ -46,10 +55,46 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			throw new IllegalArgumentException("tokNone == null");
 		}
 		
+		if (wsTokens != null && ArrayUtils.contains(wsTokens, null)) {
+			throw new IllegalArgumentException();
+		}
+		
+		if (commentTokens != null && ArrayUtils.contains(commentTokens, null)) {
+			throw new IllegalArgumentException();
+		}
+		
 		this.input = input;
 		
 		this.singleToken = createTokenArray(tokenClass, 1);
+
+		if (wsTokens != null) {
+			this.wsTokens = createTokenArray(tokenClass);
+			this.numWSTokens = wsTokens.length;
+
+			System.arraycopy(wsTokens, 0, this.wsTokens, 0, wsTokens.length);
+			
+			if (commentTokens != null) {
+				this.wsAndCommentsToken = createTokenArray(tokenClass);
+				this.numWSAndCommentTokens = wsTokens.length + commentTokens.length;
+
+				System.arraycopy(wsTokens, 0, this.wsAndCommentsToken, 0, wsTokens.length);
+				System.arraycopy(commentTokens, 0, this.wsAndCommentsToken, wsTokens.length, commentTokens.length);
+			}
+			else {
+				this.wsAndCommentsToken = null;
+				this.numWSAndCommentTokens = 0;
+			}
+		}
+		else {
+			this.wsTokens = null;
+			this.numWSTokens = 0;
+			this.wsAndCommentsToken = null;
+			this.numWSAndCommentTokens = 0;
+		}
+
 		this.possiblyMatchingTokens = createTokenArray(tokenClass);
+		
+		
 		this.exactMatches = new boolean[tokenClass.getEnumConstants().length];
 		
 		this.tokenMatch = new TokenMatch();
@@ -119,9 +164,105 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	public TOKEN lex(TOKEN [] inputTokens) throws IOException {
 		return lex(DEFAULT_MATCH, inputTokens);
 	}
-	
-	public TOKEN lex(LexerMatch matchMethod, TOKEN [] inputTokens) throws IOException {
+
+	private boolean isWSToken(TOKEN token) {
+		Objects.requireNonNull(token);
 		
+		for (int i = 0; i < numWSTokens; ++ i) {
+			if (token == wsTokens[i]) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private boolean isWSOrCommentToken(TOKEN token) {
+		Objects.requireNonNull(token);
+		
+		for (int i = 0; i < numWSAndCommentTokens; ++ i) {
+			if (token == wsAndCommentsToken[i]) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	
+	public final TOKEN lexSkipWS(TOKEN toFind) throws IOException {
+		
+		Objects.requireNonNull(toFind);
+		
+		wsTokens[numWSTokens] = toFind;
+		
+		TOKEN found = lex(DEFAULT_MATCH, wsTokens, numWSTokens + 1);
+
+		if (isWSToken(found)) {
+			found = lex(toFind);
+		}
+		
+		return found;
+	}
+
+	public final TOKEN lexSkipWS(TOKEN [] tokens) throws IOException {
+
+		System.arraycopy(tokens, 0, wsTokens, numWSTokens, tokens.length);
+		
+		TOKEN token = lex(DEFAULT_MATCH, wsTokens, numWSTokens + tokens.length);
+
+		if (isWSToken(token)) {
+			token = lex(tokens);
+		}
+		
+		return token;
+	}
+
+	
+	public final TOKEN lexSkipWSAndComment(TOKEN toFind) throws IOException {
+
+		TOKEN token;
+
+		wsAndCommentsToken[numWSAndCommentTokens] = toFind;
+		
+		for (;;) {
+			token = lex(DEFAULT_MATCH, wsAndCommentsToken, numWSAndCommentTokens + 1);
+
+			if (!isWSOrCommentToken(token)) {
+				break;
+			}
+		}
+		
+		return token;
+	}
+
+	public final TOKEN lexSkipWSAndComment(TOKEN [] tokens) throws IOException {
+
+		TOKEN token;
+
+		System.arraycopy(tokens, 0, wsAndCommentsToken, numWSAndCommentTokens, tokens.length);
+		
+		for (;;) {
+			token = lex(DEFAULT_MATCH, wsAndCommentsToken, numWSAndCommentTokens + tokens.length);
+
+			if (!isWSOrCommentToken(token)) {
+				break;
+			}
+		}
+		
+		return token;
+	}
+
+
+	public final void skipAnyWS() throws IOException {
+		lex(LexerMatch.LONGEST_MATCH, wsTokens, numWSTokens);
+	}
+
+	public TOKEN lex(LexerMatch matchMethod, TOKEN [] inputTokens) throws IOException {
+		return lex(matchMethod, inputTokens, inputTokens.length);
+	}
+		
+	public TOKEN lex(LexerMatch matchMethod, TOKEN [] inputTokens, int numInputTokens) throws IOException {
 		if (hasDebugLevel(1)) {
 			debug("----");
 			debug("lex(\"" + input.peek(20) + "\": " + Arrays.toString(inputTokens) + ")");
@@ -145,7 +286,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		
 		// Start out with scanning all input tokens, we will switch to scan only those tokens left matching
 		TOKEN [] tokens = inputTokens;
-		int numTokens = inputTokens.length;
+		int numTokens = numInputTokens;
 		
 		// Read input until finds matching token
 		// TODO: exit if cannot find matching token of any length

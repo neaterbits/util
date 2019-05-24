@@ -1,9 +1,11 @@
 package com.neaterbits.util;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 public class ArrayUtils {
 
+	@SafeVarargs
 	public static <T> T[] merge(T [] ... arrays) {
 		
 		if (arrays.length == 0) {
@@ -39,5 +41,17 @@ public class ArrayUtils {
 
 	public static <T> T [] subArray(T [] array, int startIdx) {
 		return Arrays.copyOfRange(array, startIdx, array.length);
+	}
+	
+	public static <T> boolean contains(T [] array, T object) {
+		Objects.requireNonNull(array);
+		
+		for (int i = 0; i < array.length; ++ i) {
+			if (Objects.equals(array[i], object)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }
