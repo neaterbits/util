@@ -35,6 +35,7 @@
 		<module>util-buffers</module>
 		<module>util-compat</module>
 		<module>util-io-common</module>
+		<module>util-io-buffers</module>
 		<module>util-parse</module>
 	</modules>
 

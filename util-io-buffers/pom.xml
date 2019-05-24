@@ -5,20 +5,22 @@
     <artifactId>root</artifactId>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <artifactId>util-parse</artifactId>
-  <name>Common parser support code</name>
+  <artifactId>util-io-buffers</artifactId>
+  <name>IO buffers code</name>
   <packaging>jar</packaging>
   <dependencies>
-  <dependency>
-  	<groupId>${project.groupId}</groupId>
-  	<artifactId>util-base</artifactId>
-  	<version>${project.version}</version>
-  </dependency>
-  <dependency>
-  	<groupId>${project.groupId}</groupId>
-  	<artifactId>util-io-common</artifactId>
-  	<version>${project.version}</version>
-  </dependency>
+
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>util-buffers</artifactId>
+		<version>${project.version}</version>
+	</dependency>
+
+	<dependency>
+		<groupId>${project.groupId}</groupId>
+		<artifactId>util-io-common</artifactId>
+		<version>${project.version}</version>
+	</dependency>
 
 	<!-- test dependencies --> 
 

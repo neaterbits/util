@@ -24,7 +24,7 @@ public interface Tokenizer {
 
 	Integer asInteger(long stringRef);
 
-	int asDecimalSize(long stringRef);
+	// int asDecimalSize(long stringRef);
 
 	BigDecimal asBigDecimal(long stringRef);
 	
