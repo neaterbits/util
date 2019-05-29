@@ -12,7 +12,7 @@ import com.neaterbits.util.io.strings.CharInput;
 
 public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharInput> {
 
-	private static final int DEBUG_LEVEL = 0;
+	private static final Integer DEBUG_LEVEL = 0;
 
 	private static final String PREFIX = "Lexer";
 
@@ -39,6 +39,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	private final TokenMatch tokenMatch;
 	
 	private int lineNo;
+	private long lineStartOffset;
 	
 	private long tokenizerPos;
 	
@@ -107,6 +108,14 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 
 	private void mark() {
 		this.tokenizerPos = input.getReadPos();
+	}
+	
+	public long getTokenStartPos() {
+		return tokenizerPos;
+	}
+	
+	public int getStartPosInLine() {
+		return (int)(getTokenStartPos() - lineStartOffset);
 	}
 
 	public long getStringRef(int startPos, int endSkip) {
@@ -323,6 +332,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			// for showing lineno in case of error
 			if (c == '\n') {
 				++ lineNo;
+				lineStartOffset = tokenizerPos + cur.length() + 1;
 			}
 			
 			cur.append(c);
@@ -636,6 +646,18 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	
 	public final String get() {
 		return cur.toString();
+	}
+	
+	public final int getStartLineNo() {
+		return lineNo;
+	}
+	
+	public final int getEndLineNo() {
+		return lineNo;
+	}
+
+	public final int getTokenLength() {
+		return cur.length();
 	}
 	
 	public final ParserException unexpectedToken() {
