@@ -21,12 +21,12 @@ import java.util.Map;
  *
  */
 
-public class DuplicateDetectingStringStorageBuffer extends BaseStringStorageBuffer {
+public class MapStringStorageBuffer extends BaseStringStorageBuffer {
 
 	// Detect repeated strings and return same value
 	private final Map<String, Integer> map;
 	
-	public DuplicateDetectingStringStorageBuffer() {
+	public MapStringStorageBuffer() {
 		this.map = new HashMap<String, Integer>();
 	}
 	

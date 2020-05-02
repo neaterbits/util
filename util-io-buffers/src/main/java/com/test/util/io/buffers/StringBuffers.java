@@ -8,7 +8,7 @@ import com.neaterbits.util.BigDecimalConversion;
 import com.neaterbits.util.IEnum;
 import com.neaterbits.util.StringUtils;
 import com.neaterbits.util.buffers.BaseBuffers;
-import com.neaterbits.util.buffers.DuplicateDetectingStringStorageBuffer;
+import com.neaterbits.util.buffers.MapStringStorageBuffer;
 import com.neaterbits.util.io.loadstream.LoadStream;
 import com.neaterbits.util.io.loadstream.StreamStatus;
 import com.neaterbits.util.io.strings.CharInput;
@@ -445,7 +445,7 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 	}
 	
 	@Override
-	public int addToBuffer(DuplicateDetectingStringStorageBuffer buffer, long pos) {
+	public int addToBuffer(MapStringStorageBuffer buffer, long pos) {
 
 		int bufNo = bufNo(pos);
 		int bufOffset = bufOffset(pos);

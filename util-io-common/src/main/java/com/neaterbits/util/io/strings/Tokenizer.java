@@ -1,7 +1,7 @@
 package com.neaterbits.util.io.strings;
 
 import com.neaterbits.util.IEnum;
-import com.neaterbits.util.buffers.DuplicateDetectingStringStorageBuffer;
+import com.neaterbits.util.buffers.MapStringStorageBuffer;
 
 /**
  * Marker interface for tokenizer that allows to read tokens. All strings are longs
@@ -16,7 +16,7 @@ public interface Tokenizer extends StringSource {
 	
 	boolean equalsIgnoreCase(String s, long stringRef);
 	
-	int addToBuffer(DuplicateDetectingStringStorageBuffer buffer, long stringRef);
+	int addToBuffer(MapStringStorageBuffer buffer, long stringRef);
 	
 	String asString(long startOffset, long endOffset);
 }
