@@ -117,6 +117,10 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	public int getStartPosInLine() {
 		return (int)(getTokenStartPos() - lineStartOffset);
 	}
+	
+	public long getStringRef() {
+        return input.getStringRef(tokenizerPos, input.getReadPos(), 0, 0);
+	}
 
 	public long getStringRef(int startPos, int endSkip) {
 		return input.getStringRef(tokenizerPos, input.getReadPos(), startPos, endSkip);
@@ -138,6 +142,10 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	}
 
 	private static final LexerMatch DEFAULT_MATCH = LexerMatch.LONGEST_MATCH;
+
+	public TOKEN peek(@SuppressWarnings("unchecked") TOKEN ... inputTokens) throws IOException {
+        return peek(DEFAULT_MATCH, null, inputTokens);
+    }
 
 	public TOKEN peek(Value<String> value, @SuppressWarnings("unchecked") TOKEN ... inputTokens) throws IOException {
 		return peek(DEFAULT_MATCH, value, inputTokens);
@@ -598,7 +606,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			}
 			break;
 
-		case CHARTYPE:
+		case CHARTYPE: {
 			final boolean matches = token.getCharType().matches(cur.toString());
 			if (matches) {
 				// Matches but we should read all characters from stream
@@ -610,6 +618,21 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 				possibleMatch = false;
 			}
 			break;
+		}
+			
+		case CUSTOM: {
+            final boolean matches = token.getCustom().test(cur);
+            if (matches) {
+                // Matches but we should read all characters from stream
+                match = true;
+                possibleMatch = true;
+            }
+            else {
+                match = false;
+                possibleMatch = false;
+            }
+		    break;
+		}
 			
 		case EOF:
 			// skip

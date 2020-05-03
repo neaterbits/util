@@ -13,8 +13,11 @@ public enum TokenType {
 	FROM_CHAR_UPTO_CHAR, // From a character to a character, but not including
 	FROM_STRING_TO_STRING, // From a string to another, eg. HTML comment
 	
-	EXCLUDING_CHAR, // up to but excluding char
-	INCLUDING_CHAR // up to and including char
+	FROM_STRING_TO_EOL,
 	
+	EXCLUDING_CHAR, // up to but excluding char
+	INCLUDING_CHAR, // up to and including char
+	
+	CUSTOM
 	;
 }

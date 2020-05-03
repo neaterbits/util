@@ -1,5 +1,7 @@
 package com.neaterbits.util.parse;
 
+import java.util.function.Predicate;
+
 public interface IToken {
 
 	TokenType getTokenType();
@@ -19,4 +21,6 @@ public interface IToken {
 	
 	// Chartype token
 	CharType getCharType();
+	
+	Predicate<CharSequence> getCustom();
 }

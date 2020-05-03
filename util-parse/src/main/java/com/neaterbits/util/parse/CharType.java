@@ -8,7 +8,7 @@ public abstract class CharType {
 		return false;
 	}
 	
-	public boolean matches(String s) {
+	public boolean matches(CharSequence s) {
 		
 		final int len = s.length();
 		
