@@ -2,7 +2,7 @@ package com.neaterbits.util.buffers;
 
 import java.util.Arrays;
 
-public abstract class BaseStringStorageBuffer {
+public abstract class BaseStringStorageBuffer implements StringStorageBufferGetters {
 
 	public static final int NONE = 0;
 
@@ -58,6 +58,7 @@ public abstract class BaseStringStorageBuffer {
 		this.buffer = newBuffer;
 	}
 	
+	@Override
 	public final String getString(int ref) {
 		if (ref > writePos) {
 			throw new IllegalArgumentException("ref > writePos");
@@ -80,5 +81,4 @@ public abstract class BaseStringStorageBuffer {
 			}
 		}
 	}
-
 }
