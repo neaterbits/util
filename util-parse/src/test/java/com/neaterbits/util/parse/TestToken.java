@@ -10,6 +10,9 @@ public enum TestToken implements IToken {
 	KEYWORD_XYZ("xyz"),
 	KEYWORD_ZYX("zyx"),
 	
+	KEYWORD_ELSE("else"),
+	KEYWORD_ELSE_IF("else if"),
+	
 	WS(new CharTypeWS()),
 	COMMENT("/*", "*/");
 

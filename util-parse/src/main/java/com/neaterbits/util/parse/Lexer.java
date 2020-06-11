@@ -300,6 +300,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		TOKEN found = null;
 		
 		TOKEN longestFoundSoFar = null;
+		int lengthOfLongestFoundSoFar = 0;
 		
 		// Start out with scanning all input tokens, we will switch to scan only those tokens left matching
 		TOKEN [] tokens = inputTokens;
@@ -392,8 +393,9 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			
 			if (found == null) { // found may be set in case of FIRST_MATCH matching method
 				if (firstMatchThisIteration != null) {
-					// found a match this iterations, set as longest so far
+					// found a match this iteration, set as longest so far
 					longestFoundSoFar = firstMatchThisIteration;
+					lengthOfLongestFoundSoFar = cur.length();
 				}
 	
 				// No possible matches and none found, return tokNone unless have found an earlier match
@@ -420,6 +422,14 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 					else {
 						// found a token, return that
 						found = longestFoundSoFar;
+
+						// Reset back to length of last found
+						final int beyondLongest = cur.length() - lengthOfLongestFoundSoFar;
+				
+						if (beyondLongest > 0) {
+						    cur.setLength(lengthOfLongestFoundSoFar);
+						    input.rewind(beyondLongest);
+						}
 					}
 				}
 				else {

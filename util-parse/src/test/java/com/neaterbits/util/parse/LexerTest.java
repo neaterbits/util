@@ -47,4 +47,26 @@ public class LexerTest {
 
 		assertThat(lexer.get()).isEqualTo("zyx");
 	}
+
+	@Test
+	public void testGettingElseAndElseIfReturnsElseWithoutTrailingSpace() throws IOException {
+	    
+	    // Make sure that 'else {' returns 'else'
+	    // even if also matching middle space of 'else if' 
+
+        final StringBuffers buffer = new StringBuffers(new SimpleLoadStream("else {")); 
+        final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
+
+        final TestToken [] tokens = new TestToken[] {
+                TestToken.KEYWORD_ELSE,
+                TestToken.KEYWORD_ELSE_IF
+        };
+        
+        final TestToken token = lexer.lexSkipWSAndComment(tokens);
+        
+        assertThat(token).isEqualTo(TestToken.KEYWORD_ELSE);
+        
+        assertThat(buffer.getString(lexer.getStringRef())).isEqualTo("else");
+        assertThat(lexer.get()).isEqualTo("else");
+	}
 }
