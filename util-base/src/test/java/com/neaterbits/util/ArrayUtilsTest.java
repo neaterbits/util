@@ -2,11 +2,11 @@ package com.neaterbits.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class ArrayUtilsTest {
 
-	@Test(groups={"unit"})
+	@Test
 	public void testMerge() {
 		final Integer [] ret = ArrayUtils.merge(
 				new Integer [] { 9, 8, 7 },
@@ -19,7 +19,7 @@ public class ArrayUtilsTest {
 		});
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testSubArray() {
 		
 		final Integer [] input = new Integer [] { 3, 2, 1 };

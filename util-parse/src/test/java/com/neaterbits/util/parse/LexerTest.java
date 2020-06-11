@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 import com.neaterbits.util.io.loadstream.SimpleLoadStream;
 import com.neaterbits.util.io.strings.CharInput;
@@ -26,7 +26,7 @@ public class LexerTest {
 		return lexer;
 	}
 	
-	@Test(groups="unit")
+	@Test
 	public void testParseSkipWS() throws IOException {
 		
 		final StringBuffers buffer = new StringBuffers(new SimpleLoadStream(" xyz  "));
@@ -37,7 +37,7 @@ public class LexerTest {
 		assertThat(lexer.get()).isEqualTo("xyz");
 	}
 
-	@Test(groups="unit")
+	@Test
 	public void testParseSkipWSAndComment() throws IOException {
 		
 		final StringBuffers buffer = new StringBuffers(new SimpleLoadStream(" /* xyz */zyx "));

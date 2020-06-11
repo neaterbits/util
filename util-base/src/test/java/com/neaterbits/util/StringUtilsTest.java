@@ -2,11 +2,11 @@ package com.neaterbits.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 public class StringUtilsTest {
 
-	@Test(groups={"unit"})
+	@Test
 	public void testTrimHead() {
 
 		assertThat(StringUtils.trimHead(new String [] { null, "", "abc", "", null }))
@@ -14,7 +14,7 @@ public class StringUtilsTest {
 
 	}
 	
-	@Test(groups={"unit"})
+	@Test
 	public void testTrimTail() {
 
 		assertThat(StringUtils.trimTail(new String [] { null, "", "abc", "", null }))
@@ -22,7 +22,7 @@ public class StringUtilsTest {
 
 	}
 	
-	@Test(groups={"unit"})
+	@Test
 	public void testTrim() {
 
 		assertThat(StringUtils.trim(new String [] { null, "", "abc", "", null }))
@@ -30,7 +30,7 @@ public class StringUtilsTest {
 
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testSplit() {
 		checkSplit("123", '_', "123");
 		checkSplit("/a/b/c", '/', "", "a", "b", "c");
@@ -44,19 +44,19 @@ public class StringUtilsTest {
 		assertThat(StringUtils.split(str, c)).isEqualTo(expected);
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testToUpperFirst() {
 		assertThat(StringUtils.toUpperFirst("upperCase")).isEqualTo("UpperCase");
 		assertThat(StringUtils.toUpperFirst("UpperCase")).isEqualTo("UpperCase");
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testToLowerFirst() {
 		assertThat(StringUtils.toLowerFirst("LowerCase")).isEqualTo("lowerCase");
 		assertThat(StringUtils.toLowerFirst("lowerCase")).isEqualTo("lowerCase");
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testIsAlphaNumeric() {
 		assertThat(StringUtils.isAlphaNumeric("1234")).isEqualTo(true);
 		assertThat(StringUtils.isAlphaNumeric("abcd")).isEqualTo(true);
@@ -72,7 +72,7 @@ public class StringUtilsTest {
 		
 	}
 
-	@Test(groups={"unit"})
+	@Test
 	public void testIsRemoveBlanks() {
 		assertThat(StringUtils.removeBlanks("")).isEqualTo("");
 		assertThat(StringUtils.removeBlanks("1234")).isEqualTo("1234");
