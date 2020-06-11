@@ -64,6 +64,11 @@ public class StringSourceInputStream extends InputStream implements StringSource
 	}
 	
 	@Override
+    public int asInt(long stringRef) {
+        return Integer.parseInt(asString(stringRef));
+    }
+	
+    @Override
 	public BigDecimal asBigDecimal(long stringRef) {
 		return new BigDecimal(asString(stringRef));
 	}

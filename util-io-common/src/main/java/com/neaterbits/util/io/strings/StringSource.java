@@ -12,4 +12,5 @@ public interface StringSource extends StringRef {
 
 	BigDecimal asBigDecimal(long stringRef);
 
+	int asInt(long stringRef);
 }

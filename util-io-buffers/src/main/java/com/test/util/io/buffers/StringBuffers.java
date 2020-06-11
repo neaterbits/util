@@ -506,9 +506,15 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 
 	@Override
 	public Integer asInteger(long stringRef) {
-		// TODO in-buffer
-		return StringUtils.asIntegerOrNull(getString(stringRef));
+	    // TODO in-buffer
+	    return StringUtils.asIntegerOrNull(getString(stringRef));
 	}
+
+	@Override
+    public int asInt(long stringRef) {
+        // TODO in-buffer
+	    return Integer.parseInt(getString(stringRef));
+    }
 
 	/*
 	@Override
@@ -518,8 +524,8 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		return DecimalSize.encodeFromString(s);
 	}
 	*/
-	
-	@Override
+
+    @Override
 	public BigDecimal asBigDecimal(long stringRef) {
 		final String s = asString(stringRef);
 		
