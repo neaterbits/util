@@ -50,12 +50,10 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 	// Read 100 bytes at a time max so that can parse as we read from socket
 	private static final int READ_CHUNK = 100;
 	
-
 	private final LoadStream reader;
 
 	private long curWritePos;
 	private long curReadPos;
-	
 	
 	public StringBuffers(LoadStream inputStream) {
 		super(new char [INITIAL_BUFFERS][], INITIAL_BUFFERS, MAX_BUFFERS, OFFSET_BITS);
@@ -223,7 +221,7 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		return curReadPos;
 	}
 	
-	@Override
+    @Override
 	public long getStringRef(long startPos, long endPos, int startOffset, int endSkip) {
 
 		final long pos = startPos;
@@ -561,8 +559,27 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		
 		return getString(stringRef);
 	}
+	
+	private static long toRef(int offset) {
+	    
+	    final int bufIdx = offset / BUFFER_SIZE;
+	    final int bufOffset  = offset % BUFFER_SIZE; 
+	    
+	    return stringRef(bufIdx, bufOffset, 0);
+	}
 
 	@Override
+    public String asStringFromOffset(int startOffset, int endOffset) {
+	    
+	    return asString(toRef(startOffset), toRef(endOffset));
+    }
+
+    @Override
+    public int getOffsetFromStart(long stringRef) {
+        return bufNo(stringRef) + bufOffset(stringRef);
+    }
+
+    @Override
 	public String toString() {
 		return "StringBuffers [curWritePos=" + posString(curWritePos) + ", curReadPos=" + posString(curReadPos) +  "]";
 	}

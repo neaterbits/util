@@ -35,6 +35,11 @@ public class StringCharInput implements CharInput {
 	}
 
 	@Override
+    public int getOffsetFromStart(long stringRef) {
+        return (int)(pos >> 32);
+    }
+
+    @Override
 	public long getStringRef(long startPos, long endPos, int startOffset, int endSkip) {
 		
 		if (startPos > endPos) {

@@ -18,5 +18,23 @@ public interface Tokenizer extends StringSource {
 	
 	int addToBuffer(MapStringStorageBuffer buffer, long stringRef);
 	
-	String asString(long startOffset, long endOffset);
+	/**
+	 * String between two buffer references
+	 * 
+	 * @param startStringRef opaque start reference
+	 * @param endStringRef opaque end reference
+	 * 
+	 * @return the resulting {@link String}
+	 */
+	String asString(long startStringRef, long endStringRef);
+	
+	/**
+	 * As a String counted as offset from the beginning of the stream
+	 * 
+	 * @param startOffset index from beginning of stream
+	 * @param endOffset index from end of stream, 
+	 * 
+	 * @return the resulting {@link String}
+	 */
+	String asStringFromOffset(int startOffset, int endOffset);
 }

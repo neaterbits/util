@@ -9,6 +9,8 @@ public interface CharInput {
 	// Current read pos, may be encoded so cannot do arithmetics on this
 	long getReadPos();
 	
+	int getOffsetFromStart(long stringRef);
+	
 	long getStringRef(long startPos, long endPos, int startOffset, int endSkip);
 	
 	// when reading one char extra in lexer so that tokenizer position in buffer reflects

@@ -39,7 +39,9 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	private final TokenMatch tokenMatch;
 	
 	private int lineNo;
-	private long lineStartOffset;
+	
+	// Start offset from start of input
+	private int lineStartOffset;
 	
 	private long tokenizerPos;
 	
@@ -114,8 +116,12 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		return tokenizerPos;
 	}
 	
+	public int getTokenStartOffset() {
+	    return input.getOffsetFromStart(getTokenStartPos());
+	}
+
 	public int getStartPosInLine() {
-		return (int)(getTokenStartPos() - lineStartOffset);
+		return input.getOffsetFromStart(getTokenStartPos()) - lineStartOffset;
 	}
 	
 	public long getStringRef() {
@@ -341,7 +347,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 			// for showing lineno in case of error
 			if (c == '\n') {
 				++ lineNo;
-				lineStartOffset = tokenizerPos + cur.length() + 1;
+				lineStartOffset = input.getOffsetFromStart(tokenizerPos) + cur.length() + 1;
 			}
 			
 			cur.append(c);
