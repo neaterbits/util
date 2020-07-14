@@ -37,4 +37,6 @@ public interface Tokenizer extends StringSource {
 	 * @return the resulting {@link String}
 	 */
 	String asStringFromOffset(int startOffset, int endOffset);
+	
+	boolean equals(long stringRef1, long stringRef2);
 }

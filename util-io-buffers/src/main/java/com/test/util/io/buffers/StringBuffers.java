@@ -372,6 +372,75 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		return equals(s, stringRef, false);
 	}
 	
+	@Override
+	public boolean equals(long stringRef1, long stringRef2) {
+
+		int bufNo1 = bufNo(stringRef1);
+		int bufOffset1 = bufOffset(stringRef1);
+
+		int bufNo2 = bufNo(stringRef2);
+		int bufOffset2 = bufOffset(stringRef2);
+		
+		final int length1 = length(stringRef1);
+		final int length2 = length(stringRef2);
+		
+		boolean areEqual;
+		
+		if (length1 != length2) {
+			areEqual = false;
+		}
+		else {
+			areEqual = true;
+	
+			char [] buf1 = buffers[bufNo1];
+			char [] buf2 = buffers[bufNo2];
+	
+			final int readBufNo = bufNo(curReadPos);
+			final int readBufOffest = bufOffset(curReadPos);
+			
+			for (int i = 0; i < length1; ++ i) {
+				
+				if (bufOffset1 == readBufOffest && bufNo1 == readBufNo) {
+					areEqual = false;
+					break;
+				}
+
+				if (bufOffset2 == readBufOffest && bufNo2 == readBufNo) {
+					areEqual = false;
+					break;
+				}
+
+				final char c1 = buf1[bufOffset1];
+				final char c2 = buf2[bufOffset2];
+				
+				if (c1 != c2) {
+					areEqual = false;
+					break;
+				}
+	
+				if (bufOffset1 == BUFFER_SIZE - 1) {
+					++ bufNo1;
+					bufOffset1 = 0;
+					buf1 = buffers[bufNo1];
+				}
+				else {
+					++ bufOffset1;
+				}
+	
+				if (bufOffset2 == BUFFER_SIZE - 1) {
+					++ bufNo2;
+					bufOffset2 = 0;
+					buf2 = buffers[bufNo2];
+				}
+				else {
+					++ bufOffset2;
+				}
+			}
+		}
+		
+		return areEqual;
+	}
+
 	private boolean equals(String s, long pos, boolean caseSensitive) {
 
 		boolean equals = true;
