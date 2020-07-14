@@ -14,7 +14,8 @@ public enum TestToken implements IToken {
 	KEYWORD_ELSE_IF("else if"),
 	
 	WS(new CharTypeWS()),
-	COMMENT("/*", "*/");
+	C_COMMENT("/*", "*/"),
+	CPP_COMMENT("//", TokenType.FROM_STRING_TO_EOL);
 
 	private final TokenType tokenType;
 	private final String literal;
@@ -35,6 +36,13 @@ public enum TestToken implements IToken {
 	
 	private TestToken(CharType charType) {
 		this(TokenType.CHARTYPE, null, null, charType);
+	}
+	
+	private TestToken(String fromLiteral, TokenType tokenType) {
+	    this.tokenType = tokenType;
+	    this.literal = fromLiteral;
+	    this.toLiteral = null;
+	    this.charType = null;
 	}
 	
 	private TestToken(TokenType tokenType, String literal, String toLiteral, CharType charType) {

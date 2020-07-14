@@ -20,7 +20,7 @@ public class LexerTest {
 				TestToken.NONE,
 				TestToken.EOF,
 				new TestToken [] { TestToken.WS },
-				new TestToken [] { TestToken.COMMENT });
+				new TestToken [] { TestToken.C_COMMENT, TestToken.CPP_COMMENT });
 		
 		
 		return lexer;
@@ -38,7 +38,7 @@ public class LexerTest {
 	}
 
 	@Test
-	public void testParseSkipWSAndComment() throws IOException {
+	public void testParseSkipWSAndCComment() throws IOException {
 		
 		final StringBuffers buffer = new StringBuffers(new SimpleLoadStream(" /* xyz */zyx "));
 		final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
@@ -47,6 +47,17 @@ public class LexerTest {
 
 		assertThat(lexer.get()).isEqualTo("zyx");
 	}
+
+    @Test
+    public void testParseSkipWSAndCPPComment() throws IOException {
+
+        final StringBuffers buffer = new StringBuffers(new SimpleLoadStream(" // xyz \nzyx "));
+        final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
+
+        assertThat(lexer.lexSkipWSAndComment(TestToken.KEYWORD_ZYX)).isEqualTo(TestToken.KEYWORD_ZYX);
+
+        assertThat(lexer.get()).isEqualTo("zyx");
+    }
 
 	@Test
 	public void testGettingElseAndElseIfReturnsElseWithoutTrailingSpace() throws IOException {

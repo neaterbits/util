@@ -649,6 +649,21 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
             }
 		    break;
 		}
+		
+		case FROM_STRING_TO_EOL:
+		    
+		    if (cur.length() <= token.getFromLiteral().length()) {
+		        match = false;
+		        possibleMatch = startsWith(token.getFromLiteral(), cur);
+		    }
+		    else {
+		        final boolean startsWith = startsWith(cur, token.getFromLiteral());
+		        
+		        match = startsWith && c == '\n';
+		        possibleMatch = startsWith;
+		    }
+		    
+		    break;
 			
 		case EOF:
 			// skip
@@ -663,6 +678,20 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 
 		tokenMatch.matchesExactly = match;
 		tokenMatch.mightMatch = possibleMatch;
+	}
+	
+	private static boolean startsWith(CharSequence toSearch, CharSequence start) {
+	    
+	    boolean match = true;
+	    
+	    for (int i = 0; i < start.length(); ++ i) {
+	        if (toSearch.charAt(i) != start.charAt(i)) {
+	            match = false;
+	            break;
+	        }
+	    }
+	    
+	    return match;
 	}
 	
 	private final int read() throws IOException {
