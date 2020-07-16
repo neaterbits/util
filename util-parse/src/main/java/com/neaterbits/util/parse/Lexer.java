@@ -424,6 +424,8 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 							debug("No possible matches, returning");
 						}
 						
+						input.rewind(cur.length());
+						
 						// No possible matches, return not-found token
 						found = tokNone; // triggers to break out of loop
 					}

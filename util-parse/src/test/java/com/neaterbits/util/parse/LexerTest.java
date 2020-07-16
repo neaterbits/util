@@ -59,6 +59,19 @@ public class LexerTest {
         assertThat(lexer.get()).isEqualTo("zyx");
     }
 
+    @Test
+    public void testParseLexNotFoundDoesNotChangeStreamEvenIfSameInitial() throws IOException {
+        
+        final StringBuffers buffer = new StringBuffers(new SimpleLoadStream("else  "));
+        final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
+
+        assertThat(lexer.lexSkipWS(TestToken.KEYWORD_ELSE_IF)).isEqualTo(TestToken.NONE);
+
+        assertThat(lexer.lexSkipWS(TestToken.KEYWORD_ELSE)).isEqualTo(TestToken.KEYWORD_ELSE);
+
+        assertThat(lexer.get()).isEqualTo("else");
+    }
+
 	@Test
 	public void testGettingElseAndElseIfReturnsElseWithoutTrailingSpace() throws IOException {
 	    
