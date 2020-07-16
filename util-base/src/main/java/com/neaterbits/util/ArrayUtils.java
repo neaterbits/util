@@ -37,6 +37,11 @@ public class ArrayUtils {
 		
 		return ret;
 	}
+	
+	public static <T> String toString(T [] array, int numElements) {
+	    
+	    return Arrays.toString(Arrays.copyOf(array, numElements));
+	}
 
 
 	public static <T> T [] subArray(T [] array, int startIdx) {

@@ -3,7 +3,6 @@ package com.neaterbits.util.parse;
 import java.io.EOFException;
 import java.io.IOException;
 import java.lang.reflect.Array;
-import java.util.Arrays;
 import java.util.Objects;
 
 import com.neaterbits.util.ArrayUtils;
@@ -287,8 +286,11 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		
 	public TOKEN lex(LexerMatch matchMethod, TOKEN [] inputTokens, int numInputTokens) throws IOException {
 		if (hasDebugLevel(1)) {
+		    
 			debug("----");
-			debug("lex(\"" + input.peek(20) + "\": " + Arrays.toString(inputTokens) + ")");
+			
+			final String tokens = ArrayUtils.toString(inputTokens, numInputTokens);
+			debug("lex(\"" + input.peek(20) + "\": " + tokens + ")");
 		}
 		
 		if (inputTokens.length > possiblyMatchingTokens.length) {
