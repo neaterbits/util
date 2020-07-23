@@ -12,6 +12,7 @@ import com.neaterbits.util.buffers.MapStringStorageBuffer;
 import com.neaterbits.util.io.loadstream.LoadStream;
 import com.neaterbits.util.io.loadstream.StreamStatus;
 import com.neaterbits.util.io.strings.CharInput;
+import com.neaterbits.util.io.strings.StringRef;
 import com.neaterbits.util.io.strings.Tokenizer;
 
 public class StringBuffers extends BaseBuffers<char[][], char[]> implements CharInput, Tokenizer {
@@ -224,6 +225,26 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
     @Override
 	public long getStringRef(long startPos, long endPos, int startOffset, int endSkip) {
 
+        if (startPos == StringRef.STRING_NONE) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (endPos == StringRef.STRING_NONE) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (endPos < startPos) {
+            throw new IllegalArgumentException();
+        }
+
+        if (startOffset < 0) {
+            throw new IllegalArgumentException();
+        }
+        
+        if (endSkip < 0) {
+            throw new IllegalArgumentException();
+        }
+        
 		final long pos = startPos;
 
 		int bufNo = bufNo(pos);
@@ -234,6 +255,10 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		}
 		
 		int length = getTokenLength(bufNo, bufOffset, endPos);
+		
+		if (startOffset + endSkip > length) {
+		    throw new IllegalArgumentException();
+		}
 
 		if (startOffset > 0) {
 			length -= startOffset;
@@ -266,7 +291,9 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		
 		length -= endSkip;
 		
-		return stringRef(bufNo, bufOffset, length);
+		final long result = stringRef(bufNo, bufOffset, length);
+		
+		return result;
 	}
 
 	public long getPos() {
@@ -489,8 +516,13 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 	}
 
 	private int getTokenLength(int bufNo, int bufOffset, long endPos) {
+	    
 		final int readBufNo = bufNo(endPos);
 		final int readBufOffest = bufOffset(endPos);
+		
+		if (readBufNo < bufNo || (readBufNo == bufNo && readBufOffest < bufOffset)) {
+		    throw new IllegalArgumentException();
+		}
 		
 		int length;
 		
@@ -558,6 +590,11 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 	}
 	
 	public String getString(long ref) {
+	    
+	    if (ref == StringRef.STRING_NONE) {
+	        throw new IllegalArgumentException();
+	    }
+	    
 		final int length = length(ref);
 		
 		int bufNo = bufNo(ref);
