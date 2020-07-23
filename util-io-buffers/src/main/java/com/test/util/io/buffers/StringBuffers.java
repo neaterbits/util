@@ -233,7 +233,7 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 			throw new IllegalArgumentException("buf offset beyond buffer");
 		}
 		
-		int length = getTokenLength(bufNo, bufOffset);
+		int length = getTokenLength(bufNo, bufOffset, endPos);
 
 		if (startOffset > 0) {
 			length -= startOffset;
@@ -488,9 +488,9 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 		return equals;
 	}
 
-	private int getTokenLength(int bufNo, int bufOffset) {
-		final int readBufNo = bufNo(curReadPos);
-		final int readBufOffest = bufOffset(curReadPos);
+	private int getTokenLength(int bufNo, int bufOffset, long endPos) {
+		final int readBufNo = bufNo(endPos);
+		final int readBufOffest = bufOffset(endPos);
 		
 		int length;
 		
