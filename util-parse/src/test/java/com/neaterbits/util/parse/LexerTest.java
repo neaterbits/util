@@ -93,4 +93,28 @@ public class LexerTest {
         assertThat(buffer.getString(lexer.getStringRef())).isEqualTo("else");
         assertThat(lexer.get()).isEqualTo("else");
 	}
+
+    @Test
+    public void testParseFromToLiteralContents() throws IOException {
+        
+        final StringBuffers buffer = new StringBuffers(new SimpleLoadStream("/* xyz */"));
+        final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
+        
+        assertThat(lexer.lexSkipWS(TestToken.C_COMMENT)).isEqualTo(TestToken.C_COMMENT);
+
+        assertThat(lexer.get()).isEqualTo("/* xyz */");
+        assertThat(buffer.getString(lexer.getStringRef())).isEqualTo("/* xyz */");
+    }
+
+    @Test
+    public void testParseFromToCharContents() throws IOException {
+        
+        final StringBuffers buffer = new StringBuffers(new SimpleLoadStream("\"xyz\""));
+        final Lexer<TestToken, CharInput> lexer = createLexer(buffer);
+        
+        assertThat(lexer.lexSkipWS(TestToken.STRING_LITERAL)).isEqualTo(TestToken.STRING_LITERAL);
+
+        assertThat(lexer.get()).isEqualTo("\"xyz\"");
+        assertThat(buffer.getString(lexer.getStringRef())).isEqualTo("\"xyz\"");
+    }
 }
