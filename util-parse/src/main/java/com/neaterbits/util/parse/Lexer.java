@@ -734,17 +734,14 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	
 	public final ParserException unexpectedToken() {
 		
-		String next;
-		
-		try {
-			next = getNext();
-		} catch (IOException e) {
-			next = "<exception>";
-		}
-		
-		return new ParserException("Unexpected token for \"" + cur.toString() + "\" at " + lineNo + ": " + lastToken+ "\", next=\""+ next + "\"");
+		return new ParserException("Unexpected token for \"" + cur.toString() + "\"" + exceptionContext());
 	}
-	
+
+	public final ParserException parserError(String message) {
+	    
+	    return new ParserException(message + exceptionContext());
+	}
+
 	public final int getEndSkip() {
 		return 0;
 	}
@@ -760,4 +757,17 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 	private static boolean hasDebugLevel(int level) {
 		return DEBUG_LEVEL>= level;
 	}
- }
+
+    private String exceptionContext() {
+        
+        String next;
+        
+        try {
+            next = getNext();
+        } catch (IOException e) {
+            next = "<exception>";
+        }
+
+        return " at " + lineNo + ": " + lastToken+ "\", next=\"" + next + "\"";
+    }
+}
