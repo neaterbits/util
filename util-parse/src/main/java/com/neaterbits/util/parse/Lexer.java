@@ -131,6 +131,10 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		return input.getStringRef(tokenizerPos, input.getReadPos(), startPos, endSkip);
 	}
 
+    public char getCharacter(int startPos) {
+        return cur.charAt(startPos);
+    }
+	
 	private TOKEN [] createTokenArray(Class<TOKEN> tokenClass) {
 		return createTokenArray(tokenClass, tokenClass.getEnumConstants().length);
 	}
