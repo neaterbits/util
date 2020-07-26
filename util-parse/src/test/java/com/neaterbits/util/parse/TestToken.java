@@ -1,7 +1,5 @@
 package com.neaterbits.util.parse;
 
-import java.util.function.Predicate;
-
 public enum TestToken implements IToken {
 
 	NONE(TokenType.NONE),
@@ -110,7 +108,7 @@ public enum TestToken implements IToken {
 	}
 
     @Override
-    public Predicate<CharSequence> getCustom() {
+    public CustomMatcher getCustom() {
         throw new UnsupportedOperationException();
     }
 }

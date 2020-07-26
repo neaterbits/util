@@ -8,6 +8,7 @@ import java.util.Objects;
 import com.neaterbits.util.ArrayUtils;
 import com.neaterbits.util.Value;
 import com.neaterbits.util.io.strings.CharInput;
+import com.neaterbits.util.parse.IToken.CustomMatchResult;
 
 public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharInput> {
 
@@ -134,7 +135,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
     public char getCharacter(int startPos) {
         return cur.charAt(startPos);
     }
-	
+
 	private TOKEN [] createTokenArray(Class<TOKEN> tokenClass) {
 		return createTokenArray(tokenClass, tokenClass.getEnumConstants().length);
 	}
@@ -645,15 +646,27 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		}
 			
 		case CUSTOM: {
-            final boolean matches = token.getCustom().test(cur);
-            if (matches) {
+            final CustomMatchResult matches = token.getCustom().test(cur);
+            
+            switch (matches) {
+            case MATCH:
                 // Matches but we should read all characters from stream
                 match = true;
                 possibleMatch = true;
-            }
-            else {
+                break;
+                
+            case POSSIBLE_MATCH:
+                match = false;
+                possibleMatch = true;
+                break;
+
+            case NO_MATCH:
                 match = false;
                 possibleMatch = false;
+                break;
+                
+            default:
+                throw new UnsupportedOperationException();
             }
 		    break;
 		}

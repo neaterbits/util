@@ -1,7 +1,5 @@
 package com.neaterbits.util.parse;
 
-import java.util.function.Predicate;
-
 public interface IToken {
 
 	TokenType getTokenType();
@@ -22,5 +20,23 @@ public interface IToken {
 	// Chartype token
 	CharType getCharType();
 	
-	Predicate<CharSequence> getCustom();
+	enum CustomMatchResult {
+	    
+	    // Matches
+	    MATCH,
+	    
+	    // Does not match but might match with more input
+	    POSSIBLE_MATCH,
+	    
+	    // No match and more input will not change it
+	    NO_MATCH
+	}
+	
+	@FunctionalInterface
+	interface CustomMatcher {
+	    
+	    CustomMatchResult test(CharSequence string);
+	}
+	
+	CustomMatcher getCustom();
 }
