@@ -248,4 +248,9 @@ public class StringUtils {
         || (c >= 'a' && c <= 'f')
         || (c >= 'A' && c <= 'F');
 	}
+
+    public static boolean isOctalDigit(char c) {
+        
+        return c >= '0' && c <= '8';
+    }
 }

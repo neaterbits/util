@@ -638,10 +638,17 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
     @Override
     public long asHexLong(long stringRef, int startPos, int endSkip) {
         // TODO in-buffer
-
         final String string = asString(stringRef);
 
         return Long.parseLong(string, startPos, string.length() - endSkip, 16);
+    }
+
+    @Override
+    public long asOctalLong(long stringRef, int startPos, int endSkip) {
+        // TODO in-buffer
+        final String string = asString(stringRef);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 8);
     }
 
     @Override
