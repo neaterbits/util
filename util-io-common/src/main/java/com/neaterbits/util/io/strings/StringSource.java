@@ -2,6 +2,8 @@ package com.neaterbits.util.io.strings;
 
 import java.math.BigDecimal;
 
+import com.neaterbits.util.StringUtils;
+
 public interface StringSource extends StringRef {
 
 	String asString(long stringRef);
@@ -40,6 +42,46 @@ public interface StringSource extends StringRef {
         final String string = asString(stringRef);
 
         return Long.parseLong(string, startPos, string.length() - endSkip, 8);
+    }
+
+    default long asBinaryLong(long stringRef, int startPos, int endSkip) {
+        
+        final String string = asString(stringRef);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 2);
+    }
+    
+    default String getStringWithoutSeparator(long stringRef, char separator) {
+        
+        return StringUtils.remove(asString(stringRef), separator);
+    }
+
+    default long asLongWithSeparator(long stringRef, int startPos, int endSkip, char separator) {
+        
+        final String string = getStringWithoutSeparator(stringRef, separator);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 10);
+    }
+
+    default long asHexLongWithSeparator(long stringRef, int startPos, int endSkip, char separator) {
+        
+        final String string = getStringWithoutSeparator(stringRef, separator);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 16);
+    }
+
+    default long asOctalLongWithSeparator(long stringRef, int startPos, int endSkip, char separator) {
+        
+        final String string = getStringWithoutSeparator(stringRef, separator);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 8);
+    }
+
+    default long asBinaryLongWithSeparator(long stringRef, int startPos, int endSkip, char separator) {
+        
+        final String string = getStringWithoutSeparator(stringRef, separator);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 2);
     }
 
     default BigDecimal asBigDecimal(long stringRef) {

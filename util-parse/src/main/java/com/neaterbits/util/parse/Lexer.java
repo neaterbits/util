@@ -215,7 +215,6 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 		
 		return false;
 	}
-
 	
 	public final TOKEN lexSkipWS(TOKEN toFind) throws IOException {
 		
@@ -386,7 +385,7 @@ public final class Lexer<TOKEN extends Enum<TOKEN> & IToken, INPUT extends CharI
 				final boolean wentFromMatchingToNonMatching = ! match && this.exactMatches[token.ordinal()];
 				
 				// If might match later or matches now, add to array for next iteration
-				if ((tokenMatch.mightMatch || match) && ! wentFromMatchingToNonMatching) {
+				if ((tokenMatch.mightMatch || match) && (! wentFromMatchingToNonMatching || token.isEager())) {
 					this.possiblyMatchingTokens[numPossibleMatch] = token;
 					++ numPossibleMatch;
 				}

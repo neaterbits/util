@@ -652,6 +652,14 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
     }
 
     @Override
+    public long asBinaryLong(long stringRef, int startPos, int endSkip) {
+        // TODO in-buffer
+        final String string = asString(stringRef);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 2);
+    }
+
+    @Override
 	public BigDecimal asBigDecimal(long stringRef) {
 		final String s = asString(stringRef);
 		

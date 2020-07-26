@@ -226,20 +226,36 @@ public class StringUtils {
 
 	public static String removeBlanks(String s) {
 
-		final int len = s.length();
-		
-		final StringBuilder sb = new StringBuilder(len);
-		
-		for (int i = 0; i < len; ++ i) {
-			final char c = s.charAt(i);
-
-			if (!Character.isWhitespace(c)) {
-				sb.append(c);
-			}
-		}
-
-		return sb.toString();
+		return remove(s, Character::isWhitespace);
 	}
+	
+	@FunctionalInterface
+	private interface CharTest {
+	    
+	    boolean match(char c);
+	}
+
+	public static String remove(String s, char toRemove) {
+	    
+	    return remove(s, c -> c == toRemove);
+	}
+
+	private static String remove(String s, CharTest matcher) {
+
+        final int len = s.length();
+        
+        final StringBuilder sb = new StringBuilder(len);
+        
+        for (int i = 0; i < len; ++ i) {
+            final char c = s.charAt(i);
+
+            if (!matcher.match(c)) {
+                sb.append(c);
+            }
+        }
+
+        return sb.toString();
+    }
 
 	public static boolean isHexDigit(char c) {
 	    

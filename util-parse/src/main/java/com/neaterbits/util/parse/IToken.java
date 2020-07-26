@@ -20,6 +20,10 @@ public interface IToken {
 	// Chartype token
 	CharType getCharType();
 	
+	default boolean isEager() {
+	    return false;
+	}
+	
 	enum CustomMatchResult {
 	    
 	    // Matches

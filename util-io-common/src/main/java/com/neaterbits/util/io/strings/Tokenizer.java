@@ -5,8 +5,6 @@ import com.neaterbits.util.buffers.MapStringStorageBuffer;
 
 /**
  * Marker interface for tokenizer that allows to read tokens. All strings are longs
- * @author nhl
- * 
  *
  */
 
