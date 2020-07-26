@@ -614,20 +614,35 @@ public class StringBuffers extends BaseBuffers<char[][], char[]> implements Char
 	    return StringUtils.asIntegerOrNull(getString(stringRef));
 	}
 
-	@Override
+    @Override
     public int asInt(long stringRef) {
         // TODO in-buffer
 	    return Integer.parseInt(getString(stringRef));
     }
+    
 
-	/*
-	@Override
-	public int asDecimalSize(long stringRef) {
-		final String s = asString(stringRef);
-		
-		return DecimalSize.encodeFromString(s);
-	}
-	*/
+    @Override
+    public long asLong(long stringRef) {
+        // TODO in-buffer
+        return Long.parseLong(asString(stringRef));
+    }
+
+    @Override
+    public long asLong(long stringRef, int startPos, int endSkip) {
+        // TODO in-buffer
+        final String string = getString(stringRef);
+
+        return Long.parseLong(string.substring(startPos, string.length() - endSkip));
+    }
+
+    @Override
+    public long asHexLong(long stringRef, int startPos, int endSkip) {
+        // TODO in-buffer
+
+        final String string = asString(stringRef);
+
+        return Long.parseLong(string, startPos, string.length() - endSkip, 16);
+    }
 
     @Override
 	public BigDecimal asBigDecimal(long stringRef) {

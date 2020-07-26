@@ -3,7 +3,6 @@ package com.neaterbits.util.io.strings;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -56,20 +55,5 @@ public class StringSourceInputStream extends InputStream implements StringSource
 				OffsetLengthStringRef.decodeOffset(stringRef),
 				OffsetLengthStringRef.decodeLength(stringRef),
 				charset);
-	}
-	
-	@Override
-	public Integer asInteger(long stringRef) {
-		return Integer.parseInt(asString(stringRef));
-	}
-	
-	@Override
-    public int asInt(long stringRef) {
-        return Integer.parseInt(asString(stringRef));
-    }
-	
-    @Override
-	public BigDecimal asBigDecimal(long stringRef) {
-		return new BigDecimal(asString(stringRef));
 	}
 }
