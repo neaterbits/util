@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import com.neaterbits.util.io.buffers.StringBuffers;
 import com.neaterbits.util.io.loadstream.LoadStream;
 import com.neaterbits.util.io.loadstream.SimpleLoadStream;
 

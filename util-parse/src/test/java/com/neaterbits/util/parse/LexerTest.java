@@ -6,9 +6,9 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import com.neaterbits.util.io.buffers.StringBuffers;
 import com.neaterbits.util.io.loadstream.SimpleLoadStream;
 import com.neaterbits.util.io.strings.CharInput;
-import com.test.util.io.buffers.StringBuffers;
 
 public class LexerTest {
 
