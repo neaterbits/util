@@ -5,14 +5,14 @@ public final class IdentityKey<T> {
 	private final T obj;
 
 	public IdentityKey(T obj) {
-		
+
 		if (obj == null) {
 			throw new IllegalArgumentException("obj == null");
 		}
-		
+
 		this.obj = obj;
 	}
-	
+
 	public final T get() {
 		return obj;
 	}
@@ -24,6 +24,18 @@ public final class IdentityKey<T> {
 
 	@Override
 	public final boolean equals(Object obj) {
-		return this.obj == obj;
+
+	    if (obj == null) {
+	        return false;
+	    }
+
+	    if (!getClass().equals(obj.getClass())) {
+	        return false;
+	    }
+
+	    @SuppressWarnings("unchecked")
+        final IdentityKey<T> other = (IdentityKey<T>)obj;
+
+	    return this.obj == other.obj;
 	}
 }
