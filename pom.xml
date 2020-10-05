@@ -37,6 +37,8 @@
 		<module>util-io-common</module>
 		<module>util-io-buffers</module>
 		<module>util-parse</module>
+		<module>util-concurrency</module>
+		<module>structured-log-model</module>
 	</modules>
 
 	<build>
