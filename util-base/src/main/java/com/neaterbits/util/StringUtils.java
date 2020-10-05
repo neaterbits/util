@@ -3,8 +3,10 @@ package com.neaterbits.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import com.neaterbits.util.compat.function.CFunction;
 
@@ -89,6 +91,43 @@ public class StringUtils {
 
 		return sb.toString();
 	}
+
+    public static <T> String join(Collection<T> strings, char separator, Function<T, String> map) {
+        return join(strings, separator, strings.size(), map);
+    }
+
+    public static String join(Collection<String> strings, char separator, int count) {
+        return join(strings.toArray(new String[strings.size()]), separator, count);
+    }
+
+    public static String join(String[] strings, char separator, int count) {
+        return join(Arrays.asList(strings), separator, count, string -> string);
+    }
+
+    public static <T> String join(Collection<T> strings, char separator, int count, Function<T, String> map) {
+        return join(strings, separator, 0, count, map);
+    }
+
+    public static <T> String join(Collection<T> strings, char separator, int start, int count, Function<T, String> map) {
+
+        final StringBuilder sb = new StringBuilder();
+
+        final Iterator<T> iter = strings.iterator();
+
+        for (int i = 0; i < start; ++ i) {
+            iter.next();
+        }
+
+        for (int i = 0; i < count; ++ i) {
+            if (i > 0) {
+                sb.append(separator);
+            }
+
+            sb.append(map.apply(iter.next()));
+        }
+
+        return sb.toString();
+    }
 
     public static boolean startsWith(List<String> strings, String [] parts) {
 
