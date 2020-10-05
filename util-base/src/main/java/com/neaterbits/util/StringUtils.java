@@ -2,19 +2,21 @@ package com.neaterbits.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import com.neaterbits.util.compat.function.CFunction;
 
 public class StringUtils {
-	
+
 	private static final String EMPTY = "";
 
 	private static final String [] EMPTY_ARRAY = new String[0];
 
 	public static boolean equals(String s1, String s2) {
 		final boolean equals;
-		
+
 		if (s1 == null && s2 == null) {
 			equals = true;
 		}
@@ -27,9 +29,9 @@ public class StringUtils {
 
 		return equals;
 	}
-	
+
 	public static String trimToNull(String s) {
-		
+
 		final String trimmed;
 
 		if (s == null) {
@@ -43,10 +45,10 @@ public class StringUtils {
 		}
 		else {
 			final String s2 = s.trim();
-			
+
 			trimmed = s2.isEmpty() ? null : s2;
 		}
-		
+
 		return trimmed;
 	}
 
@@ -70,9 +72,13 @@ public class StringUtils {
 		return integer;
 	}
 
+    public static String join(Collection<String> strings, char separator) {
+        return StringUtils.join(strings.toArray(new String[strings.size()]), separator);
+    }
+
 	public static String join(String [] strings, char c) {
 		final StringBuilder sb = new StringBuilder();
-		
+
 		for (int i = 0; i < strings.length; i ++) {
 			if (i > 0) {
 				sb.append(c);
@@ -83,16 +89,43 @@ public class StringUtils {
 
 		return sb.toString();
 	}
-	
+
+    public static boolean startsWith(List<String> strings, String [] parts) {
+
+        Objects.requireNonNull(strings);
+        Objects.requireNonNull(parts);
+
+        final boolean startsWith;
+
+        if (parts.length > strings.size()) {
+            startsWith = false;
+        }
+        else {
+
+            boolean matches = true;
+
+            for (int i = 0; i < parts.length; ++ i) {
+                if (!parts[i].equals(strings.get(i))) {
+                    matches = false;
+                    break;
+                }
+            }
+
+            startsWith = matches;
+        }
+
+        return startsWith;
+    }
+
 	public static String [] trimHead(String [] strings) {
 		final int firstNonEmpty = firstNonEmpty(strings);
-		
+
 		return firstNonEmpty != -1 ? Arrays.copyOfRange(strings, firstNonEmpty, strings.length) : EMPTY_ARRAY;
 	}
-	
+
 	public static String [] trimTail(String [] strings) {
 		final int lastNonEmpty = lastNonEmpty(strings);
-		
+
 		return lastNonEmpty != -1 ? Arrays.copyOfRange(strings, 0, lastNonEmpty + 1) : EMPTY_ARRAY;
 	}
 
@@ -112,7 +145,7 @@ public class StringUtils {
 				return i;
 			}
 		}
-		
+
 		return -1;
 	}
 
@@ -125,18 +158,18 @@ public class StringUtils {
 				firstNonEmpty != -1 ? firstNonEmpty : 0,
 				lastNonEmpty != -1 ? lastNonEmpty + 1 : strings.length);
 	}
-	
-	
+
+
 	public static String [] split(String s, char c) {
 		final int length = s.length();
 
 		final List<String> strings = new ArrayList<String>(100);
 
 		int last = -1;
-		
+
 		for (int i = 0; i < length; ++ i) {
 			if (s.charAt(i) == c) {
-				
+
 				final String found;
 
 				if (i == 0) {
@@ -170,7 +203,7 @@ public class StringUtils {
 			return Character.toUpperCase(t);
 		}
 	};
-	
+
 	private static final CFunction<Character, Character> toLower = new CFunction<Character, Character>() {
 
 		@Override
@@ -182,14 +215,14 @@ public class StringUtils {
 	public static String toUpperFirst(String s) {
 		return changeFirst(s, toUpper);
 	}
-	
+
 	public static String toLowerFirst(String s) {
 		return changeFirst(s, toLower);
 	}
 
 	private static String changeFirst(String s, CFunction<Character, Character> func) {
 		String ret;
-		
+
 		if (s == null || s.isEmpty()) {
 			ret = s;
 		}
@@ -207,20 +240,20 @@ public class StringUtils {
 	public static boolean isBlank(String s) {
 		return s == null || s.isEmpty() || s.trim().isEmpty();
 	}
-	
+
 	public static boolean isAlphaNumeric(String s) {
 
 		final int len = s.length();
-		
+
 		for (int i = 0; i < len; ++ i) {
-			
+
 			final int codePoint = s.codePointAt(i);
-			
+
 			if (!Character.isAlphabetic(codePoint) && !Character.isDigit(codePoint)) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
 
@@ -228,24 +261,24 @@ public class StringUtils {
 
 		return remove(s, Character::isWhitespace);
 	}
-	
+
 	@FunctionalInterface
 	private interface CharTest {
-	    
+
 	    boolean match(char c);
 	}
 
 	public static String remove(String s, char toRemove) {
-	    
+
 	    return remove(s, c -> c == toRemove);
 	}
 
 	private static String remove(String s, CharTest matcher) {
 
         final int len = s.length();
-        
+
         final StringBuilder sb = new StringBuilder(len);
-        
+
         for (int i = 0; i < len; ++ i) {
             final char c = s.charAt(i);
 
@@ -258,15 +291,15 @@ public class StringUtils {
     }
 
 	public static boolean isHexDigit(char c) {
-	    
-	    return 
+
+	    return
 	       (c >= '0' && c <= '9')
         || (c >= 'a' && c <= 'f')
         || (c >= 'A' && c <= 'F');
 	}
 
     public static boolean isOctalDigit(char c) {
-        
+
         return c >= '0' && c <= '8';
     }
 }
