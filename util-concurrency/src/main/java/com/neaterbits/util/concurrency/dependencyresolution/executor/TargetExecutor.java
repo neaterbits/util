@@ -55,8 +55,6 @@ public final class TargetExecutor {
 			final int targetsLeft = targets.size();
 			final int priorNumScheduled = asyncExecutor.getNumScheduledJobs();
 			
-			System.out.println("## schedule targets");
-			
 			boolean anyStateChange = false;
 			
 			for (TargetStateMachine<CONTEXT> target : targets) {

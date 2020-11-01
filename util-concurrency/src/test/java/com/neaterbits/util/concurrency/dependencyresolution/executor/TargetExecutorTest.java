@@ -38,8 +38,6 @@ public class TargetExecutorTest {
 		final RecursiveBuildInfo<TaskContext, File, File> buildInfo = new RecursiveBuildInfo<>(
 				(context, target) -> {
 
-					System.out.println("## target " + target);
-
 					final Collection<File> result;
 
 					int level = 0;
@@ -125,15 +123,14 @@ public class TargetExecutorTest {
 						if (files == null) {
 							throw new AssertionError();
 						}
-
-						if (files.size() != targetObject.listFiles().length) {
+						
+						if (files.size() != targetObject.listFiles().length + 1) { // +1 for root directory
 							throw new AssertionError();
 						}
 					}
 					catch (Exception ex) {
 						throw new AssertionError();
 					}
-
 
 					return new ActionLog("1234", 0);
 				}),
@@ -155,7 +152,7 @@ public class TargetExecutorTest {
 
 			final File [] files = targetObject.listFiles();
 
-			assertThat(collectedFiles.get().size()).isEqualTo(files.length);
+			assertThat(collectedFiles.get().size()).isEqualTo(files.length + 1);
 
 			for (File file : files) {
 				assertThat(collectedFiles.get().contains(file)).isTrue();
