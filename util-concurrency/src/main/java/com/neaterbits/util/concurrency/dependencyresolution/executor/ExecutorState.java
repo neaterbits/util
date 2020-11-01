@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -23,18 +22,69 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 final class ExecutorState<CONTEXT extends TaskContext> implements ActionParameters<Object>, TargetExecutorLogState {
 
-	
-	private static class Target<CTX extends TaskContext> {
+	private static class TargetState<CTX extends TaskContext> {
+	    
 		private final TargetDefinition<?> definition;
 		private final TargetStateMachine<CTX> stateMachine;
+        private final TargetPaths paths;
 		
-		public Target(TargetDefinition<?> definition, TargetStateMachine<CTX> stateMachine) {
+		TargetState(
+		        TargetDefinition<?> definition,
+		        TargetStateMachine<CTX> stateMachine,
+		        TargetPath path) {
+		    
+		    Objects.requireNonNull(definition);
+		    Objects.requireNonNull(stateMachine);
+		    Objects.requireNonNull(path);
+		    
 			this.definition = definition;
 			this.stateMachine = stateMachine;
+
+			this.paths = new TargetPaths(path);
 		}
+
+		TargetState(
+                TargetDefinition<?> definition,
+                TargetStateMachine<CTX> stateMachine,
+                TargetPaths path) {
+            
+            Objects.requireNonNull(definition);
+            Objects.requireNonNull(stateMachine);
+            Objects.requireNonNull(path);
+            
+            this.definition = definition;
+            this.stateMachine = stateMachine;
+
+            this.paths = path;
+        }
+		
+        @Override
+        public int hashCode() {
+            final int prime = 31;
+            int result = 1;
+            result = prime * result + ((definition == null) ? 0 : definition.hashCode());
+            return result;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            final TargetState<?> other = (TargetState<?>) obj;
+            if (definition == null) {
+                if (other.definition != null)
+                    return false;
+            } else if (!definition.equals(other.definition))
+                return false;
+            return true;
+        }
 	}
 	
-	private final Map<TargetKey<?>, Target<CONTEXT>> targets;
+	private final Map<TargetKey<?>, TargetState<CONTEXT>> targets;
 	private final Map<Object, TargetKey<?>> targetsByTargetObject;
 
 	private final List<TargetStateMachine<CONTEXT>> nonCompletedTargets;
@@ -48,23 +98,31 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			TargetExecutor targetExecutor,
 			TargetExecutorLogger logger) {
 
-		final Set<TargetDefinition<?>> toExecuteTargets = new HashSet<>();
+		final Map<TargetKey<?>, TargetState<CTX>> toExecuteTargets = new HashMap<>();
 
 		Objects.requireNonNull(rootTarget);
 		
-		toExecuteTargets.add(rootTarget);
+		final TargetState<CTX> targetState = new TargetState<>(
+		        rootTarget,
+		        new TargetStateMachine<>(rootTarget, logger),
+		        new TargetPath(rootTarget));
 		
-		getSubTargets(rootTarget, toExecuteTargets);
+		toExecuteTargets.put(rootTarget.getTargetKey(), targetState);
+		
+		getSubTargets(
+		        rootTarget,
+		        toExecuteTargets,
+		        targetState.paths,
+		        logger);
 		
 		final ExecutorState<CTX> state = new ExecutorState<>(toExecuteTargets, logger);
 		
 		return state;
 	}
 	
-	private ExecutorState(Set<TargetDefinition<?>> toExecuteTargets, TargetExecutorLogger logger) {
+	private ExecutorState(Map<TargetKey<?>, TargetState<CONTEXT>> toExecuteTargets, TargetExecutorLogger logger) {
 
-		this.targets = toExecuteTargets.stream()
-				.collect(Collectors.toMap(TargetDefinition::getTargetKey, target -> new Target<>(target, new TargetStateMachine<CONTEXT>(target, logger))));
+		this.targets = new HashMap<>(toExecuteTargets);
 		
 		this.targetsByTargetObject = new HashMap<>(toExecuteTargets.size());
 		
@@ -73,7 +131,9 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 							.map(target -> target.stateMachine)
 							.collect(Collectors.toList()));
 		
-		for (TargetDefinition<?> target : toExecuteTargets) {
+		for (TargetState<?> targetState : toExecuteTargets.values()) {
+		    
+		    final TargetDefinition<?> target = targetState.definition;
 			
 			final Object targetObject = target.getTargetObject();
 			
@@ -102,7 +162,17 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		return targets.containsKey(target);
 	}
 	
-	void addTargetToExecute(TargetDefinition<?> target, TargetExecutorLogger logger) {
+	TargetPaths getPaths(TargetKey<?> targetKey) {
+	    
+	    return targets.get(targetKey).paths;
+	}
+	
+	void addTargetToExecute(
+            TargetDefinition<?> target,
+            TargetPaths prevPaths,
+	        Prerequisites prevPrerequisites,
+	        Prerequisite<?> prevPrerequisite,
+	        TargetExecutorLogger logger) {
 
 		Objects.requireNonNull(target);
 		
@@ -116,16 +186,18 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			throw new IllegalStateException();
 		}
 
-		final TargetStateMachine<CONTEXT> targetState = new TargetStateMachine<>(target, logger);
+		final TargetStateMachine<CONTEXT> targetStateMachine = new TargetStateMachine<>(target, logger);
 		
 		if (targets.containsKey(target.getTargetKey())) {
 			throw new IllegalStateException();
 		}
+	
+		final TargetPaths paths = prevPaths.add(prevPrerequisites, prevPrerequisite, target);
 		
-		targets.put(target.getTargetKey(), new Target<>(target, targetState));
+		targets.put(target.getTargetKey(), new TargetState<CONTEXT>(target, targetStateMachine, paths));
 		targetsByTargetObject.put(targetObject, target.getTargetKey());
 		
-		nonCompletedTargets.add(targetState);
+		nonCompletedTargets.add(targetStateMachine);
 	}
 	
 	private Set<TargetDefinition<?>> targetsInState(Status status) {
@@ -157,7 +229,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		final Map<TargetDefinition<?>, Exception> map = new HashMap<>();
 		
-		for (Map.Entry<TargetKey<?>, Target<CONTEXT>> entry : targets.entrySet()) {
+		for (Map.Entry<TargetKey<?>, TargetState<CONTEXT>> entry : targets.entrySet()) {
 			if (entry.getValue().stateMachine.getStatus() == Status.FAILED) {
 				map.put(entry.getValue().definition, entry.getValue().stateMachine.getException());
 			}
@@ -206,7 +278,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 
 		Objects.requireNonNull(target);
 
-		final Target<?> targetState = targets.get(target.getTargetKey());
+		final TargetState<?> targetState = targets.get(target.getTargetKey());
 
 		if (targetState == null) {
 			
@@ -229,7 +301,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		Objects.requireNonNull(targetKey);
 	
-		final Target<CONTEXT> targetState = targets.get(targetKey);
+		final TargetState<CONTEXT> targetState = targets.get(targetKey);
 		
 		return targetState != null ? targetState.definition : null;
 	}
@@ -238,7 +310,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		Objects.requireNonNull(target);
 		
-		final Target<CONTEXT> targetState = targets.get(target);
+		final TargetState<CONTEXT> targetState = targets.get(target);
 		
 		return targetState != null ? targetState.stateMachine : null;
 	}
@@ -362,12 +434,17 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 					: null;
 	}
 
-	private static <TARGET> void getSubTargets(TargetDefinition<TARGET> target, Set<TargetDefinition<?>> toExecuteTargets) {
+	private static <CTX extends TaskContext, TARGET>
+	void getSubTargets(
+	        TargetDefinition<TARGET> target,
+	        Map<TargetKey<?>, TargetState<CTX>> toExecuteTargets,
+	        TargetPaths paths,
+	        TargetExecutorLogger logger) {
 		
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
-			
+		    
 			for (Prerequisite<?> prerequisite : prerequisites.getPrerequisites()) {
-
+			    
 				if (prerequisite.getSubTarget() != null) {
 
 					final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget().getTargetDefinitionIfAny();
@@ -375,15 +452,21 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 					// System.out.println("## add subtarget " + prerequisite.getSubTarget() + "/" + targetDefinition);
 					
 					if (targetDefinition != null) {
-						
-						if (toExecuteTargets.contains(targetDefinition)) {
+
+					    final TargetPaths targetDefinitionPath = paths.add(prerequisites, prerequisite, targetDefinition);
+					    
+					    if (toExecuteTargets.containsKey(targetDefinition.getTargetKey())) {
 							// eg external modules are prerequisites via multiple paths
 						}
 						else {
-							toExecuteTargets.add(targetDefinition);
+						    
+						    final TargetStateMachine<CTX> stateMachine = new TargetStateMachine<>(targetDefinition, logger);
+						    final TargetState<CTX> targetState = new TargetState<>(targetDefinition, stateMachine, targetDefinitionPath);
+
+							toExecuteTargets.put(targetDefinition.getTargetKey(), targetState);
 						}
 
-						getSubTargets(targetDefinition, toExecuteTargets);
+						getSubTargets(targetDefinition, toExecuteTargets, targetDefinitionPath, logger);
 					}
 				}
 				else {

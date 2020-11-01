@@ -88,7 +88,12 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 	}
 	
 	private
-	void addRecursiveBuildTargets(ExecutorState<CONTEXT> targetState, TaskContext context, Prerequisites fromPrerequisites, TargetDefinition<?> target, TargetExecutorLogger logger) {
+	void addRecursiveBuildTargets(
+	        ExecutorState<CONTEXT> executorState,
+	        TaskContext context,
+	        Prerequisites fromPrerequisites,
+	        TargetDefinition<?> target,
+	        TargetExecutorLogger logger) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final BiFunction<Object, Object, Collection<Object>> getSubPrerequisites
@@ -112,6 +117,8 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 			throw new IllegalStateException("prerequisites mismatch for "  + target + " " + targetPrerequisites + "/" + target.getPrerequisites());
 		}
 		*/
+		
+		final TargetPaths prevPaths = executorState.getPaths(target.getTargetKey());
 		
 		final List<Prerequisite<?>> targetPrerequisitesList = new ArrayList<>(targetPrerequisites.size());
 		
@@ -142,7 +149,9 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 							subPrerequisiteObject,
 							Arrays.asList(subPrerequisites));
 
-			targetPrerequisitesList.add(new Prerequisite<>(logContext, subPrerequisiteObject, subTarget.getTargetReference()));
+			final Prerequisite<?> subPrerequisite = new Prerequisite<>(logContext, subPrerequisiteObject, subTarget.getTargetReference());
+			
+			targetPrerequisitesList.add(subPrerequisite);
 			
 			logger.onAddRecursiveTarget(target, subTarget);
 
@@ -150,12 +159,17 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 				System.out.println("## added subtarget " + subTarget + " from prerequisites " + targetPrerequisites + " from " + target.getTargetObject());
 			}
 			
-			if (!targetState.hasTarget(subTarget.getTargetKey())) {
+			if (!executorState.hasTarget(subTarget.getTargetKey())) {
 				if (DEBUG) {
 					System.out.println("## added target to execute " + subTarget);
 				}
 
-				targetState.addTargetToExecute(subTarget, logger);
+				executorState.addTargetToExecute(
+				        subTarget,
+				        prevPaths,
+				        subPrerequisites,
+				        subPrerequisite,
+				        logger);
 			}
 			
 			if (DEBUG) {
