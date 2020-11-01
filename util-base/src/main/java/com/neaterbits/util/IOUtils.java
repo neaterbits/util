@@ -1,8 +1,11 @@
 package com.neaterbits.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public class IOUtils {
 
@@ -39,4 +42,21 @@ public class IOUtils {
 
 		return ret;
 	}
+
+    public static void write(File file, String data) throws IOException {
+        
+        write(file, data, Charset.forName("UTF-8"));
+    }
+	
+	public static void write(File file, String data, Charset charset) throws IOException {
+	    
+	    write(file, data.getBytes(charset));
+	}
+
+	public static void write(File file, byte [] data) throws IOException {
+        
+	    try (FileOutputStream outputStream = new FileOutputStream(file)) {
+	        outputStream.write(data);
+	    }
+    }
 }
