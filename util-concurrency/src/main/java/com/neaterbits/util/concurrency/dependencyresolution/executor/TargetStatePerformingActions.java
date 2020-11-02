@@ -58,33 +58,40 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 		return Status.SCHEDULED;
 	}
 
-
 	private 
 	boolean addRecursiveBuildTargetsIfAny(ExecutorState<CONTEXT> targetState, TaskContext context, TargetDefinition<?> target, TargetExecutorLogger logger) {
 
-		final boolean added;
-		
-		if (target.getFromPrerequisite() != null) {
-			final Prerequisites fromPrerequisites = target.getFromPrerequisite().getFromPrerequisites();
+	    final TargetPaths targetPaths = targetState.getPaths(target.getTargetKey());
 
-			if (fromPrerequisites == null) {
-				throw new IllegalStateException("## no prerequisites for target " + target.getTargetObject());
-			}
-			
-			if (fromPrerequisites.isRecursiveBuild()) {
-				addRecursiveBuildTargets(targetState, context, fromPrerequisites, target, logger);
+	    boolean anyAdded = false;
+	    
+	    for (TargetPath targetPath : targetPaths.getPaths()) {
+	    
+    	    final TargetEdge lastEdge = targetPath.getLastEdge();
+    		
+    		switch (lastEdge.getType()) {
+    		case RECURSIVE_ROOT:
+    		case RECURSIVE_SUB:
+                final Prerequisites fromPrerequisites = lastEdge.getPrerequisites();
+    
+                if (fromPrerequisites == null) {
+                    throw new IllegalStateException("## no prerequisites for target " + target.getTargetObject());
+                }
+                
+                if (!fromPrerequisites.isRecursiveBuild()) {
+                    throw new IllegalStateException();
+                }
+                
+                addRecursiveBuildTargets(targetState, context, fromPrerequisites, target, logger);
+                anyAdded = true;
+    		    break;
+    		    
+    	    default:
+    	        break;
+    		}
+	    }
 
-				added = true;
-			}
-			else {
-				added = false;
-			}
-		}
-		else {
-			added = false;
-		}
-		
-		return added;
+		return anyAdded;
 	}
 	
 	private

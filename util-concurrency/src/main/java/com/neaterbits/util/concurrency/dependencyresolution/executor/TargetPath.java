@@ -26,11 +26,23 @@ final class TargetPath {
             Prerequisite<?> prerequisite,
             TargetDefinition<?> target) {
         
-        final TargetEdge targetEdge = new TargetEdge(prerequisites, prerequisite, target);
+        final TargetEdge targetEdge = new TargetEdge(
+                getLastEdge(),
+                prerequisites,
+                prerequisite,
+                target);
         
         final List<TargetEdge> list = new ArrayList<>(path);
         list.add(targetEdge);
         
         return new TargetPath(list);
+    }
+
+    TargetEdge getLastEdge() {
+        return path.get(path.size() - 1);
+    }
+
+    TargetEdge getLastEdge(int offset) {
+        return path.get(path.size() - 1 - offset);
     }
 }

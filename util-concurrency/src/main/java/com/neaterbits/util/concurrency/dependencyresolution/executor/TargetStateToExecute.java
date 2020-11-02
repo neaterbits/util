@@ -31,7 +31,7 @@ final class TargetStateToExecute<CONTEXT extends TaskContext>
 				context.logger.onScheduleTarget(target, status.getStatus(), context.state);
 			}
 
-			Collector.collectFromSubTargetsAndSubProducts(context, target);
+			BaseCollector.collectFromSubTargetsAndSubProducts(context, target);
 
 			final boolean hasActions = runAnyActionsAndCallOnCompleted(context, target, (exception, async) -> {
 				schedule(state -> exception != null

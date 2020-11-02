@@ -342,9 +342,9 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		Objects.requireNonNull(targetReference);
 		
-		if (!targetReference.isTopOfRecursion()) {
-			throw new IllegalArgumentException();
-		}
+		// if (!targetReference.isTopOfRecursion()) {
+		//	throw new IllegalArgumentException();
+		// }
 		
 		return recursiveTargetCollected.get(targetReference);
 	}

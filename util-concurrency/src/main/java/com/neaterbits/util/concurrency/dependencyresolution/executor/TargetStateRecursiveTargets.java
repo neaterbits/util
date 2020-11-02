@@ -26,7 +26,8 @@ final class TargetStateRecursiveTargets<CONTEXT extends TaskContext> extends Bas
 		
 		switch (completion.getStatus()) {
 		case SUCCESS:
-			Collector.collectFromSubTargetsAndSubProducts(context, target);
+			BaseCollector.collectFromSubTargetsAndSubProducts(context, target);
+
 			onCompletedTarget(context, target, completion.getException(), false);
 			nextState = new TargetStateDone<>(target, logger);
 			break;

@@ -38,4 +38,8 @@ final class TargetPaths {
         
         return new TargetPaths(added);
     }
+
+    public List<TargetPath> getPaths() {
+        return paths;
+    }
 }
