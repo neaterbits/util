@@ -76,7 +76,7 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 				logContext,
 				getType(),
 				file.apply(fileTarget),
-				getDescriptionFunction(),
+				getDescriptionFunction().apply(target),
 				target,
 				prerequisitesList,
 				makeAction(),

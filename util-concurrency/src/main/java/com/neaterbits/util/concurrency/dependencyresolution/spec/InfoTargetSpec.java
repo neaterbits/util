@@ -68,7 +68,7 @@ public final class InfoTargetSpec<CONTEXT extends TaskContext, TARGET> extends T
 				getType(),
 				name,
 				qualifierName,
-				getDescriptionFunction(),
+				getDescriptionFunction().apply(target),
 				target,
 				prerequisitesList,
 				makeAction(),

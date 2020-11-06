@@ -2,7 +2,6 @@ package com.neaterbits.util.concurrency.dependencyresolution.model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.structuredlog.binary.logging.Loggable;
@@ -18,7 +17,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private final int constructorLogSequenceNo;
 
 	private final TargetKey<TARGET> targetKey;
-	private final Function<TARGET, String> description;
+	private final String description;
 
 	private List<Prerequisites> prerequisites;
 	private final Action<TARGET> action;
@@ -32,7 +31,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 			String logIdentifier,
 			String logLocalIdentifier,
             TargetKey<TARGET> targetKey,
-			Function<TARGET, String> description,
+			String description,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,
 			ActionWithResult<TARGET> actionWithResult) {
@@ -54,7 +53,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				TargetDefinition.class,
 				logIdentifier,
 				logLocalIdentifier,
-				description.apply(targetKey.getTargetObject()));
+				description);
 		
 		this.logContext = logContext;
         this.targetKey = targetKey;
@@ -90,13 +89,9 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 
 	@Override
 	public final String getDescription() {
-		return description.apply(targetKey.getTargetObject());
-	}
-
-	public final Function<TARGET, String> getDescriptionFunction() {
 		return description;
 	}
-	
+
 	public final TARGET getTargetObject() {
 		return targetKey.getTargetObject();
 	}

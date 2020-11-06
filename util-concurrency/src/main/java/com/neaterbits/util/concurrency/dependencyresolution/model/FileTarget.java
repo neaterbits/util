@@ -3,7 +3,6 @@ package com.neaterbits.util.concurrency.dependencyresolution.model;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Function;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
@@ -25,7 +24,7 @@ public final class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 			LogContext logContext,
 			Class<TARGET> type,
 			File file,
-			Function<TARGET, String> description,
+			String description,
 			TARGET targetObject,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,

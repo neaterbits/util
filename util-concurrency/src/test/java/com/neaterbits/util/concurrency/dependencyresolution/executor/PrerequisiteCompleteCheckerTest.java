@@ -24,7 +24,7 @@ public class PrerequisiteCompleteCheckerTest {
 				logContext, 
 				File.class,
 				targetObject,
-				f -> "File target " + f.getName(),
+				"File target " + targetObject.getName(),
 				targetObject,
 				Collections.emptyList(),
 				new Action<File>(null, (context, target, params) -> {
@@ -68,7 +68,7 @@ public class PrerequisiteCompleteCheckerTest {
 				String.class,
 				"test info target",
 				obj -> "Qualifier name",
-				obj -> "Target object " + obj,
+				"Target object " + infoTargetObj,
 				infoTargetObj,
 				Arrays.asList(prerequisites),
 				null,

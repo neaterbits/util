@@ -31,27 +31,27 @@ public class TargetExecutorTest {
 	@Test
 	public void testTarget() throws IOException {
 
-		final File targetObject = new File("/");
-
 		// final File file = File.createTempFile("test", "file");
 
 		// file.deleteOnExit();
 		
 		final CreateTargetDefinition<TaskContext, File> createTargetDefinition
-		    = (LogContext logContext, TaskContext context, File target, List<Prerequisites> prerequisitesList) -> {
+		    = (LogContext logContext, TaskContext context, File targetObject, List<Prerequisites> prerequisitesList) -> {
 		        
 		        return new FileTarget<File>(
 		                logContext,
 		                File.class,
-		                target,
-		                f -> "File target " + f,
-		                target,
+		                targetObject,
+		                "File target " + targetObject.getName(),
+		                targetObject,
 		                prerequisitesList,
 		                new Action<File>(null, (c, t, params) -> {
 		                    return new ActionLog("1234", 0);
 		                }),
 		                null);
 	    };
+
+	    final File targetObject = new File("/");
 
 		final RecursiveBuildInfo<TaskContext, File, File> buildInfo = new RecursiveBuildInfo<>(
 				(context, target) -> {
@@ -103,7 +103,7 @@ public class TargetExecutorTest {
 				logContext,
 				File.class,
 				targetObject,
-				f -> "File target " + f,
+				"File target " + targetObject.getName(),
 				targetObject,
 				Collections.emptyList(),
 				new Action<File>(null, (context, target, params) -> {
@@ -129,7 +129,7 @@ public class TargetExecutorTest {
 				String.class,
 				"test info target",
 				obj -> "Qualifier name",
-				obj -> "Target object " + obj,
+				"Target object " + infoTargetObj,
 				infoTargetObj,
 				Arrays.asList(prerequisites),
 				new Action<>(null, (context, target, params) -> {

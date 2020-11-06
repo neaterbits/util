@@ -30,7 +30,7 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 			Class<TARGET> type,
 			String name,
 			Function<TARGET, String> qualifierName,
-			Function<TARGET, String> description,
+			String description,
 			TARGET targetObject,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,
