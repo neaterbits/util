@@ -37,6 +37,10 @@ final class TargetPath {
         
         return new TargetPath(list);
     }
+    
+    boolean isEmpty() {
+        return path.isEmpty();
+    }
 
     TargetEdge getLastEdge() {
         return path.get(path.size() - 1);

@@ -3,7 +3,6 @@ package com.neaterbits.util.concurrency.dependencyresolution.executor;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.function.Function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -15,12 +14,11 @@ import com.neaterbits.util.concurrency.dependencyresolution.model.InfoTarget;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
 
 public class PrerequisiteCompleteCheckerTest {
 
-	private static TestTarget makePrerequisite(LogContext logContext, File targetObject) {
+	private static Prerequisite<File> makePrerequisite(LogContext logContext, File targetObject) {
 		
 		final FileTarget<File> fileTarget = new FileTarget<File>(
 				logContext, 
@@ -36,20 +34,9 @@ public class PrerequisiteCompleteCheckerTest {
 				}),
 				null);
 		
-		final Prerequisite<File> prerequisite = new Prerequisite<File>(logContext, targetObject, fileTarget.getTargetReference());
+		final Prerequisite<File> prerequisite = new Prerequisite<File>(logContext, targetObject, fileTarget);
 		
-		return new TestTarget(prerequisite, fileTarget);
-	}
-	
-	private static class TestTarget {
-
-	    private final Prerequisite<File> prerequisite;
-	    private final FileTarget<File> targetDefinition;
-
-	    TestTarget(Prerequisite<File> prerequisite, FileTarget<File> targetDefinition) {
-            this.prerequisite = prerequisite;
-            this.targetDefinition = targetDefinition;
-        }
+		return prerequisite;
 	}
 	
 	@Test
@@ -61,16 +48,16 @@ public class PrerequisiteCompleteCheckerTest {
 		final File targetObject2 = new File("/targetobject2");
 		final File targetObject3 = new File("/targetobject3");
 		
-		final TestTarget target1 = makePrerequisite(logContext, targetObject1);
-		final TestTarget target2 = makePrerequisite(logContext, targetObject2);
-		final TestTarget target3 = makePrerequisite(logContext, targetObject3);
+		final Prerequisite<File> target1 = makePrerequisite(logContext, targetObject1);
+		final Prerequisite<File> target2 = makePrerequisite(logContext, targetObject2);
+		final Prerequisite<File> target3 = makePrerequisite(logContext, targetObject3);
 		
 		final Prerequisites prerequisites = new Prerequisites(
 				logContext, 
 				Arrays.asList(
-						target1.prerequisite,
-						target2.prerequisite,
-						target3.prerequisite
+						target1,
+						target2,
+						target3
 				),
 				null,
 				null,
@@ -89,30 +76,8 @@ public class PrerequisiteCompleteCheckerTest {
 				null,
 				null);
 
-		final Function<TargetReference<?>, TargetDefinition<?>> getTargetDefinition
-		    = targetKey -> {
-                
-                final FileTarget<File> fileTarget;
-
-                if (targetKey.getTargetObject() == targetObject1) {
-                    fileTarget = target1.targetDefinition;
-                }
-                else if (targetKey.getTargetObject() == targetObject2) {
-                    fileTarget = target2.targetDefinition;
-                }
-                else if (targetKey.getTargetObject() == targetObject3) {
-                    fileTarget = target3.targetDefinition;
-                }
-                else {
-                    throw new IllegalStateException();
-                }
-                
-                return fileTarget;
-        };
-
 		assertThat(PrerequisiteCompleteChecker.hasCompletedPrerequisites(
 				target -> new PrerequisiteCompletion(Status.TO_EXECUTE),
-				getTargetDefinition,
 				infoTarget)
 				
 				.getStatus()).isEqualTo(Status.TO_EXECUTE);
@@ -124,7 +89,6 @@ public class PrerequisiteCompleteCheckerTest {
 							target.getTargetObject() == targetObject1
 								? Status.SUCCESS
 								: Status.TO_EXECUTE),
-				getTargetDefinition,
 				infoTarget)
 				
 				.getStatus()).isEqualTo(Status.TO_EXECUTE);
@@ -135,7 +99,6 @@ public class PrerequisiteCompleteCheckerTest {
 							target.getTargetObject() == targetObject2
 								? Status.SUCCESS
 								: Status.TO_EXECUTE),
-				getTargetDefinition,
 				infoTarget)
 				
 				.getStatus()).isEqualTo(Status.TO_EXECUTE);
@@ -146,14 +109,12 @@ public class PrerequisiteCompleteCheckerTest {
 							target.getTargetObject() == targetObject3
 								? Status.SUCCESS
 								: Status.TO_EXECUTE),
-				getTargetDefinition,
 				infoTarget)
 				
 				.getStatus()).isEqualTo(Status.TO_EXECUTE);
 		
 		assertThat(PrerequisiteCompleteChecker.hasCompletedPrerequisites(
 				target -> new PrerequisiteCompletion(Status.SUCCESS),
-				getTargetDefinition,
 				infoTarget)
 				.getStatus()).isEqualTo(Status.SUCCESS);
 	}

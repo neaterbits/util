@@ -100,7 +100,7 @@ public class TargetExecutorTest {
 						new Prerequisite<File>(
 								logContext,
 								targetObject,
-								fileTarget.getTargetReference())),
+								fileTarget)),
 				"Info prerequisites",
 				buildInfo,
 				collectors);

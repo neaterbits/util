@@ -17,8 +17,9 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private final LogContext logContext;
 	private final int constructorLogSequenceNo;
 
-	private final TargetReference<TARGET> targetReference;
-	
+	private final TargetKey<TARGET> targetKey;
+	private final Function<TARGET, String> description;
+
 	private List<Prerequisites> prerequisites;
 	private final Action<TARGET> action;
 	private final ActionWithResult<TARGET> actionWithResult;
@@ -36,7 +37,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 			LogContext logContext,
 			String logIdentifier,
 			String logLocalIdentifier,
-			TargetReference<TARGET> targetReference,
+            TargetKey<TARGET> targetKey,
+			Function<TARGET, String> description,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,
 			ActionWithResult<TARGET> actionWithResult) {
@@ -48,7 +50,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				
 				) {
 
-			throw new IllegalArgumentException("No action or prerequisites for target " + targetReference);
+			throw new IllegalArgumentException("No action or prerequisites for target " + targetToLogString());
 		}
 		
 		
@@ -58,17 +60,16 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				TargetDefinition.class,
 				logIdentifier,
 				logLocalIdentifier,
-				targetReference.getDescription());
+				description.apply(targetKey.getTargetObject()));
 		
 		this.logContext = logContext;
-		this.targetReference = targetReference;
+        this.targetKey = targetKey;
+		this.description = description;
 		this.prerequisites = logConstructorListField(logContext, LOG_FIELD_PREREQUISITES, prerequisites);
 		this.action = action;
 		this.actionWithResult = actionWithResult;
 		
 		updatePrerequisites(prerequisites);
-		
-		targetReference.setTargetDefinition(this);
 	}
 
 	@Override
@@ -90,34 +91,26 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	}
 	
 	final Class<TARGET> getType() {
-		return targetReference.getType();
+		return targetKey.getType();
 	}
 
 	@Override
 	public final String getDescription() {
-		return targetReference.getDescription();
+		return description.apply(targetKey.getTargetObject());
 	}
 
 	public final Function<TARGET, String> getDescriptionFunction() {
-		return targetReference.getDescriptionFunction();
-	}
-	
-	public final boolean isRoot() {
-		return targetReference.isRoot();
+		return description;
 	}
 	
 	public final TARGET getTargetObject() {
-		return targetReference.getTargetObject();
+		return targetKey.getTargetObject();
 	}
 	
 	public final TargetKey<TARGET> getTargetKey() {
-		return targetReference;
+		return targetKey;
 	}
 	
-	public final TargetReference<TARGET> getTargetReference() {
-		return targetReference;
-	}
-
 	public final Action<TARGET> getAction() {
 		return action;
 	}
@@ -126,19 +119,11 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		return actionWithResult;
 	}
 	
-	public final Prerequisite<?> getFromPrerequisite() {
-		return targetReference.getFromPrerequisite();
-	}
-	
-	final void setFromPrerequisite(Prerequisite<?> prerequisite) {
-		targetReference.setFromPrerequisite(prerequisite);
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((targetReference == null) ? 0 : targetReference.hashCode());
+		result = prime * result + ((targetKey == null) ? 0 : targetKey.hashCode());
 		return result;
 	}
 
@@ -151,10 +136,10 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		if (getClass() != obj.getClass())
 			return false;
 		final TargetDefinition<?> other = (TargetDefinition<?>) obj;
-		if (targetReference == null) {
-			if (other.targetReference != null)
+		if (targetKey == null) {
+			if (other.targetKey != null)
 				return false;
-		} else if (!targetReference.equals(other.targetReference))
+		} else if (!targetKey.equals(other.targetKey))
 			return false;
 		return true;
 	}

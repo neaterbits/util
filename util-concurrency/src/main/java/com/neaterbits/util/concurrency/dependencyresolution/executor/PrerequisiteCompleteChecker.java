@@ -5,7 +5,6 @@ import java.util.function.Function;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 class PrerequisiteCompleteChecker {
@@ -14,7 +13,7 @@ class PrerequisiteCompleteChecker {
 			ExecutorState<CONTEXT> targetState,
 			TargetDefinition<?> target) {
 		
-		final PrerequisiteCompletion completion = hasCompletedPrerequisites(targetState::getTargetCompletion, targetState::getTargetDefinition, targetState::printTargetKeys, target);
+		final PrerequisiteCompletion completion = hasCompletedPrerequisites(targetState::getTargetCompletion, targetState::printTargetKeys, target);
 		
 		/*
 		if (completion.getStatus() == Status.FAILED) {
@@ -29,16 +28,14 @@ class PrerequisiteCompleteChecker {
 
 	static <CONTEXT extends TaskContext> PrerequisiteCompletion hasCompletedPrerequisites(
 			Function<TargetDefinition<?>, PrerequisiteCompletion> targetState,
-			Function<TargetReference<?>, TargetDefinition<?>> getTargetDefiniton,
 			TargetDefinition<?> target) {
 		
-		return hasCompletedPrerequisites(targetState, getTargetDefiniton, null, target);
+		return hasCompletedPrerequisites(targetState, null, target);
 	}
 		
 
 	private static <CONTEXT extends TaskContext> PrerequisiteCompletion hasCompletedPrerequisites(
 			Function<TargetDefinition<?>, PrerequisiteCompletion> targetState,
-			Function<TargetReference<?>, TargetDefinition<?>> getTargetDefiniton,
 			Runnable printTargetKeys,
 			TargetDefinition<?> target) {
 		
@@ -48,7 +45,7 @@ class PrerequisiteCompleteChecker {
 				
 				if (prerequisite.getSubTarget() != null) {
 					
-					final TargetDefinition<?> targetDefinition = getTargetDefiniton.apply(prerequisite.getSubTarget());
+					final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget();
 					
 					if (targetDefinition == null) {
 						
@@ -63,7 +60,6 @@ class PrerequisiteCompleteChecker {
 					
 						final PrerequisiteCompletion subStatus = hasCompletedPrerequisites(
 								targetState,
-								getTargetDefiniton,
 								printTargetKeys,
 								targetDefinition);
 						

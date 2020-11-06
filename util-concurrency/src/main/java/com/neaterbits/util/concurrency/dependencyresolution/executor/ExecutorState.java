@@ -16,7 +16,6 @@ import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetKey;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionParameters;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -137,7 +136,9 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			
 			final Object targetObject = target.getTargetObject();
 			
-			if (targetObject == null && !target.isRoot()) {
+			final boolean isRoot = targetState.paths.isEmpty();
+			
+			if (targetObject == null && !isRoot) {
 				throw new IllegalArgumentException("No target object for " + target);
 			}
 			
@@ -284,7 +285,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			
 			printTargetKeys();
 			
-			throw new IllegalStateException("No target state for " + target.targetSimpleLogString() + "/" + target.getTargetReference());
+			throw new IllegalStateException("No target state for " + target.targetSimpleLogString() + "/" + target.getTargetKey());
 		}
 		
 		final TargetStateMachine<?> stateMachine = targetState.stateMachine;
@@ -315,12 +316,12 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		return targetState != null ? targetState.stateMachine : null;
 	}
 	
-	void addToRecursiveTargetCollected(TargetReference<?> target, CollectedTargetObjects collected) {
+	void addToRecursiveTargetCollected(TargetDefinition<?> target, CollectedTargetObjects collected) {
 		
 		Objects.requireNonNull(target);
 		Objects.requireNonNull(collected);
 		
-		CollectedTargetObjects objects = recursiveTargetCollected.get(target);
+		CollectedTargetObjects objects = recursiveTargetCollected.get(target.getTargetKey());
 		
 		// System.out.println("## merge collected " + collected + " with " + objects);
 		
@@ -331,14 +332,14 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			objects = collected;
 		}
 
-		recursiveTargetCollected.put(target, objects);
+		recursiveTargetCollected.put(target.getTargetKey(), objects);
 	}
 	
-	CollectedTargetObjects getRecursiveTargetCollected(TargetReference<?> targetReference) {
+	CollectedTargetObjects getRecursiveTargetCollected(TargetDefinition<?> targetReference) {
 		
 		Objects.requireNonNull(targetReference);
 		
-		return recursiveTargetCollected.get(targetReference);
+		return recursiveTargetCollected.get(targetReference.getTargetKey());
 	}
 
 	void onCompletedTarget(TargetKey<?> target) {
@@ -439,7 +440,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			    
 				if (prerequisite.getSubTarget() != null) {
 
-					final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget().getTargetDefinitionIfAny();
+					final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget();
 
 					// System.out.println("## add subtarget " + prerequisite.getSubTarget() + "/" + targetDefinition);
 					

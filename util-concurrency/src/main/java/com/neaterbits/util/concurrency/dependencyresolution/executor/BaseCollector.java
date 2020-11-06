@@ -8,7 +8,6 @@ import java.util.Set;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 abstract class BaseCollector {
@@ -84,12 +83,12 @@ abstract class BaseCollector {
         
         for (Prerequisite<?> prerequisite : withProduce.getPrerequisites()) {
 
-            final TargetReference<?> subTargetReference = prerequisite.getSubTarget();
+            final TargetDefinition<?> subTarget = prerequisite.getSubTarget();
 
-            final List<CollectedProduct> targetSubProducts = targetState.getCollectedProducts(subTargetReference);
+            final List<CollectedProduct> targetSubProducts = targetState.getCollectedProducts(subTarget.getTargetKey());
             
             if (DEBUG) {
-                System.out.println("## collected subproducts for " + target + " from " + subTargetReference + " " + targetSubProducts);
+                System.out.println("## collected subproducts for " + target + " from " + subTarget + " " + targetSubProducts);
             }
             
             if (targetSubProducts != null) {

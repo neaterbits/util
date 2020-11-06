@@ -7,7 +7,6 @@ import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.TargetBuildResult;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.TargetExecutor;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogger;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.TargetBuilder;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.TargetBuilderImpl;
 import com.neaterbits.util.concurrency.scheduling.AsyncExecutor;
@@ -36,9 +35,7 @@ public abstract class TargetBuilderSpec<CONTEXT extends TaskContext> {
 			
 			final TargetFinderLogger targetFinderLogger = null; // new PrintlnTargetFinderLogger();
 			
-			targetFinder.computeTargets((List)targetSpecs, logContext, context, targetFinderLogger, targetReference -> {
-				
-				final TargetDefinition<?> rootTarget = targetReference.getTargetDefinitionIfAny();
+			targetFinder.computeTargets((List)targetSpecs, logContext, context, targetFinderLogger, rootTarget -> {
 				
 				rootTarget.logRootObject(logContext);
 				

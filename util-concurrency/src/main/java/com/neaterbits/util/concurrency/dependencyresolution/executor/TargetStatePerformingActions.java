@@ -156,7 +156,7 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 							subPrerequisiteObject,
 							Arrays.asList(subPrerequisites));
 
-			final Prerequisite<?> subPrerequisite = new Prerequisite<>(logContext, subPrerequisiteObject, subTarget.getTargetReference());
+			final Prerequisite<?> subPrerequisite = new Prerequisite<>(logContext, subPrerequisiteObject, subTarget);
 			
 			targetPrerequisitesList.add(subPrerequisite);
 			
@@ -205,7 +205,6 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 		
 	}
 
-
 	@Override
 	public BaseTargetState<CONTEXT> onCheckPrerequisitesComplete(TargetExecutionContext<CONTEXT> context) {
 
@@ -213,5 +212,4 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 		
 		return this;
 	}
-
 }

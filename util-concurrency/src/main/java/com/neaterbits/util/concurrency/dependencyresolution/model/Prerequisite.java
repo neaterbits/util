@@ -17,17 +17,17 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 
 	// One of the below
 	private final File sourceFile;
-	private final TargetReference<PREREQUISITE> subTarget;
+	private final TargetDefinition<PREREQUISITE> subTarget;
 	
 	public Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile) {
 		this(logContext, item, sourceFile, null);
 	}
 
-	public Prerequisite(LogContext logContext, PREREQUISITE item, TargetReference<PREREQUISITE> subTarget) {
+	public Prerequisite(LogContext logContext, PREREQUISITE item, TargetDefinition<PREREQUISITE> subTarget) {
 		this(logContext, item, null, subTarget);
 	}
 		
-	private Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile, TargetReference<PREREQUISITE> subTarget) {
+	private Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile, TargetDefinition<PREREQUISITE> subTarget) {
 		this.constructorLogSequenceNo = logConstructor(logContext, this, getClass(), null, null, null);
 		
 		Objects.requireNonNull(item);
@@ -40,17 +40,10 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 			this.subTarget = null;
 		}
 		else {
-			if (subTarget.getTargetDefinitionIfAny() != null) {
-				// Log target definition directly
-				logConstructorLoggableField(logContext, null, LOG_FIELD_SUBTARGET, subTarget.getTargetDefinitionIfAny());
-	
-				this.subTarget = subTarget;
-			}
-			else {
-				this.subTarget = logConstructorLoggableField(logContext, null, LOG_FIELD_SUBTARGET, subTarget);
-			}
+			// Log target definition directly
+			logConstructorLoggableField(logContext, null, LOG_FIELD_SUBTARGET, subTarget);
 
-			subTarget.setFromPrerequisite(this);
+			this.subTarget = subTarget;
 		}
 	}
 
@@ -87,7 +80,7 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 		return sourceFile;
 	}
 
-	public TargetReference<PREREQUISITE> getSubTarget() {
+	public TargetDefinition<PREREQUISITE> getSubTarget() {
 		return subTarget;
 	}
 

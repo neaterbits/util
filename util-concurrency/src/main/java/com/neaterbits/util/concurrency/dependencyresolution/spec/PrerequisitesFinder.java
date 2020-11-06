@@ -10,7 +10,7 @@ import java.util.function.Consumer;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
+import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.scheduling.AsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -34,7 +34,7 @@ abstract class PrerequisitesFinder {
 			TARGET target,
 			TargetFinderLogger logger,
 			int indent,
-			Consumer<TargetReference<TARGET>> targetCreated);
+			Consumer<TargetDefinition<TARGET>> targetCreated);
 	
 	final <CONTEXT extends TaskContext, TARGET, PREREQUISITE>
 	void getPrerequisites(

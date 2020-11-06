@@ -27,7 +27,7 @@ final class TargetPathCollector extends BaseCollector {
 
         for (Prerequisite<?> prerequisite : withProduce.getPrerequisites()) {
 
-            final TargetDefinition<?> subTarget = prerequisite.getSubTarget().getTargetDefinitionIfAny();
+            final TargetDefinition<?> subTarget = prerequisite.getSubTarget();
             
             if (subTarget != null) {
 
@@ -60,7 +60,7 @@ final class TargetPathCollector extends BaseCollector {
 
                             // Anything gathered from subtargets of this one ?
                             final CollectedTargetObjects subCollectedObjects
-                                = context.state.getRecursiveTargetCollected(subTarget.getTargetReference());
+                                = context.state.getRecursiveTargetCollected(subTarget);
                 
                             if (subCollectedObjects != null) {
                                 collectedObjects = subCollectedObjects.mergeWith(collectedObjects);
@@ -77,14 +77,14 @@ final class TargetPathCollector extends BaseCollector {
 
                             // Anything gathered from subtargets of this one ?
                             final CollectedTargetObjects subCollectedObjects
-                                = context.state.getRecursiveTargetCollected(subTarget.getTargetReference());
+                                = context.state.getRecursiveTargetCollected(subTarget);
                     
                             if (subCollectedObjects != null) {
                                 collectedObjects = subCollectedObjects.mergeWith(collectedObjects);
                             }
 
                             // Add to target above since not recursion root
-                            context.state.addToRecursiveTargetCollected(target.getTargetReference(), collectedObjects);
+                            context.state.addToRecursiveTargetCollected(target, collectedObjects);
                             break;
                         }
                         

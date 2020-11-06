@@ -39,6 +39,11 @@ final class TargetPaths {
         return new TargetPaths(added);
     }
 
+    boolean isEmpty() {
+        return paths.isEmpty() || paths.stream()
+                .allMatch(TargetPath::isEmpty);
+    }
+    
     public List<TargetPath> getPaths() {
         return paths;
     }

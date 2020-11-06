@@ -2,7 +2,7 @@ package com.neaterbits.util.concurrency.dependencyresolution.model;
 
 import java.util.Objects;
 
-public abstract class TargetKey<TARGET> {
+public class TargetKey<TARGET> {
 
 	private final Class<TARGET> type;
 	private final TARGET targetObject;

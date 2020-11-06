@@ -40,7 +40,8 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 				logContext,
 				getLogIdentifier(name, getQualifierName(qualifierName, targetObject)),
 				getLogLocalIdentifier(name),
-				new TargetReference<>(logContext, type, targetObject, description, true),
+				new TargetKey<>(type, targetObject),
+				description,
 				prerequisites,
 				action,
 				actionWithResult);

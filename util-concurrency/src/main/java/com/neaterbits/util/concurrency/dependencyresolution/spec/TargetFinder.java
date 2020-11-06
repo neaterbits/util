@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.model.TargetReference;
 import com.neaterbits.util.concurrency.scheduling.AsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -23,7 +22,7 @@ final class TargetFinder extends PrerequisitesFinder {
 			LogContext logContext,
 			CONTEXT context,
 			TargetFinderLogger logger,
-			Consumer<TargetReference<TARGET>> rootTarget) {
+			Consumer<TargetDefinition<TARGET>> rootTarget) {
 
 		for (TargetSpec<CONTEXT, TARGET> targetSpec : targetSpecs) {
 			findTargets(null, targetSpec, logContext, context, null, logger, 0, rootTarget);
@@ -42,7 +41,7 @@ final class TargetFinder extends PrerequisitesFinder {
 				TARGET target,
 				TargetFinderLogger logger,
 				int indent,
-				Consumer<TargetReference<TARGET>> targetCreated) {
+				Consumer<TargetDefinition<TARGET>> targetCreated) {
 		
 		if (logger != null) {
 			logger.onFindTarget(indent, context, targetSpec, target);
@@ -51,14 +50,14 @@ final class TargetFinder extends PrerequisitesFinder {
 		
 		final Consumer<List<Prerequisites>> onFoundPrerequisites = (List<Prerequisites> prerequisites) -> {
 
-			final TargetReference<TARGET> createdTargetReference;
+			final TargetDefinition<TARGET> createdTargetDefinition;
 			
 			if (
 				   (prerequisites == null || prerequisites.isEmpty())
 				&& !targetSpec.hasAction()) {
 				
 				// Link to target specified elsewhere
-				createdTargetReference = new TargetReference<>(logContext, targetSpec.getType(), target, null, false);
+			    throw new UnsupportedOperationException();
 			}
 			else {
 			
@@ -68,10 +67,10 @@ final class TargetFinder extends PrerequisitesFinder {
 					logger.onFoundPrerequisites(indent, createdTarget, prerequisites);
 				}
 				
-				createdTargetReference = createdTarget.getTargetReference();
+				createdTargetDefinition = createdTarget;
 			}
 
-			targetCreated.accept(createdTargetReference);
+			targetCreated.accept(createdTargetDefinition);
 		};
 		
 		findPrerequisites(
