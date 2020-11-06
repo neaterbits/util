@@ -19,8 +19,6 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 	private final File sourceFile;
 	private final TargetReference<PREREQUISITE> subTarget;
 	
-	private Prerequisites fromPrerequisites;
-
 	public Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile) {
 		this(logContext, item, sourceFile, null);
 	}
@@ -79,24 +77,6 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 	@Override
 	public String getDebugString() {
 		return null;
-	}
-
-	@Override
-	public BuildEntity getFromEntity() {
-		return fromPrerequisites;
-	}
-
-	public Prerequisites getFromPrerequisites() {
-		return fromPrerequisites;
-	}
-
-	void setFromPrerequisites(Prerequisites fromPrerequisites) {
-
-		if (this.fromPrerequisites != null) {
-			throw new IllegalStateException();
-		}
-		
-		this.fromPrerequisites = fromPrerequisites;
 	}
 
 	PREREQUISITE getItem() {

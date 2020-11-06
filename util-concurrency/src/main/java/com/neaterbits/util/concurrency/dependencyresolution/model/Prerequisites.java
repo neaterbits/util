@@ -20,8 +20,6 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 	private final RecursiveBuildInfo<?, ?, ?> recursiveBuildInfo;
 	private final Producers<?> producers;
 	
-	private TargetReference<?> fromTarget;
-
 	private static String getLogIdentifierValue() {
 		return null;
 	}
@@ -55,8 +53,6 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 		this.description = description;
 		this.recursiveBuildInfo = recursiveBuildInfo;
 		this.producers = collectors;
-
-		prerequisites.forEach(prerequisite -> prerequisite.setFromPrerequisites(this));
 	}
 	
 	@Override
@@ -82,22 +78,6 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 	@Override
 	public String getDebugString() {
 		return null;
-	}
-
-	@Override
-	public BuildEntity getFromEntity() {
-		return fromTarget.getTargetDefinitionIfAny();
-	}
-
-	public TargetReference<?> getFromTarget() {
-		return fromTarget;
-	}
-
-	void setFromTarget(TargetReference<?> fromTarget) {
-		
-		Objects.requireNonNull(fromTarget);
-		
-		this.fromTarget = fromTarget;
 	}
 
 	public Collection<Prerequisite<?>> getPrerequisites() {

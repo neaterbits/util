@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,6 @@ import com.neaterbits.structuredlog.xml.model.LogData;
 import com.neaterbits.structuredlog.xml.model.LogDataEntry;
 import com.neaterbits.structuredlog.xml.model.LogEntry;
 import com.neaterbits.structuredlog.xml.model.LogPath;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.BuildEntity;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectedObject;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectedProduct;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectedProducts;
@@ -29,17 +29,24 @@ public final class StructuredTargetExecutorLogger implements TargetExecutorLogge
 
 	private final Map<LogPath, Integer> paths;
 	
-	public StructuredTargetExecutorLogger() {
+	private final Function<TargetDefinition<?>, List<String>> getPath;
+	
+	public StructuredTargetExecutorLogger(Function<TargetDefinition<?>, List<String>> getPath) {
+	    
+	    Objects.requireNonNull(getPath);
+	    
 		this.log = new Log();
 		this.paths = new HashMap<>();
+	
+		this.getPath = getPath;
 	}
 	
-	private LogEntry addLogEntry(BuildEntity buildEntity, Object entityObj, String state, String message) {
+	private LogEntry addLogEntry(TargetDefinition<?> buildEntity, Object entityObj, String state, String message) {
 
 		final List<String> path;
 		
 		if (buildEntity != null) {
-			path = buildEntity.getPath();
+			path = getPath.apply(buildEntity);
 		
 			path.add(String.format("%08x", System.identityHashCode(buildEntity)));
 			
@@ -99,7 +106,7 @@ public final class StructuredTargetExecutorLogger implements TargetExecutorLogge
 				logEntry,
 				dataType,
 				targets,
-				BuildEntity::getPath,
+				getPath,
 				TargetDefinition::getDebugString);
 	}
 

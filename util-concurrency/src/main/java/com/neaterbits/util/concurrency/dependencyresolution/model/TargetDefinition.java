@@ -76,18 +76,11 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		return constructorLogSequenceNo;
 	}
 
-	@Override
-	public final BuildEntity getFromEntity() {
-		return getFromPrerequisite();
-	}
-
 	public final List<Prerequisites> getPrerequisites() {
 		return prerequisites;
 	}
 	
 	public void updatePrerequisites(List<Prerequisites> prerequisites) {
-
-		prerequisites.forEach(p -> p.setFromTarget(targetReference));
 
 		this.prerequisites = Collections.unmodifiableList(prerequisites);
 	}
@@ -139,18 +132,6 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	
 	final void setFromPrerequisite(Prerequisite<?> prerequisite) {
 		targetReference.setFromPrerequisite(prerequisite);
-	}
-
-	public final boolean isRecursionSubTarget() {
-		return targetReference.isRecursionSubTarget();
-	}
-	
-	public final boolean isTopOfRecursion() {
-		return targetReference.isTopOfRecursion();
-	}
-	
-	public final TargetReference<?> getTopOfRecursion() {
-		return targetReference.getTopOfRecursion();
 	}
 
 	@Override

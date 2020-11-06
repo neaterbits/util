@@ -76,16 +76,6 @@ public class TargetReference<TARGET> extends TargetKey<TARGET> implements Loggab
 		this.fromPrerequisite = fromPrerequisite;
 	}
 
-	private TargetReference<?> getFromTarget() {
-		return fromPrerequisite != null
-				? fromPrerequisite.getFromPrerequisites().getFromTarget()
-				: null;
-	}
-	
-	public final boolean isRecursionSubTarget() {
-		return fromPrerequisite != null ? fromPrerequisite.getFromPrerequisites().isRecursiveBuild() : false;
-	}
-
 	public final String getDescription() {
 		return description != null ? description.apply(getTargetObject()) : null;
 	}
@@ -94,56 +84,6 @@ public class TargetReference<TARGET> extends TargetKey<TARGET> implements Loggab
 		return description;
 	}
 	
-	public final TargetReference<?> getTopOfRecursion() {
-
-		if (!isRecursionSubTarget()) {
-			throw new IllegalStateException();
-		}
-		
-		TargetReference<?> result = null;
-		
-		for (TargetReference<?> target = this;
-				   target != null
-				&& target.isRecursionSubTarget();
-				target = target.getFromTarget()) {
-			
-			result = target;
-		}
-		
-		if (!result.isTopOfRecursion()) {
-			throw new IllegalStateException();
-		}
-
-		return result;
-	}
-	
-	public final boolean isTopOfRecursion() {
-		
-		return getRecursionLevel() == 0;
-	}
-	
-	public final int getRecursionLevel() {
-		
-		int level = 0;
-		
-		if (!isRecursionSubTarget()) {
-			throw new IllegalStateException("Not a recursion target " + this);
-		}
-		
-		for (TargetReference<?> target = getFromTarget();
-				   target != null
-				&& target.isRecursionSubTarget()
-				// && target.targetSpec == this.targetSpec
-				;
-				
-				target = target.getFromTarget()) {
-			
-			++ level;
-		}
-		
-		return level;
-	}
-
 	@Override
 	public String toString() {
 		return "TargetReference [description=" + getDescription() + ", toString()=" + super.toString() + "]";

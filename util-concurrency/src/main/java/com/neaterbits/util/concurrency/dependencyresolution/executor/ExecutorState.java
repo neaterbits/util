@@ -320,10 +320,6 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		Objects.requireNonNull(target);
 		Objects.requireNonNull(collected);
 		
-		if (!target.isTopOfRecursion()) {
-			throw new IllegalArgumentException();
-		}
-		
 		CollectedTargetObjects objects = recursiveTargetCollected.get(target);
 		
 		// System.out.println("## merge collected " + collected + " with " + objects);
@@ -341,10 +337,6 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 	CollectedTargetObjects getRecursiveTargetCollected(TargetReference<?> targetReference) {
 		
 		Objects.requireNonNull(targetReference);
-		
-		// if (!targetReference.isTopOfRecursion()) {
-		//	throw new IllegalArgumentException();
-		// }
 		
 		return recursiveTargetCollected.get(targetReference);
 	}
