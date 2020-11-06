@@ -3,14 +3,19 @@ package com.neaterbits.util.concurrency.dependencyresolution.spec;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubProducts;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo.CreateTargetDefinition;
+import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -40,7 +45,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 			Class<?> itemType,
 			Constraint constraint,
 			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites,
-			RecursiveBuildInfo<CONTEXT, TARGET, PREREQUISITE> recursiveBuildInfo,
+			RecursiveBuildSpec<CONTEXT, TARGET, PREREQUISITE> recursiveBuildSpec,
 			Function<TARGET, PREREQUISITE> getSingleFrom,
 			Function<PREREQUISITE, File> getSingleFile,
 			BuildSpec<CONTEXT, PREREQUISITE> action,
@@ -61,7 +66,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 			}
 		}
 		
-		if (recursiveBuildInfo != null) {
+		if (recursiveBuildSpec != null) {
 			Objects.requireNonNull(action);
 		}
 		
@@ -75,8 +80,17 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		this.constraint = constraint;
 		this.getPrerequisites = getPrerequisites;
 
-		this.recursiveBuildInfo = recursiveBuildInfo;
-		
+        final CreateTargetDefinition<CONTEXT, PREREQUISITE> createTargetDefinition
+            = (LogContext logContext,
+                CONTEXT context,
+                PREREQUISITE target,
+                List<Prerequisites> prerequisitesList) -> {
+    
+            return action.getSubTarget().createTargetDefinition(logContext, context, target, prerequisitesList);
+        };
+
+        this.recursiveBuildInfo = new RecursiveBuildInfo<>(recursiveBuildSpec, createTargetDefinition);
+        
 		this.getSingleFrom = getSingleFrom;
 		this.getSingleFile = getSingleFile;
 		
@@ -157,7 +171,8 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 	}
 	
 	RecursiveBuildInfo<CONTEXT, TARGET, PREREQUISITE> getRecursiveBuildInfo() {
-		return recursiveBuildInfo;
+
+	    return recursiveBuildInfo;
 	}
 
 	ProduceFromSubTargets<TARGET> getCollectSubTargets() {

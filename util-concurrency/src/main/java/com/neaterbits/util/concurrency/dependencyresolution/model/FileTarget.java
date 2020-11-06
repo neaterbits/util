@@ -3,7 +3,6 @@ package com.neaterbits.util.concurrency.dependencyresolution.model;
 import java.io.File;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
@@ -21,15 +20,11 @@ public final class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 	}
 	
 	private final File file;
-	private final BiFunction<?, TARGET, ?> getFileTarget;
-	private final Function<Object, File> getFile;
 	
 	public FileTarget(
 			LogContext logContext,
 			Class<TARGET> type,
 			File file,
-			BiFunction<?, TARGET, ?> getFileTarget,
-			Function<Object, File> getFile,
 			Function<TARGET, String> description,
 			TARGET targetObject,
 			List<Prerequisites> prerequisites,
@@ -49,32 +44,6 @@ public final class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 		Objects.requireNonNull(file);
 		
 		this.file = file;
-		this.getFileTarget = getFileTarget;
-		this.getFile = getFile;
-	}
-
-	@Override
-	public <CONTEXT> TargetDefinition<TARGET> createTarget(LogContext logContext, CONTEXT context, TARGET target,
-			List<Prerequisites> prerequisitesList) {
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		final Object fileTarget = ((BiFunction)getFileTarget).apply(context, target);
-		final File file = getFile.apply(fileTarget);
-		
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		final FileTarget<TARGET> result = new FileTarget<>(
-				logContext,
-				getType(),
-				file,
-				(BiFunction)getFileTarget,
-				getFile,
-				getDescriptionFunction(),
-				target,
-				prerequisitesList,
-				getAction(),
-				getActionWithResult());
-		
-		return result;
 	}
 
 	@Override

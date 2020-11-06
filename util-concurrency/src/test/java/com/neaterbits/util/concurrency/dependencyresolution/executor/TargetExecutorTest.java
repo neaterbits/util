@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
 import org.junit.Test;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.Value;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo.CreateTargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.PrintlnTargetExecutorLogger;
 import com.neaterbits.util.concurrency.dependencyresolution.model.FileTarget;
 import com.neaterbits.util.concurrency.dependencyresolution.model.InfoTarget;
@@ -34,6 +36,22 @@ public class TargetExecutorTest {
 		// final File file = File.createTempFile("test", "file");
 
 		// file.deleteOnExit();
+		
+		final CreateTargetDefinition<TaskContext, File> createTargetDefinition
+		    = (LogContext logContext, TaskContext context, File target, List<Prerequisites> prerequisitesList) -> {
+		        
+		        return new FileTarget<File>(
+		                logContext,
+		                File.class,
+		                target,
+		                f -> "File target " + f,
+		                target,
+		                prerequisitesList,
+		                new Action<File>(null, (c, t, params) -> {
+		                    return new ActionLog("1234", 0);
+		                }),
+		                null);
+	    };
 
 		final RecursiveBuildInfo<TaskContext, File, File> buildInfo = new RecursiveBuildInfo<>(
 				(context, target) -> {
@@ -58,7 +76,8 @@ public class TargetExecutorTest {
 
 					return result;
 				},
-				Function.identity());
+				Function.identity(),
+				createTargetDefinition);
 
 		final Value<ArrayList<File>> collectedFiles = new Value<>();
 
@@ -84,8 +103,6 @@ public class TargetExecutorTest {
 				logContext,
 				File.class,
 				targetObject,
-				(context, f) -> f,
-				f -> (File)f,
 				f -> "File target " + f,
 				targetObject,
 				Collections.emptyList(),
@@ -145,8 +162,7 @@ public class TargetExecutorTest {
 				taskContext,
 				infoTarget,
 				new PrintlnTargetExecutorLogger(),
-				builResult -> {
-
+				buildResult -> {
 
 			assertThat(collectedFiles.get()).isNotNull();
 

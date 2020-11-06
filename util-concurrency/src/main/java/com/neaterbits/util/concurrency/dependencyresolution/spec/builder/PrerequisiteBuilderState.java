@@ -10,7 +10,7 @@ import java.util.function.Function;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubProducts;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.BuildSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisiteSpec;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
@@ -123,6 +123,7 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	final PrerequisiteSpec<CONTEXT, TARGET, ?> build() {
+	    
 		return new PrerequisiteSpec<>(
 				null,
 				description,
@@ -131,7 +132,7 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 				constraint,
 				(BiFunction)getPrerequisites,
 				recursiveBuild
-					? new RecursiveBuildInfo<>(
+					? new RecursiveBuildSpec<>(
 							(BiFunction)getSubPrerequisites,
 							(Function)getDependencyFromPrerequisite)
 					: null,

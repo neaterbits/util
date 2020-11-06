@@ -53,25 +53,6 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 	}
 	
 	@Override
-	public <CONTEXT> TargetDefinition<TARGET> createTarget(
-			LogContext logContext,
-			CONTEXT context,
-			TARGET target,
-			List<Prerequisites> prerequisitesList) {
-
-		return new InfoTarget<>(
-				logContext,
-				getType(),
-				name,
-				qualifierName,
-				getDescriptionFunction(),
-				target,
-				prerequisitesList,
-				getAction(),
-				getActionWithResult());
-	}
-
-	@Override
 	public String getLogIdentifier() {
 		return getLogIdentifier(name, getQualifierName(qualifierName, getTargetObject()));
 	}

@@ -67,7 +67,6 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 		return file;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Override
 	TargetDefinition<TARGET> createTargetDefinition(LogContext logContext, CONTEXT context, TARGET target, List<Prerequisites> prerequisitesList) {
 		
@@ -77,8 +76,6 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 				logContext,
 				getType(),
 				file.apply(fileTarget),
-				getFileTarget,
-				(Function)file,
 				getDescriptionFunction(),
 				target,
 				prerequisitesList,

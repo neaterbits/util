@@ -24,8 +24,6 @@ public class PrerequisiteCompleteCheckerTest {
 				logContext, 
 				File.class,
 				targetObject,
-				(context, f) -> f,
-				f -> (File)f,
 				f -> "File target " + f.getName(),
 				targetObject,
 				Collections.emptyList(),

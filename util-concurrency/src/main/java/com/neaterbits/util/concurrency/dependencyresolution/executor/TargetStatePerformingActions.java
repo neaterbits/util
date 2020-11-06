@@ -102,9 +102,13 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 	        TargetDefinition<?> target,
 	        TargetExecutorLogger logger) {
 
+	    @SuppressWarnings({ "unchecked", "rawtypes" })
+        final RecursiveBuildInfo<TaskContext, Object, Object>
+	            recursiveBuildInfo = (RecursiveBuildInfo)fromPrerequisites.getRecursiveBuildInfo();
+	    
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final BiFunction<Object, Object, Collection<Object>> getSubPrerequisites
-			= (BiFunction)fromPrerequisites.getRecursiveBuildInfo().getSubPrerequisitesFunction();
+			= (BiFunction)recursiveBuildInfo.getSubPrerequisitesFunction();
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final Function<Object, Object> getTargetFromPrerequisite = (Function)fromPrerequisites.getRecursiveBuildInfo().getTargetFromPrerequisiteFunction();
@@ -148,9 +152,8 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 					fromPrerequisites.getRecursiveBuildInfo(),
 					fromPrerequisites.getProducers());
 			
-			@SuppressWarnings({ "unchecked", "rawtypes" })
 			final TargetDefinition<Object> subTarget =
-					((TargetDefinition)target).createTarget(
+					recursiveBuildInfo.createTarget(
 							logContext,
 							context,
 							subPrerequisiteObject,
