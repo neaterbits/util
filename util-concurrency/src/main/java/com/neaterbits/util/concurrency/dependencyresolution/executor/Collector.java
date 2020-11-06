@@ -14,28 +14,6 @@ class Collector {
 	
 	private static final Boolean DEBUG = false;
 	
-	/*
-	private static Prerequisites findOnlyPrerequisitesWithCollect(Target<?> target) {
-
-		Prerequisites withCollect = null;
-		
-		for (Prerequisites prerequisites : target.getPrerequisites()) {
-			
-			if (prerequisites.getCollect() != null) {
-				
-				if (withCollect != null) {
-					throw new IllegalStateException("Multiple prerequisites with collect for " + target + " " + target.getPrerequisites());
-				}
-				
-				withCollect = prerequisites;
-			}
-		}
-
-
-		return withCollect;
-	}
-	*/
-	
 	private static <CONTEXT extends TaskContext>
 	CollectedTargetObjects getCollectedTargetsFromSub(Prerequisites withProduce, ExecutorState<CONTEXT> targetState) {
 
@@ -69,8 +47,6 @@ class Collector {
 		final ProduceFromSubTargets<?> produceFromSubTargets = withProduce.getProducers().getProduceFromSubTargets();
 		final Object collectTargetObject;
 		final CollectedProduct collectedProduct;
-		
-		// if (withCollect.isRecursiveBuild()) {
 		
 		if (target.isRecursionSubTarget()) {
 			
@@ -147,10 +123,6 @@ class Collector {
 	
 	private static <CONTEXT extends TaskContext> void collectProductsFromSubTargetsOf(TargetExecutionContext<CONTEXT> context, TargetDefinition<?> target) {
 
-		// final Prerequisites withCollect = findOnlyPrerequisitesWithCollect(target);
-
-		// if (withCollect != null) {
-		
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
 
 			if (prerequisites.getProducers().getProduceFromSubTargets() != null) {
@@ -237,10 +209,6 @@ class Collector {
 
 	private static <CONTEXT extends TaskContext> void collectProductsFromSubProductsOf(TargetExecutionContext<CONTEXT> context, TargetDefinition<?> target) {
 
-		// final Prerequisites withCollect = findOnlyPrerequisitesWithCollect(target);
-
-		// if (withCollect != null) {
-		
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
 
 			if (prerequisites.getProducers().getProduceFromSubProducts() != null) {
