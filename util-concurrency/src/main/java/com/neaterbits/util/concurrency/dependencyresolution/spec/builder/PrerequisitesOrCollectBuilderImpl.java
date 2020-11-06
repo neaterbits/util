@@ -25,9 +25,9 @@ final class PrerequisitesOrCollectBuilderImpl<CONTEXT extends TaskContext, TARGE
 	
 	@Override
 	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> collectSubTargetsToProduct(
-			BiFunction<TARGET, List<ITEM>, PRODUCT> collect) {
+			BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubTargets) {
 
-		prerequisiteBuilderState.setCollectSubTargets(collect);
+		prerequisiteBuilderState.setProduceFromSubTargets(produceFromSubTargets);
 		
 		return new PrerequisitesOrActionBuilderImpl<>(getTargetBuilderState());
 	}
@@ -36,9 +36,9 @@ final class PrerequisitesOrCollectBuilderImpl<CONTEXT extends TaskContext, TARGE
 
 	@Override
 	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> collectSubProductsToProduct(
-			BiFunction<TARGET, List<ITEM>, PRODUCT> collect) {
+			BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubProducts) {
 		
-		prerequisiteBuilderState.setCollectSubProducts(collect);
+		prerequisiteBuilderState.setProduceFromSubProducts(produceFromSubProducts);
 		
 		return new PrerequisitesOrActionBuilderImpl<>(getTargetBuilderState());
 	}

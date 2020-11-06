@@ -7,7 +7,7 @@ import java.util.Objects;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.structuredlog.binary.logging.Loggable;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.BuildEntity;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.Collectors;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
 
 public final class Prerequisites extends BuildEntity implements Loggable {
@@ -18,7 +18,7 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 	private final Collection<Prerequisite<?>> prerequisites;
 	private final String description;
 	private final RecursiveBuildInfo<?, ?, ?> recursiveBuildInfo;
-	private final Collectors<?> collectors;
+	private final Producers<?> producers;
 	
 	private TargetReference<?> fromTarget;
 
@@ -35,7 +35,7 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 			Collection<Prerequisite<?>> prerequisites,
 			String description,
 			RecursiveBuildInfo<?, ?, ?> recursiveBuildInfo,
-			Collectors<?> collectors) {
+			Producers<?> collectors) {
 		
 		final String identifier = getLogIdentifierValue();
 		
@@ -54,7 +54,7 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 		this.prerequisites = logged != null ? Collections.unmodifiableCollection(logged) : null;
 		this.description = description;
 		this.recursiveBuildInfo = recursiveBuildInfo;
-		this.collectors = collectors;
+		this.producers = collectors;
 
 		prerequisites.forEach(prerequisite -> prerequisite.setFromPrerequisites(this));
 	}
@@ -112,8 +112,8 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 		return recursiveBuildInfo != null;
 	}
 
-	public Collectors<?> getCollectors() {
-		return collectors;
+	public Producers<?> getProducers() {
+		return producers;
 	}
 	
 	@Override

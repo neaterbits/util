@@ -62,7 +62,7 @@ public class TargetExecutorTest {
 
 		final Value<ArrayList<File>> collectedFiles = new Value<>();
 
-		final CollectSubTargets<String> collectSubTargets = new CollectSubTargets<>(ArrayList.class, (infoTarget, files) -> {
+		final ProduceFromSubTargets<String> collectSubTargets = new ProduceFromSubTargets<>(ArrayList.class, (infoTarget, files) -> {
 
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			final ArrayList<File> arrayList = new ArrayList(files);
@@ -76,7 +76,7 @@ public class TargetExecutorTest {
 			return arrayList;
 		});
 
-		final Collectors<String> collectors = new Collectors<>(collectSubTargets, null);
+		final Producers<String> collectors = new Producers<>(collectSubTargets, null);
 
 		final LogContext logContext = new LogContext();
 

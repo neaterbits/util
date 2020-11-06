@@ -7,9 +7,9 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectSubProducts;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectSubTargets;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.Collectors;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubProducts;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
@@ -27,7 +27,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 	private final Function<TARGET, PREREQUISITE> getSingleFrom;
 	private final Function<PREREQUISITE, File> getSingleFile;
 	private final BuildSpec<CONTEXT, PREREQUISITE> action;
-	private final Collectors<TARGET> collectors;
+	private final Producers<TARGET> collectors;
 	
 	public PrerequisiteSpec(String named) {
 		this(named, null, null, null, null, null, null, null, null, null, null);
@@ -44,7 +44,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 			Function<TARGET, PREREQUISITE> getSingleFrom,
 			Function<PREREQUISITE, File> getSingleFile,
 			BuildSpec<CONTEXT, PREREQUISITE> action,
-			Collectors<TARGET> collectors) {
+			Producers<TARGET> collectors) {
 
 		if (named == null) {
 			if (getSingleFrom == null || getSingleFile == null) {
@@ -152,7 +152,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		return action;
 	}
 
-	Collectors<TARGET> getCollectors() {
+	Producers<TARGET> getCollectors() {
 		return collectors;
 	}
 	
@@ -160,11 +160,11 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		return recursiveBuildInfo;
 	}
 
-	CollectSubTargets<TARGET> getCollectSubTargets() {
-		return collectors.getCollectSubTargets();
+	ProduceFromSubTargets<TARGET> getCollectSubTargets() {
+		return collectors.getProduceFromSubTargets();
 	}
 
-	CollectSubProducts<TARGET> getCollectSubProducts() {
-		return collectors.getCollectSubProducts();
+	ProduceFromSubProducts<TARGET> getCollectSubProducts() {
+		return collectors.getProduceFromSubProducts();
 	}
 }

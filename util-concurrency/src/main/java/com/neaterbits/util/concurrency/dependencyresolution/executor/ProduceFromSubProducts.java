@@ -4,36 +4,29 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-public final class CollectSubTargets<TARGET> {
+public final class ProduceFromSubProducts<TARGET> {
 
 	private final Class<?> productClass;
 	private final BiFunction<TARGET, List<?>, ?> collect;
 
-	public CollectSubTargets(Class<?> productClass, BiFunction<TARGET, List<?>, ?> collect) {
-		
+	public ProduceFromSubProducts(Class<?> productClass, BiFunction<TARGET, List<?>, ?> collect) {
+
 		Objects.requireNonNull(productClass);
 		Objects.requireNonNull(collect);
 		
 		this.productClass = productClass;
 		this.collect = collect;
 	}
-	
-	CollectedProduct collect(Object targetObject, CollectedTargetObjects subTargetObjects) {
+
+	CollectedProduct collect(Object targetObject, CollectedProducts subProducts) {
 
 		Objects.requireNonNull(targetObject);
-		Objects.requireNonNull(subTargetObjects);
+		Objects.requireNonNull(subProducts);
 		
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		final BiFunction<Object, List<Object>, Object> function = (BiFunction)collect;
 		
-		final List<Object> collectedObjects = subTargetObjects.getCollectedObjects();
-
-		/*
-		System.out.println("## collected objects " + collectedObjects);
-		System.out.println("## target object " + targetObject);
-		*/
-		
-		final Object productObject =  function.apply(targetObject, collectedObjects);
+		final Object productObject =  function.apply(targetObject, subProducts.getCollectedObjects());
 		
 		if (productObject == null) {
 			throw new IllegalStateException();

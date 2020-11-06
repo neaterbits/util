@@ -37,11 +37,11 @@ class Collector {
 	*/
 	
 	private static <CONTEXT extends TaskContext>
-	CollectedTargetObjects getCollectedTargetsFromSub(Prerequisites withCollect, ExecutorState<CONTEXT> targetState) {
+	CollectedTargetObjects getCollectedTargetsFromSub(Prerequisites withProduce, ExecutorState<CONTEXT> targetState) {
 
-		final Set<CollectedTargetObject> targetObjects = new HashSet<>(withCollect.getPrerequisites().size());
+		final Set<CollectedTargetObject> targetObjects = new HashSet<>(withProduce.getPrerequisites().size());
 		
-		for (Prerequisite<?> prerequisite : withCollect.getPrerequisites()) {
+		for (Prerequisite<?> prerequisite : withProduce.getPrerequisites()) {
 
 			final TargetReference<?> subTarget = prerequisite.getSubTarget();
 
@@ -59,16 +59,16 @@ class Collector {
 			TargetExecutionContext<?> context,
 			
 			TargetDefinition<?> target,
-			Prerequisites withCollect,
+			Prerequisites withProduce,
 			CollectedTargetObjects subTargetObjects) {
 	
-		if (!target.getPrerequisites().contains(withCollect)) {
+		if (!target.getPrerequisites().contains(withProduce)) {
 			throw new IllegalArgumentException();
 		}
 		
-		final CollectSubTargets<?> collect = withCollect.getCollectors().getCollectSubTargets();
+		final ProduceFromSubTargets<?> produceFromSubTargets = withProduce.getProducers().getProduceFromSubTargets();
 		final Object collectTargetObject;
-		final CollectedProduct collected;
+		final CollectedProduct collectedProduct;
 		
 		// if (withCollect.isRecursiveBuild()) {
 		
@@ -97,16 +97,16 @@ class Collector {
 				context.state.addToRecursiveTargetCollected(topOfRecursionTargetReference, thisObj);
 			}
 			
-			collected = null;
+			collectedProduct = null;
 		}
 		else {
 
-			if (withCollect.isRecursiveBuild()) {
+			if (withProduce.isRecursiveBuild()) {
 				// Target directly above recursion targets
 				
 				CollectedTargetObjects allCollectedTargetObjects = null;
 				
-				for (Prerequisite<?> prerequisite : withCollect.getPrerequisites()) {
+				for (Prerequisite<?> prerequisite : withProduce.getPrerequisites()) {
 					
 					if (!prerequisite.getSubTarget().isTopOfRecursion()) {
 						throw new IllegalStateException();
@@ -122,14 +122,14 @@ class Collector {
 					}
 				}
 				
-				context.logger.onAddTopRecursionCollected(target, withCollect, allCollectedTargetObjects);
+				context.logger.onAddTopRecursionCollected(target, withProduce, allCollectedTargetObjects);
 				
 				if (allCollectedTargetObjects != null) {
 					collectTargetObject = target.getTargetObject();
-					collected = collect.collect(collectTargetObject, allCollectedTargetObjects);
+					collectedProduct = produceFromSubTargets.collect(collectTargetObject, allCollectedTargetObjects);
 				}
 				else {
-					collected = null;
+					collectedProduct = null;
 				}
 			}
 			else {
@@ -137,12 +137,12 @@ class Collector {
 					System.out.println("## collect sub target objects " + subTargetObjects);
 				}
 	
-				collectTargetObject = withCollect.getFromTarget().getTargetObject();
-				collected = collect.collect(collectTargetObject, subTargetObjects);
+				collectTargetObject = withProduce.getFromTarget().getTargetObject();
+				collectedProduct = produceFromSubTargets.collect(collectTargetObject, subTargetObjects);
 			}
 		}
 		
-		return collected;
+		return collectedProduct;
 	}
 	
 	private static <CONTEXT extends TaskContext> void collectProductsFromSubTargetsOf(TargetExecutionContext<CONTEXT> context, TargetDefinition<?> target) {
@@ -153,7 +153,7 @@ class Collector {
 		
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
 
-			if (prerequisites.getCollectors().getCollectSubTargets() != null) {
+			if (prerequisites.getProducers().getProduceFromSubTargets() != null) {
 
 				if (DEBUG) {
 					System.out.println("-- collect computed targets for " + target.getTargetObject());
@@ -184,11 +184,11 @@ class Collector {
 	}
 
 	private static <CONTEXT extends TaskContext>
-	CollectedProducts getCollectedProductsFromSub(TargetDefinition<?> target, Prerequisites withCollect, ExecutorState<CONTEXT> targetState) {
+	CollectedProducts getCollectedProductsFromSub(TargetDefinition<?> target, Prerequisites withProduce, ExecutorState<CONTEXT> targetState) {
 
-		final Set<CollectedProduct> subProducts = new HashSet<>(withCollect.getPrerequisites().size());
+		final Set<CollectedProduct> subProducts = new HashSet<>(withProduce.getPrerequisites().size());
 		
-		for (Prerequisite<?> prerequisite : withCollect.getPrerequisites()) {
+		for (Prerequisite<?> prerequisite : withProduce.getPrerequisites()) {
 
 			final TargetReference<?> subTargetReference = prerequisite.getSubTarget();
 
@@ -209,30 +209,30 @@ class Collector {
 	private static CollectedProduct productFromCollectedSubProducts(
 			TargetExecutionContext<?> context,
 			TargetDefinition<?> target,
-			Prerequisites withCollect,
+			Prerequisites withProduce,
 			CollectedProducts subProducts) {
 	
-		if (!target.getPrerequisites().contains(withCollect)) {
+		if (!target.getPrerequisites().contains(withProduce)) {
 			throw new IllegalArgumentException();
 		}
 		
-		final CollectSubProducts<?> collect = withCollect.getCollectors().getCollectSubProducts();
-		final CollectedProduct collected;
+		final ProduceFromSubProducts<?> produceFromSubProducts = withProduce.getProducers().getProduceFromSubProducts();
+		final CollectedProduct collectedProduct;
 		
-		if (collect == null) {
-			collected = null;
+		if (produceFromSubProducts == null) {
+			collectedProduct = null;
 		}
 		else {
 			
-			if (withCollect.isRecursiveBuild()) {
+			if (withProduce.isRecursiveBuild()) {
 				throw new UnsupportedOperationException();
 			}
 			else {
-				collected = collect.collect(target.getTargetObject(), subProducts);
+				collectedProduct = produceFromSubProducts.collect(target.getTargetObject(), subProducts);
 			}
 		}
 		
-		return collected;
+		return collectedProduct;
 	}
 
 	private static <CONTEXT extends TaskContext> void collectProductsFromSubProductsOf(TargetExecutionContext<CONTEXT> context, TargetDefinition<?> target) {
@@ -243,7 +243,7 @@ class Collector {
 		
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
 
-			if (prerequisites.getCollectors().getCollectSubProducts() != null) {
+			if (prerequisites.getProducers().getProduceFromSubProducts() != null) {
 
 				if (DEBUG) {
 					System.out.println("-- collect computed products for " + " with prerequisites " + prerequisites);

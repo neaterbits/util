@@ -139,7 +139,7 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 					list,
 					fromPrerequisites.getDescription(),
 					fromPrerequisites.getRecursiveBuildInfo(),
-					fromPrerequisites.getCollectors());
+					fromPrerequisites.getProducers());
 			
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			final TargetDefinition<Object> subTarget =
@@ -183,7 +183,7 @@ final class TargetStatePerformingActions<CONTEXT extends TaskContext> extends Ba
 				targetPrerequisitesList,
 				fromPrerequisites.getDescription(),
 				fromPrerequisites.getRecursiveBuildInfo(),
-				fromPrerequisites.getCollectors());
+				fromPrerequisites.getProducers());
 		
 		target.updatePrerequisites(Arrays.asList(updatedPrerequisites));
 		

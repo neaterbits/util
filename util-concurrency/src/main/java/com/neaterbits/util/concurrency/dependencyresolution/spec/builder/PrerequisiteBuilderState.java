@@ -7,9 +7,9 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectSubProducts;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.CollectSubTargets;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.Collectors;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubProducts;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.BuildSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisiteSpec;
@@ -32,8 +32,8 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 	
 	private boolean recursiveBuild;
 	
-	private BiFunction<TARGET, List<ITEM>, PRODUCT> collectSubTargets;
-	private BiFunction<TARGET, List<ITEM>, PRODUCT> collectSubProducts;
+	private BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubTargets;
+	private BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubProducts;
 
 	private BuildSpec<CONTEXT, ?> build;
 	
@@ -91,26 +91,26 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 		this.getSingleFile = getSingleFile;
 	}
 	
-	final void setCollectSubTargets(BiFunction<TARGET, List<ITEM>, PRODUCT> collect) {
+	final void setProduceFromSubTargets(BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubTargets) {
 
-		Objects.requireNonNull(collect);
+		Objects.requireNonNull(produceFromSubTargets);
 		
-		if (this.collectSubTargets != null) {
+		if (this.produceFromSubTargets != null) {
 			throw new IllegalStateException();
 		}
 		
-		this.collectSubTargets = collect;
+		this.produceFromSubTargets = produceFromSubTargets;
 	}
 
-	final void setCollectSubProducts(BiFunction<TARGET, List<ITEM>, PRODUCT> collect) {
+	final void setProduceFromSubProducts(BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubProducts) {
 
-		Objects.requireNonNull(collect);
+		Objects.requireNonNull(produceFromSubProducts);
 		
-		if (this.collectSubProducts != null) {
+		if (this.produceFromSubProducts != null) {
 			throw new IllegalStateException();
 		}
 		
-		this.collectSubProducts = collect;
+		this.produceFromSubProducts = produceFromSubProducts;
 	}
 
 	final void setBuild(BuildSpec<CONTEXT, ?> build) {
@@ -139,9 +139,9 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 				(Function)getSingleFrom,
 				(Function)getSingleFile,
 				build,
-				new Collectors<>(
-					collectSubTargets != null ? new CollectSubTargets<>(productType, (BiFunction)collectSubTargets) : null,
-					collectSubProducts != null ? new CollectSubProducts<>(productType, (BiFunction)collectSubProducts) : null));
+				new Producers<>(
+					produceFromSubTargets != null ? new ProduceFromSubTargets<>(productType, (BiFunction)produceFromSubTargets) : null,
+					produceFromSubProducts != null ? new ProduceFromSubProducts<>(productType, (BiFunction)produceFromSubProducts) : null));
 	}
 
 	@Override
