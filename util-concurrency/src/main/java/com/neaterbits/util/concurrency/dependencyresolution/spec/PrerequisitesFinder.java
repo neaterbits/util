@@ -9,7 +9,6 @@ import java.util.function.Consumer;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
-import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.scheduling.AsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
@@ -27,7 +26,6 @@ abstract class PrerequisitesFinder {
 
 	abstract <CONTEXT extends TaskContext, TARGET>
 	void findTargets(
-			Prerequisites fromPrerequisites,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			LogContext logContext,
 			CONTEXT context,
@@ -40,7 +38,6 @@ abstract class PrerequisitesFinder {
 	void getPrerequisites(
 			LogContext logContext,
 			CONTEXT context,
-			Prerequisites fromPrerequisites,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
@@ -58,7 +55,7 @@ abstract class PrerequisitesFinder {
 					},
 					(param, result) -> {
 
-						getPrerequisites(logContext, context, fromPrerequisites, targetSpec, target, prerequisiteSpec, result, logger, indent, prerequisites -> {
+						getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, result, logger, indent, prerequisites -> {
 						
 							if (logger != null) {
 								logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
@@ -70,7 +67,7 @@ abstract class PrerequisitesFinder {
 		} else {
 			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(context, target);
 
-			getPrerequisites(logContext, context, fromPrerequisites, targetSpec, target, prerequisiteSpec, sub, logger, indent, prerequisites -> {
+			getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, sub, logger, indent, prerequisites -> {
 				
 				if (logger != null) {
 					logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
@@ -85,7 +82,6 @@ abstract class PrerequisitesFinder {
 	void getPrerequisites(
 			LogContext logContext,
 			CONTEXT context,
-			Prerequisites fromPrerequisites,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
@@ -114,7 +110,6 @@ abstract class PrerequisitesFinder {
 					final TargetSpec<CONTEXT, PREREQUISITE> subTargetSpec = prerequisiteSpec.getAction().getSubTarget();
 					
 					findTargets(
-							fromPrerequisites,
 							subTargetSpec,
 							logContext,
 							context,

@@ -25,7 +25,7 @@ final class TargetFinder extends PrerequisitesFinder {
 			Consumer<TargetDefinition<TARGET>> rootTarget) {
 
 		for (TargetSpec<CONTEXT, TARGET> targetSpec : targetSpecs) {
-			findTargets(null, targetSpec, logContext, context, null, logger, 0, rootTarget);
+			findTargets(targetSpec, logContext, context, null, logger, 0, rootTarget);
 		}
 
 		asyncExecutor.runQueuedResultRunnables();
@@ -34,7 +34,6 @@ final class TargetFinder extends PrerequisitesFinder {
 	@Override
 	<CONTEXT extends TaskContext, TARGET>
 		void findTargets(
-				Prerequisites fromPrerequisites,
 				TargetSpec<CONTEXT, TARGET> targetSpec,
 				LogContext logContext,
 				CONTEXT context,
@@ -101,7 +100,7 @@ final class TargetFinder extends PrerequisitesFinder {
 		else {
 			for (PrerequisiteSpec<CONTEXT, TARGET, ?> prerequisiteSpec : prerequisiteSpecs) {
 	
-				getPrerequisites(logContext, context, null, targetSpec, target, prerequisiteSpec, logger, indent, prerequisitesList -> {
+				getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, logger, indent, prerequisitesList -> {
 					
 					// System.out.println("## find prerequisites for " + target);
 					
