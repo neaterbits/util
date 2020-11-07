@@ -83,7 +83,6 @@ final class TargetFinder extends PrerequisitesFinder {
 		        config,
 		        targetSpec,
 				target,
-				targetSpec.getPrerequisiteSpecs(),
 				indent + 1,
 				onFoundPrerequisites);
 	}
@@ -92,10 +91,11 @@ final class TargetFinder extends PrerequisitesFinder {
 	        Config<CONTEXT> config,
 	        TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
-			List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisiteSpecs,
 			int indent,
 			Consumer<List<Prerequisites>> onResult) {
 
+	    final List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisiteSpecs = targetSpec.getPrerequisiteSpecs();
+	    
 		final List<Prerequisites> list = new ArrayList<>(prerequisiteSpecs.size());
 
 		if (prerequisiteSpecs.isEmpty()) {
