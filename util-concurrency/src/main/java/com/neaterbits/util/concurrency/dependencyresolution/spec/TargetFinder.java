@@ -25,7 +25,12 @@ final class TargetFinder extends PrerequisitesFinder {
 			Consumer<TargetDefinition<TARGET>> rootTarget) {
 
 		for (TargetSpec<CONTEXT, TARGET> targetSpec : targetSpecs) {
-			findTargets(targetSpec, logContext, context, null, logger, 0, rootTarget);
+			findTargets(
+			        new Config<>(logContext, context, logger),
+			        targetSpec,
+			        null,
+			        0,
+			        rootTarget);
 		}
 
 		asyncExecutor.runQueuedResultRunnables();
@@ -34,16 +39,14 @@ final class TargetFinder extends PrerequisitesFinder {
 	@Override
 	<CONTEXT extends TaskContext, TARGET>
 		void findTargets(
-				TargetSpec<CONTEXT, TARGET> targetSpec,
-				LogContext logContext,
-				CONTEXT context,
+		        Config<CONTEXT> config,
+		        TargetSpec<CONTEXT, TARGET> targetSpec,
 				TARGET target,
-				TargetFinderLogger logger,
 				int indent,
 				Consumer<TargetDefinition<TARGET>> targetCreated) {
 		
-		if (logger != null) {
-			logger.onFindTarget(indent, context, targetSpec, target);
+		if (config.logger != null) {
+			config.logger.onFindTarget(indent, config.context, targetSpec, target);
 		}
 
 		
@@ -60,10 +63,14 @@ final class TargetFinder extends PrerequisitesFinder {
 			}
 			else {
 			
-				final TargetDefinition<TARGET> createdTarget = targetSpec.createTargetDefinition(logContext, context, target, prerequisites);
+				final TargetDefinition<TARGET> createdTarget = targetSpec.createTargetDefinition(
+				        config.logContext,
+				        config.context,
+				        target,
+				        prerequisites);
 				
-				if (logger != null) {
-					logger.onFoundPrerequisites(indent, createdTarget, prerequisites);
+				if (config.logger != null) {
+					config.logger.onFoundPrerequisites(indent, createdTarget, prerequisites);
 				}
 				
 				createdTargetDefinition = createdTarget;
@@ -73,22 +80,19 @@ final class TargetFinder extends PrerequisitesFinder {
 		};
 		
 		findPrerequisites(
-				logContext,
-				context,
-				targetSpec,
+		        config,
+		        targetSpec,
 				target,
 				targetSpec.getPrerequisiteSpecs(),
-				logger, indent + 1,
+				indent + 1,
 				onFoundPrerequisites);
 	}
 
 	private <CONTEXT extends TaskContext, TARGET, FILE_TARGET, PREREQUISITE> void findPrerequisites(
-			LogContext logContext,
-			CONTEXT context,
-			TargetSpec<CONTEXT, TARGET> targetSpec,
+	        Config<CONTEXT> config,
+	        TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisiteSpecs,
-			TargetFinderLogger logger,
 			int indent,
 			Consumer<List<Prerequisites>> onResult) {
 
@@ -100,12 +104,12 @@ final class TargetFinder extends PrerequisitesFinder {
 		else {
 			for (PrerequisiteSpec<CONTEXT, TARGET, ?> prerequisiteSpec : prerequisiteSpecs) {
 	
-				getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, logger, indent, prerequisitesList -> {
+				getPrerequisites(config, targetSpec, target, prerequisiteSpec, indent, prerequisitesList -> {
 					
 					// System.out.println("## find prerequisites for " + target);
 					
 					final Prerequisites prerequisites = new Prerequisites(
-							logContext,
+							config.logContext,
 							prerequisitesList,
 							prerequisiteSpec.getDescription(),
 							prerequisiteSpec.getRecursiveBuildInfo(),

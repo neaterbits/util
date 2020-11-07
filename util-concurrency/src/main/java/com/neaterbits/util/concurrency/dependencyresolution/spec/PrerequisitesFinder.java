@@ -7,13 +7,12 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
-import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.scheduling.AsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
-abstract class PrerequisitesFinder {
+abstract class PrerequisitesFinder extends TargetSpecApplier {
 
 	final AsyncExecutor asyncExecutor;
 	
@@ -26,22 +25,18 @@ abstract class PrerequisitesFinder {
 
 	abstract <CONTEXT extends TaskContext, TARGET>
 	void findTargets(
+	        Config<CONTEXT> config,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
-			LogContext logContext,
-			CONTEXT context,
 			TARGET target,
-			TargetFinderLogger logger,
 			int indent,
 			Consumer<TargetDefinition<TARGET>> targetCreated);
 	
 	final <CONTEXT extends TaskContext, TARGET, PREREQUISITE>
 	void getPrerequisites(
-			LogContext logContext,
-			CONTEXT context,
+            Config<CONTEXT> config,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
-			TargetFinderLogger logger,
 			int indent,
 			Consumer<Set<Prerequisite<?>>> listener) {
 		
@@ -51,26 +46,26 @@ abstract class PrerequisitesFinder {
 					prerequisiteSpec.getConstraint(),
 					null,
 					param -> {
-						return prerequisiteSpec.getPrerequisites(context, target);
+						return prerequisiteSpec.getPrerequisites(config.context, target);
 					},
 					(param, result) -> {
 
-						getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, result, logger, indent, prerequisites -> {
+						getPrerequisites(config, targetSpec, target, prerequisiteSpec, result, indent, prerequisites -> {
 						
-							if (logger != null) {
-								logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
+							if (config.logger != null) {
+								config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
 							}
 														
 							listener.accept(prerequisites);
 						});
 					});
 		} else {
-			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(context, target);
+			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(config.context, target);
 
-			getPrerequisites(logContext, context, targetSpec, target, prerequisiteSpec, sub, logger, indent, prerequisites -> {
+			getPrerequisites(config, targetSpec, target, prerequisiteSpec, sub, indent, prerequisites -> {
 				
-				if (logger != null) {
-					logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
+				if (config.logger != null) {
+					config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
 				}
 				
 				listener.accept(prerequisites);
@@ -80,13 +75,11 @@ abstract class PrerequisitesFinder {
 
 	private <CONTEXT extends TaskContext, TARGET, FILE_TARGET, PREREQUISITE>
 	void getPrerequisites(
-			LogContext logContext,
-			CONTEXT context,
-			TargetSpec<CONTEXT, TARGET> targetSpec,
+	        Config<CONTEXT> config,
+	        TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
 			Collection<PREREQUISITE> sub,
-			TargetFinderLogger logger,
 			int indent,
 			Consumer<Set<Prerequisite<?>>> listener) {
 
@@ -110,14 +103,13 @@ abstract class PrerequisitesFinder {
 					final TargetSpec<CONTEXT, PREREQUISITE> subTargetSpec = prerequisiteSpec.getAction().getSubTarget();
 					
 					findTargets(
-							subTargetSpec,
-							logContext,
-							context,
+					        config,
+					        subTargetSpec,
 							prerequisite,
-							logger, indent + 1,
+							indent + 1,
 							subTarget -> {
 	
-						final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(logContext, prerequisite, subTarget);
+						final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(config.logContext, prerequisite, subTarget);
 						
 						prerequisiteSet.add(subPrerequisite);
 						
@@ -142,7 +134,7 @@ abstract class PrerequisitesFinder {
 
 					final File sourceFile = prerequisiteSpec.getSingleFileFunction().apply(prerequisite);
 					
-					final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(logContext, prerequisite, sourceFile);
+					final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(config.logContext, prerequisite, sourceFile);
 					
 					prerequisiteSet.add(subPrerequisite);
 	
