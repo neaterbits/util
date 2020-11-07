@@ -49,10 +49,15 @@ public class PrintlnTargetFinderLogger implements TargetFinderLogger {
 		}
 		else if (targetSpec instanceof InfoTargetSpec) {
 
-			final InfoTargetSpec<CONTEXT, TARGET> infoTargetSpec = (InfoTargetSpec<CONTEXT, TARGET>)targetSpec;
-
-			System.out.println(Indent.indent(indent) + "Find info target type=" + targetType + ", name=" + infoTargetSpec.getName());
+			System.out.println(Indent.indent(indent) + "Find info target type=" + targetType);
 		}
+        else if (targetSpec instanceof NamedTargetSpec) {
+            
+            @SuppressWarnings("unchecked")
+            final NamedTargetSpec<CONTEXT> namedTargetSpec = (NamedTargetSpec<CONTEXT>)targetSpec;
+
+            System.out.println(Indent.indent(indent) + "Find info target type=" + targetType + ", name=" + namedTargetSpec.getName());
+        }
 	}
 
 	@Override

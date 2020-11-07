@@ -127,8 +127,7 @@ public class TargetExecutorTest {
 		final TargetDefinition<String> infoTarget = new InfoTarget<>(
 				logContext,
 				String.class,
-				"test info target",
-				obj -> "Qualifier name",
+				"target_identifier",
 				"Target object " + infoTargetObj,
 				infoTargetObj,
 				Arrays.asList(prerequisites),

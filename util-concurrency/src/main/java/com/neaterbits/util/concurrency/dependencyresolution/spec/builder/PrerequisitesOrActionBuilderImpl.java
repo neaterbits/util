@@ -12,8 +12,12 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 		extends PrerequisitesBuilderImpl<CONTEXT, TARGET, FILE_TARGET>
 		implements PrerequisitesOrActionBuilder<CONTEXT, TARGET> {
 
-	PrerequisitesOrActionBuilderImpl(Class<TARGET> type, String targetName, Function<TARGET, String> qualifierName, Function<TARGET, String> description) {
-		super(type, targetName, qualifierName, description);
+    PrerequisitesOrActionBuilderImpl(String name, String description) {
+        super(name, description);
+    }
+	
+    PrerequisitesOrActionBuilderImpl(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
+		super(type, getIdentifier, getDescription);
 	}
 
 	PrerequisitesOrActionBuilderImpl(
@@ -21,9 +25,9 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 			Class<FILE_TARGET> fileTargetType,
 			BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
 			Function<FILE_TARGET, File> file,
-			Function<TARGET, String> description) {
+			Function<TARGET, String> getDescription) {
 
-		super(type, fileTargetType, getFileTarget, file, description);
+		super(type, fileTargetType, getFileTarget, file, getDescription);
 	}
 
 	PrerequisitesOrActionBuilderImpl(TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState) {

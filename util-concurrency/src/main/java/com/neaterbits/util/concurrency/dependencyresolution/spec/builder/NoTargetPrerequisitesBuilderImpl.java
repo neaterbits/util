@@ -26,7 +26,7 @@ final class NoTargetPrerequisitesBuilderImpl<CONTEXT extends TaskContext>
 	public NoTargetIteratingBuilder<CONTEXT> withPrerequisites(String description) {
 		final TargetBuilderState<CONTEXT, Object, Object> targetBuilderState;
 		
-		this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(null, targetName, null, target -> this.description);
+		this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(targetName, this.description);
 
 		return new NoTargetIteratingBuilderImpl<>(targetBuilderState, description);
 	}

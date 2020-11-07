@@ -9,6 +9,7 @@ import java.util.function.Function;
 
 import com.neaterbits.util.concurrency.dependencyresolution.spec.FileTargetSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.InfoTargetSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.NamedTargetSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisiteSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetSpec;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
@@ -24,8 +25,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	private final BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget;
 	private final Class<FILE_TARGET> fileTargetType;
 	private final Function<FILE_TARGET, File> file;
-	private final Function<TARGET, String> qualifierName;
-	private final Function<TARGET, String> description;
+	private final Function<TARGET, String> getIdentifier;
+	private final Function<TARGET, String> getDescription;
 	
 	private final List<PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?>> prerequisites;
 	
@@ -35,32 +36,50 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 
 	private ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult;
 	private ProcessResult<CONTEXT, TARGET, ?> onResult;
-	
-	TargetBuilderState(Class<TARGET> type, String targetName, Function<TARGET, String> qualifierName, Function<TARGET, String> description) {
-		this.targetType = type;
+
+    TargetBuilderState(String targetName, String description) {
+
+        this.targetType = null;
+
+        this.targetName = targetName;
+        this.getIdentifier = null;
+
+        this.getFileTarget = null;
+        this.fileTargetType = null;
+        this.file = null;
+
+        this.getDescription = target -> description;
+        this.prerequisites = new ArrayList<>();
+
+    }
+
+	TargetBuilderState(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
+
+	    this.targetType = type;
 		
-		this.targetName = targetName;
-		this.qualifierName = qualifierName;
+		this.targetName = null;
+		this.getIdentifier = getIdentifier;
 		
 		this.getFileTarget = null;
 		this.fileTargetType = null;
 		this.file = null;
 		
-		this.description = description;
+		this.getDescription = getDescription;
 		this.prerequisites = new ArrayList<>();
 	}
 	
 	TargetBuilderState(Class<TARGET> type, Class<FILE_TARGET> fileTargetType, BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget, Function<FILE_TARGET, File> file, Function<TARGET, String> description) {
-		this.targetType = type;
+
+	    this.targetType = type;
 		
 		this.targetName = null;
-		this.qualifierName = null;
+		this.getIdentifier = null;
 		
 		this.getFileTarget = getFileTarget;
 		this.fileTargetType = fileTargetType;
 		this.file = file;
 		
-		this.description = description;
+		this.getDescription = description;
 		this.prerequisites = new ArrayList<>();
 	}
 	
@@ -108,28 +127,54 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 			prerequisites.add(prerequisite.build());
 		}
 		
-		return targetName != null
-				? new InfoTargetSpec<>(
+		final TargetSpec<CONTEXT, TARGET> targetSpec;
+		
+		if (targetName != null) {
+		    
+		    @SuppressWarnings({ "unchecked", "rawtypes" })
+            final TargetSpec<CONTEXT, TARGET> spec
+		        = (TargetSpec)new NamedTargetSpec<CONTEXT>(
+		                targetName,
+		                getDescription.apply(null),
+		                (List)prerequisites,
+		                constraint,
+		                (ActionFunction)actionFunction,
+		                (ActionWithResultFunction)actionWithResult,
+		                (ProcessResult)onResult);
+
+		    targetSpec = spec;
+		}
+		else if (fileTargetType != null && getFileTarget != null && file != null) {
+
+		    targetSpec = new FileTargetSpec<>(
+                    
+                    targetType,
+                    fileTargetType,
+                    getFileTarget,
+                    file,
+                    getDescription,
+                    prerequisites,
+                    constraint,
+                    actionFunction,
+                    actionWithResult,
+                    onResult);
+		}
+		else if (targetType != null) {
+		
+		    targetSpec = new InfoTargetSpec<>(
 						targetType,
-						targetName,
-						qualifierName,
-						description,
-						prerequisites,
-						constraint,
-						actionFunction,
-						actionWithResult,
-						onResult)
-				: new FileTargetSpec<>(
-						
-						targetType,
-						fileTargetType,
-						getFileTarget,
-						file,
-						description,
+						getIdentifier,
+						getDescription,
 						prerequisites,
 						constraint,
 						actionFunction,
 						actionWithResult,
 						onResult);
+		}
+		else {
+		    throw new IllegalStateException();
+		}
+
+		return targetSpec;
 	}
 }

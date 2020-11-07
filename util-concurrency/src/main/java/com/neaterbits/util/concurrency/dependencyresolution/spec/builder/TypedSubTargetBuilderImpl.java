@@ -27,27 +27,24 @@ final class TypedSubTargetBuilderImpl<CONTEXT extends TaskContext, TARGET>
 	}
 	
 	@Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addNamedSubTarget(String name, Function<TARGET, String> description) {
-		return set(new PrerequisitesOrActionBuilderImpl<>(null, name, null, description));
+	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addNamedSubTarget(String name, String description) {
+		return set(new PrerequisitesOrActionBuilderImpl<>(name, description));
 	}
 
-	@Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addInfoSubTarget(Class<TARGET> type, Function<TARGET, String> description) {
-		return set(new PrerequisitesOrActionBuilderImpl<>(type, (String)null, null, description));
-	}
+    @Override
+    public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addInfoSubTarget(
+            Class<TARGET> type,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+        
+        return set(new PrerequisitesOrActionBuilderImpl<>(type, getIdentifier, getDescription));
+    }
 
-	@Override
+    @Override
 	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFileSubTarget(Class<TARGET> type, Function<TARGET, File> file,
 			Function<TARGET, String> description) {
 
 		return set(new PrerequisitesOrActionBuilderImpl<>(type, type, (context, target) -> target, file, description));
-	}
-
-	@Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addInfoSubTarget(Class<TARGET> type, String name,
-			Function<TARGET, String> qualifierName, Function<TARGET, String> description) {
-		
-		return set(new PrerequisitesOrActionBuilderImpl<>(type, name, qualifierName, description));
 	}
 
 	@Override

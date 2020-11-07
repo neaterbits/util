@@ -8,13 +8,11 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public interface SubTargetBuilder<CONTEXT extends TaskContext, TARGET, PREREQUISITES_BUILDER> {
 
-	PREREQUISITES_BUILDER addNamedSubTarget(String name, Function<TARGET, String> description);
+	PREREQUISITES_BUILDER addNamedSubTarget(String name, String description);
 
-	PREREQUISITES_BUILDER addInfoSubTarget(Class<TARGET> type, Function<TARGET, String> description);
+	PREREQUISITES_BUILDER addInfoSubTarget(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription);
 
-	PREREQUISITES_BUILDER addInfoSubTarget(Class<TARGET> type, String name, Function<TARGET, String> qualifierName, Function<TARGET, String> description);
-
-	PREREQUISITES_BUILDER addFileSubTarget(Class<TARGET> type, Function<TARGET, File> file, Function<TARGET, String> description);
+	PREREQUISITES_BUILDER addFileSubTarget(Class<TARGET> type, Function<TARGET, File> getfile, Function<TARGET, String> getDescription);
 	
 	<FILE_TARGET> PREREQUISITES_BUILDER addFileSubTarget(
 			Class<TARGET> type,
