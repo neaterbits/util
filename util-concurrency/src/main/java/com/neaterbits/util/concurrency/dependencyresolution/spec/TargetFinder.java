@@ -29,7 +29,6 @@ final class TargetFinder extends PrerequisitesFinder {
 			        new Config<>(logContext, context, logger),
 			        targetSpec,
 			        null,
-			        0,
 			        rootTarget);
 		}
 
@@ -42,48 +41,23 @@ final class TargetFinder extends PrerequisitesFinder {
 		        Config<CONTEXT> config,
 		        TargetSpec<CONTEXT, TARGET> targetSpec,
 				TARGET target,
-				int indent,
 				Consumer<TargetDefinition<TARGET>> targetCreated) {
 		
 		if (config.logger != null) {
-			config.logger.onFindTarget(indent, config.context, targetSpec, target);
+			config.logger.onFindTarget(config.indent, config.context, targetSpec, target);
 		}
 
-		
 		final Consumer<List<Prerequisites>> onFoundPrerequisites = (List<Prerequisites> prerequisites) -> {
 
-			final TargetDefinition<TARGET> createdTargetDefinition;
-			
-			if (
-				   (prerequisites == null || prerequisites.isEmpty())
-				&& !targetSpec.hasAction()) {
-				
-				// Link to target specified elsewhere
-			    throw new UnsupportedOperationException();
-			}
-			else {
-			
-				final TargetDefinition<TARGET> createdTarget = targetSpec.createTargetDefinition(
-				        config.logContext,
-				        config.context,
-				        target,
-				        prerequisites);
-				
-				if (config.logger != null) {
-					config.logger.onFoundPrerequisites(indent, createdTarget, prerequisites);
-				}
-				
-				createdTargetDefinition = createdTarget;
-			}
+			final TargetDefinition<TARGET> createdTargetDefinition = makeTarget(config, targetSpec, target, prerequisites);
 
 			targetCreated.accept(createdTargetDefinition);
 		};
 		
 		findPrerequisites(
-		        config,
+		        config.addIndent(),
 		        targetSpec,
 				target,
-				indent + 1,
 				onFoundPrerequisites);
 	}
 
@@ -91,7 +65,6 @@ final class TargetFinder extends PrerequisitesFinder {
 	        Config<CONTEXT> config,
 	        TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
-			int indent,
 			Consumer<List<Prerequisites>> onResult) {
 
 	    final List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisiteSpecs = targetSpec.getPrerequisiteSpecs();
@@ -104,18 +77,11 @@ final class TargetFinder extends PrerequisitesFinder {
 		else {
 			for (PrerequisiteSpec<CONTEXT, TARGET, ?> prerequisiteSpec : prerequisiteSpecs) {
 	
-				getPrerequisites(config, targetSpec, target, prerequisiteSpec, indent, prerequisitesList -> {
+				getPrerequisites(config, targetSpec, target, prerequisiteSpec, prerequisitesList -> {
 					
 					// System.out.println("## find prerequisites for " + target);
 					
-					final Prerequisites prerequisites = new Prerequisites(
-							config.logContext,
-							prerequisitesList,
-							prerequisiteSpec.getDescription(),
-							prerequisiteSpec.getRecursiveBuildInfo(),
-							prerequisiteSpec.getCollectors());
-					
-					list.add(prerequisites);
+					list.add(makePrerequisites(config.logContext, prerequisitesList, prerequisiteSpec));
 	
 					if (list.size() == prerequisiteSpecs.size()) {
 						onResult.accept(list);

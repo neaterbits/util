@@ -28,7 +28,6 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 	        Config<CONTEXT> config,
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
-			int indent,
 			Consumer<TargetDefinition<TARGET>> targetCreated);
 	
 	final <CONTEXT extends TaskContext, TARGET, PREREQUISITE>
@@ -37,7 +36,6 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 			TargetSpec<CONTEXT, TARGET> targetSpec,
 			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
-			int indent,
 			Consumer<Set<Prerequisite<?>>> listener) {
 		
 		if (prerequisiteSpec.getConstraint() != null) {
@@ -50,10 +48,10 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					},
 					(param, result) -> {
 
-						getPrerequisites(config, prerequisiteSpec, result, indent, prerequisites -> {
+						getPrerequisites(config, prerequisiteSpec, result, prerequisites -> {
 						
 							if (config.logger != null) {
-								config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
+								config.logger.onPrerequisites(config.indent, targetSpec, target, prerequisiteSpec, prerequisites);
 							}
 														
 							listener.accept(prerequisites);
@@ -62,10 +60,10 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 		} else {
 			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(config.context, target);
 
-			getPrerequisites(config, prerequisiteSpec, sub, indent, prerequisites -> {
+			getPrerequisites(config, prerequisiteSpec, sub, prerequisites -> {
 				
 				if (config.logger != null) {
-					config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
+					config.logger.onPrerequisites(config.indent, targetSpec, target, prerequisiteSpec, prerequisites);
 				}
 				
 				listener.accept(prerequisites);
@@ -78,7 +76,6 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 	        Config<CONTEXT> config,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
 			Collection<PREREQUISITE> sub,
-			int indent,
 			Consumer<Set<Prerequisite<?>>> listener) {
 
 		if (sub == null) {
@@ -101,10 +98,9 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					final TargetSpec<CONTEXT, PREREQUISITE> subTargetSpec = prerequisiteSpec.getAction().getSubTarget();
 					
 					findTargets(
-					        config,
+					        config.addIndent(),
 					        subTargetSpec,
 							prerequisite,
-							indent + 1,
 							subTarget -> {
 	
 						final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(config.logContext, prerequisite, subTarget);
