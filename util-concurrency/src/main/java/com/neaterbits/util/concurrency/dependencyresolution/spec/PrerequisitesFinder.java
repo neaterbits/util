@@ -50,7 +50,7 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					},
 					(param, result) -> {
 
-						getPrerequisites(config, targetSpec, target, prerequisiteSpec, result, indent, prerequisites -> {
+						getPrerequisites(config, prerequisiteSpec, result, indent, prerequisites -> {
 						
 							if (config.logger != null) {
 								config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
@@ -62,7 +62,7 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 		} else {
 			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(config.context, target);
 
-			getPrerequisites(config, targetSpec, target, prerequisiteSpec, sub, indent, prerequisites -> {
+			getPrerequisites(config, prerequisiteSpec, sub, indent, prerequisites -> {
 				
 				if (config.logger != null) {
 					config.logger.onPrerequisites(indent, targetSpec, target, prerequisiteSpec, prerequisites);
@@ -76,15 +76,13 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 	private <CONTEXT extends TaskContext, TARGET, FILE_TARGET, PREREQUISITE>
 	void getPrerequisites(
 	        Config<CONTEXT> config,
-	        TargetSpec<CONTEXT, TARGET> targetSpec,
-			TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec,
 			Collection<PREREQUISITE> sub,
 			int indent,
 			Consumer<Set<Prerequisite<?>>> listener) {
 
 		if (sub == null) {
-			throw new IllegalStateException("No prerequisites for " + targetSpec.getType().getSimpleName() + "/" + target + "/" + prerequisiteSpec.getDescription());
+			throw new IllegalStateException("No prerequisites for " + prerequisiteSpec.getDescription());
 		}
 		
 		final Set<PREREQUISITE> subSet = sub instanceof Set<?> ? (Set<PREREQUISITE>)sub : new HashSet<>(sub);
