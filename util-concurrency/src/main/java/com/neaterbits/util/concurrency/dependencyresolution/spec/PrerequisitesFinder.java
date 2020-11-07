@@ -115,17 +115,6 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 				else {
 					
 					// Only prerequisite, no action to build target so probably a source file
-
-					/*
-					final TargetReference<PREREQUISITE> targetReference = new TargetReference<PREREQUISITE>(
-							logContext,
-							null,
-							prerequisite,
-							null);
-					
-					final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(logContext, prerequisite, targetReference);
-					*/
-
 					final File sourceFile = prerequisiteSpec.getSingleFileFunction().apply(prerequisite);
 					
 					final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(config.logContext, prerequisite, sourceFile);
