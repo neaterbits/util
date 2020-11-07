@@ -93,9 +93,9 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 		
 			for (PREREQUISITE prerequisite : subSet) {
 				
-				if (prerequisiteSpec.getAction() != null) {
+				if (prerequisiteSpec.getBuildSpec() != null) {
 					
-					final TargetSpec<CONTEXT, PREREQUISITE> subTargetSpec = prerequisiteSpec.getAction().getSubTarget();
+					final TargetSpec<CONTEXT, PREREQUISITE> subTargetSpec = prerequisiteSpec.getBuildSpec().getSubTarget();
 					
 					findTargets(
 					        config.addIndent(),

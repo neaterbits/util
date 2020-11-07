@@ -31,7 +31,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 	private final RecursiveBuildInfo<CONTEXT, TARGET, PREREQUISITE> recursiveBuildInfo;
 	private final Function<TARGET, PREREQUISITE> getSingleFrom;
 	private final Function<PREREQUISITE, File> getSingleFile;
-	private final BuildSpec<CONTEXT, PREREQUISITE> action;
+	private final BuildSpec<CONTEXT, PREREQUISITE> buildSpec;
 	private final Producers<TARGET> collectors;
 	
 	public PrerequisiteSpec(String named) {
@@ -94,7 +94,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		this.getSingleFrom = getSingleFrom;
 		this.getSingleFile = getSingleFile;
 		
-		this.action = action;
+		this.buildSpec = action;
 
 		this.collectors = collectors;
 	}
@@ -162,8 +162,8 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		return getSingleFile;
 	}
 
-	BuildSpec<CONTEXT, PREREQUISITE> getAction() {
-		return action;
+	BuildSpec<CONTEXT, PREREQUISITE> getBuildSpec() {
+		return buildSpec;
 	}
 
 	Producers<TARGET> getCollectors() {
