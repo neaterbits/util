@@ -1,6 +1,5 @@
 package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
-import java.io.File;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
@@ -113,11 +112,14 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					});
 				}
 				else {
-					
 					// Only prerequisite, no action to build target so probably a source file
-					final File sourceFile = prerequisiteSpec.getSingleFileFunction().apply(prerequisite);
+					// final File sourceFile = prerequisiteSpec.getSingleFileFunction().apply(prerequisite);
 					
-					final Prerequisite<PREREQUISITE> subPrerequisite = new Prerequisite<>(config.logContext, prerequisite, sourceFile);
+					final Prerequisite<PREREQUISITE> subPrerequisite
+					            = new Prerequisite<>(
+                                                config.logContext,
+                                                prerequisite,
+                                                new UnknownTarget<>(config.logContext, prerequisite));
 					
 					prerequisiteSet.add(subPrerequisite);
 	

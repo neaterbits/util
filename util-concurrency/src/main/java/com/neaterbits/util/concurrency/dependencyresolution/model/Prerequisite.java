@@ -47,7 +47,11 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 		}
 	}
 
-	@Override
+    public Prerequisite(LogContext logContext, Prerequisite<PREREQUISITE> other, TargetDefinition<PREREQUISITE> subTarget) {
+        this(logContext, other.item, subTarget);
+    }
+
+    @Override
 	public int getConstructorLogSequenceNo() {
 		return constructorLogSequenceNo;
 	}
@@ -72,7 +76,7 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 		return null;
 	}
 
-	PREREQUISITE getItem() {
+	public PREREQUISITE getItem() {
 		return item;
 	}
 

@@ -1,7 +1,10 @@
 package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
@@ -83,5 +86,103 @@ abstract class TargetSpecApplier {
                 prerequisiteSpec.getCollectors());
 
         return prerequisites;
+    }
+
+    static void resolveUnknownTargets(
+            LogContext logContext,
+            List<TargetDefinition<?>> toResolveList) {
+        
+        final Map<Object, TargetDefinition<?>> map = new HashMap<>();
+
+        for (TargetDefinition<?> toResolve : toResolveList) {
+            mapTargets(toResolve, map);
+        }
+        
+        for (TargetDefinition<?> toResolve : toResolveList) {
+            resolveUnknownTargets(logContext, toResolve, map);
+        }
+    }
+
+    private static <TARGET>
+    void mapTargets(TargetDefinition<?> target, Map<Object, TargetDefinition<?>> map) {
+
+        if (!(target instanceof UnknownTarget<?>)) {
+            map.put(target.getTargetObject(), target);
+        }
+
+        if (target.getPrerequisites() != null) {
+                
+            for (Prerequisites prerequisites : target.getPrerequisites()) {
+             
+                for (Prerequisite<?> prerequisite : prerequisites.getPrerequisites()) {
+
+                    if (prerequisite.getSubTarget() != null) {
+                        mapTargets(prerequisite.getSubTarget(), map);
+                    }
+                }
+            }
+        }
+    }
+
+    private static <TARGET> void resolveUnknownTargets(
+            LogContext logContext,
+            TargetDefinition<TARGET> toResolve,
+            Map<Object, TargetDefinition<?>> map) {
+        
+        if (toResolve instanceof UnknownTarget<?>) {
+            throw new IllegalArgumentException();
+        }
+
+        if (toResolve.getPrerequisites() != null) {
+            
+            final List<Prerequisites> updated = new ArrayList<>(toResolve.getPrerequisites().size());
+            
+            for (Prerequisites prerequisites : toResolve.getPrerequisites()) {
+                
+                final List<Prerequisite<?>> list = new ArrayList<>(prerequisites.getPrerequisites().size());
+                    
+                for (Prerequisite<?> prerequisite : prerequisites.getPrerequisites()) {
+
+                    final Prerequisite<?> toAdd;
+
+                    if (prerequisite.getSubTarget() != null) {
+                    
+                        if (prerequisite.getSubTarget() instanceof UnknownTarget<?>) {
+                            
+                            final TargetDefinition<?> otherTarget = map.get(prerequisite.getItem());
+
+                            if (otherTarget == null) {
+                                throw new IllegalStateException("No target previously made for '"
+                                            + prerequisite.getDebugString() + "' in '"
+                                            + prerequisite.getDescription() + "'");
+                            }
+
+                            @SuppressWarnings({ "unchecked", "rawtypes" })
+                            final Prerequisite<?> created = new Prerequisite<Object>(
+                                    logContext,
+                                    (Prerequisite)prerequisite,
+                                    (TargetDefinition)otherTarget);
+
+                            toAdd = created;
+                        }
+                        else {
+                            
+                            resolveUnknownTargets(logContext, prerequisite.getSubTarget(), map);
+                            
+                            toAdd = prerequisite;
+                        }
+                    }
+                    else {
+                        toAdd = prerequisite;
+                    }
+                    
+                    list.add(toAdd);
+                }
+                
+                updated.add(new Prerequisites(logContext, prerequisites, list));
+            }
+            
+            toResolve.updatePrerequisites(updated);
+        }
     }
 }

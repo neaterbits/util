@@ -22,14 +22,32 @@ final class TargetFinder extends PrerequisitesFinder {
 			LogContext logContext,
 			CONTEXT context,
 			TargetFinderLogger logger,
-			Consumer<TargetDefinition<TARGET>> rootTarget) {
+			Consumer<TargetDefinition<TARGET>> onRootTarget) {
 
+	    final List<TargetDefinition<?>> list = new ArrayList<>();
+	    
 		for (TargetSpec<CONTEXT, TARGET> targetSpec : targetSpecs) {
 			findTargets(
 			        new Config<>(logContext, context, logger),
 			        targetSpec,
 			        null,
-			        rootTarget);
+			        rootTarget -> {
+			            
+			            list.add(rootTarget);
+			            
+			            if (list.size() == targetSpecs.size()) {
+			                
+			                resolveUnknownTargets(logContext, list);
+			                
+			                for (TargetDefinition<?> def : list) {
+			                 
+			                    @SuppressWarnings({ "unchecked", "rawtypes" })
+                                final TargetDefinition<TARGET> td = (TargetDefinition)def;
+			                    
+			                    onRootTarget.accept(td);
+			                }
+			            }
+		            });
 		}
 
 		asyncExecutor.runQueuedResultRunnables();
@@ -78,8 +96,6 @@ final class TargetFinder extends PrerequisitesFinder {
 			for (PrerequisiteSpec<CONTEXT, TARGET, ?> prerequisiteSpec : prerequisiteSpecs) {
 	
 				getPrerequisites(config, targetSpec, target, prerequisiteSpec, prerequisitesList -> {
-					
-					// System.out.println("## find prerequisites for " + target);
 					
 					list.add(makePrerequisites(config.logContext, prerequisitesList, prerequisiteSpec));
 	

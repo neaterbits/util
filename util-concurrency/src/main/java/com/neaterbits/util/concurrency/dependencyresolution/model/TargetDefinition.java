@@ -26,7 +26,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	public abstract String targetSimpleLogString();
 	public abstract String targetToLogString();
 
-	TargetDefinition(
+	protected TargetDefinition(
 			LogContext logContext,
 			String logIdentifier,
 			String logLocalIdentifier,

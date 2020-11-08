@@ -54,6 +54,14 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 		this.recursiveBuildInfo = recursiveBuildInfo;
 		this.producers = collectors;
 	}
+
+	public Prerequisites(
+            LogContext logContext,
+            Prerequisites other,
+            Collection<Prerequisite<?>> prerequisites) {
+	    
+	    this(logContext, prerequisites, other.description, other.recursiveBuildInfo, other.producers);
+	}
 	
 	@Override
 	public int getConstructorLogSequenceNo() {
