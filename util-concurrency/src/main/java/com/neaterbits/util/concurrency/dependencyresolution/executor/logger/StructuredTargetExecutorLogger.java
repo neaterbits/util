@@ -240,7 +240,7 @@ public final class StructuredTargetExecutorLogger implements TargetExecutorLogge
 				target.getTargetObject(),
 				logState.getTargetStatus(target).name(),
 				"Executed action to build " + target.getDebugString()
-			+ (actionLog != null ? ": " + actionLog.getCommandLine() : ""));
+			+ (actionLog != null ? ": " + actionLog.toString() : ""));
 
 		addTargetLogState(logEntry, logState);
 	}

@@ -27,7 +27,7 @@ public final class TargetExecutor {
 			TargetDefinition<TARGET> rootTarget,
 			TargetExecutorLogger logger,
 			Consumer<TargetBuildResult> onResult) {
-		
+
 		final ExecutorState<CONTEXT> state = ExecutorState.createFromTargetTree(rootTarget, this, logger);
 
 		final TargetExecutionContext<CONTEXT> targetExecutionContext = new TargetExecutionContext<CONTEXT>(

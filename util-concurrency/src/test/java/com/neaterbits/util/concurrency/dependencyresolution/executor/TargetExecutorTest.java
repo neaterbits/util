@@ -22,7 +22,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.model.InfoTarget;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.CommandLineActionLog;
 import com.neaterbits.util.concurrency.scheduling.QueueAsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -46,7 +46,7 @@ public class TargetExecutorTest {
 		                targetObject,
 		                prerequisitesList,
 		                new Action<File>(null, (c, t, params) -> {
-		                    return new ActionLog("1234", 0);
+		                    return new CommandLineActionLog("1234", 0);
 		                }),
 		                null);
 	    };
@@ -107,7 +107,7 @@ public class TargetExecutorTest {
 				targetObject,
 				Collections.emptyList(),
 				new Action<File>(null, (context, target, params) -> {
-					return new ActionLog("1234", 0);
+					return new CommandLineActionLog("1234", 0);
 				}),
 				null);
 
@@ -148,7 +148,7 @@ public class TargetExecutorTest {
 						throw new AssertionError();
 					}
 
-					return new ActionLog("1234", 0);
+					return new CommandLineActionLog("1234", 0);
 				}),
 				null);
 

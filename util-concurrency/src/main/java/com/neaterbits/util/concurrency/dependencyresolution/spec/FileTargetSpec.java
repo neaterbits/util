@@ -2,6 +2,7 @@ package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -35,6 +36,9 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 			ProcessResult<CONTEXT, TARGET, ?> onResult) {
 		
 		super(type, description, prerequisites, constraint, actionFunction, actionWithResult, onResult);
+	
+		Objects.requireNonNull(getFileTarget);
+		Objects.requireNonNull(file);
 		
 		this.fileTargetType = fileTargetType;
 		this.getFileTarget = getFileTarget;
@@ -69,14 +73,29 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 
 	@Override
 	TargetDefinition<TARGET> createTargetDefinition(LogContext logContext, CONTEXT context, TARGET target, List<Prerequisites> prerequisitesList) {
-		
+	
+	    Objects.requireNonNull(context);
+	    Objects.requireNonNull(target);
+	    
 		final FILE_TARGET fileTarget = getFileTarget.apply(context, target);
+		
+		if (fileTarget == null) {
+		    throw new IllegalStateException("No file target from target " + target);
+		}
+		
+		final File file = this.file.apply(fileTarget);
+
+		if (file == null) {
+		    throw new IllegalStateException("No file from file target " + fileTarget);
+        }
+	
+		final String description = getDescriptionFunction().apply(target);
 		
 		return new FileTarget<>(
 				logContext,
 				getType(),
-				file.apply(fileTarget),
-				getDescriptionFunction().apply(target),
+				file,
+				description,
 				target,
 				prerequisitesList,
 				makeAction(),

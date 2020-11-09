@@ -52,8 +52,8 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 			Producers<TARGET> collectors) {
 
 		if (named == null) {
-			if (getSingleFrom == null || getSingleFile == null) {
-				Objects.requireNonNull(getPrerequisites);
+			if (getSingleFrom == null && getPrerequisites == null) {
+			    throw new IllegalStateException("No target for '" + description + "'");
 			}
 		}
 		else {
@@ -89,7 +89,9 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
             return action.getSubTarget().createTargetDefinition(logContext, context, target, prerequisitesList);
         };
 
-        this.recursiveBuildInfo = new RecursiveBuildInfo<>(recursiveBuildSpec, createTargetDefinition);
+        this.recursiveBuildInfo = recursiveBuildSpec != null
+                ? new RecursiveBuildInfo<>(recursiveBuildSpec, createTargetDefinition)
+                : null;
         
 		this.getSingleFrom = getSingleFrom;
 		this.getSingleFile = getSingleFile;
@@ -127,10 +129,18 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		
 		if (getPrerequisites != null) {
 			result = getPrerequisites.apply(context, target);
+			
+			if (result.contains(null)) {
+			    throw new IllegalStateException();
+			}
 		}
-		else if (getSingleFrom != null && getSingleFile != null) {
+		else if (getSingleFrom != null) {
 			
 			final PREREQUISITE prerequisite = getSingleFrom.apply(target);
+			
+			if (prerequisite == null) {
+			    throw new IllegalStateException();
+			}
 			
 			result = Arrays.asList(prerequisite);
 		}

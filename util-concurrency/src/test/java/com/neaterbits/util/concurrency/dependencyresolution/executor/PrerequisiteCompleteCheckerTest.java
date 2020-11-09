@@ -14,7 +14,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.model.InfoTarget;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
-import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionLog;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.CommandLineActionLog;
 
 public class PrerequisiteCompleteCheckerTest {
 
@@ -28,7 +28,7 @@ public class PrerequisiteCompleteCheckerTest {
 				targetObject,
 				Collections.emptyList(),
 				new Action<File>(null, (context, target, params) -> {
-					return new ActionLog("1234", 0);
+					return new CommandLineActionLog("1234", 0);
 				}),
 				null);
 		

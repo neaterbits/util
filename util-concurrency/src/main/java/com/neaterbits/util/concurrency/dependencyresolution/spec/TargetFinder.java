@@ -96,9 +96,9 @@ final class TargetFinder extends PrerequisitesFinder {
 			for (PrerequisiteSpec<CONTEXT, TARGET, ?> prerequisiteSpec : prerequisiteSpecs) {
 	
 				getPrerequisites(config, targetSpec, target, prerequisiteSpec, prerequisitesList -> {
-					
+
 					list.add(makePrerequisites(config.logContext, prerequisitesList, prerequisiteSpec));
-	
+
 					if (list.size() == prerequisiteSpecs.size()) {
 						onResult.accept(list);
 					}

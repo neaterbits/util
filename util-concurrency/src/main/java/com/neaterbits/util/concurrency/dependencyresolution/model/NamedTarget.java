@@ -49,7 +49,7 @@ public final class NamedTarget extends TargetDefinition<String> {
         return getLogIdentifier();
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 

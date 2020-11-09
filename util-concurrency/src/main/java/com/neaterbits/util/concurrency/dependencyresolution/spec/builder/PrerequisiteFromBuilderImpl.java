@@ -11,7 +11,6 @@ class PrerequisiteFromBuilderImpl<CONTEXT extends TaskContext, TARGET, PREREQUIS
 
 	private final String description;
 	private final PrerequisiteBuilderState<CONTEXT, TARGET, Void, Void> prerequisiteBuilderState;
-	private Function<TARGET, PREREQUISITE> from;
 	private Function<PREREQUISITE, File> withFile;
 	
 	PrerequisiteFromBuilderImpl(
@@ -24,8 +23,9 @@ class PrerequisiteFromBuilderImpl<CONTEXT extends TaskContext, TARGET, PREREQUIS
 		Objects.requireNonNull(prerequisiteBuilderState);
 		
 		this.description = description;
-		this.from = from;
 		this.prerequisiteBuilderState = prerequisiteBuilderState;
+		
+		prerequisiteBuilderState.setSingleFrom(from);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ class PrerequisiteFromBuilderImpl<CONTEXT extends TaskContext, TARGET, PREREQUIS
 
 		this.withFile = withFile;
 		
-		prerequisiteBuilderState.setSingleFile(from, withFile);
+		prerequisiteBuilderState.setSingleFile(withFile);
 	}
 
 	final String getDescription() {

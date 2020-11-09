@@ -81,13 +81,18 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 		this.getDependencyFromPrerequisite = getDependencyFromPrerequisite;
 		this.recursiveBuild = true;
 	}
+
+    final void setSingleFrom(Function<TARGET, ?> getSingleFrom) {
+        
+        Objects.requireNonNull(getSingleFrom);
+        
+        this.getSingleFrom = getSingleFrom;
+    }
 	
-	final void setSingleFile(Function<TARGET, ?> getSingleFrom, Function<?, File> getSingleFile) {
+	final void setSingleFile(Function<?, File> getSingleFile) {
 		
-		Objects.requireNonNull(getSingleFrom);
 		Objects.requireNonNull(getSingleFile);
 		
-		this.getSingleFrom = getSingleFrom;
 		this.getSingleFile = getSingleFile;
 	}
 	

@@ -1,6 +1,8 @@
 package com.neaterbits.util.concurrency.dependencyresolution.model;
 
+import java.io.PrintStream;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
@@ -70,6 +72,52 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		return constructorLogSequenceNo;
 	}
 
+	public final void print(PrintStream out) {
+	    
+	    out.append(getTargetObject().toString()).append(" : ");
+	    
+	    final LinkedHashSet<TargetDefinition<?>> subTargets = new LinkedHashSet<>();
+	    
+	    for (int i = 0; i < prerequisites.size(); ++ i) {
+
+	        if (i > 0) {
+                out.append(", ");
+            }
+	        
+	        out.append("[");
+	        
+	        final Prerequisites prerequisites = this.prerequisites.get(i);
+	        
+	        int j = 0;
+	        
+	        for (Prerequisite<?> prerequisite : prerequisites.getPrerequisites()) {
+
+	            if (j > 0) {
+	                out.append(", ");
+	            }
+	            
+	            out.append(prerequisite.getDebugString());
+	     
+	            if (prerequisite.getSubTarget() != null) {
+	                subTargets.add(prerequisite.getSubTarget());
+	            }
+	            else {
+	                throw new IllegalStateException("No sub target for prerequisite '" + prerequisite.getDebugString() + "'");
+	            }
+	            
+	            ++ j;
+	        }
+	        
+	        out.append("]");
+	    }
+	    
+	    out.println();
+	    
+	    for (TargetDefinition<?> subTarget : subTargets) {
+	        subTarget.print(out);
+	    }
+	}
+	
 	public final List<Prerequisites> getPrerequisites() {
 		return prerequisites;
 	}

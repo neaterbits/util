@@ -37,6 +37,9 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 		this.sourceFile = sourceFile;
 		
 		if (subTarget == null) {
+		    
+		    Objects.requireNonNull(sourceFile);
+		    
 			this.subTarget = null;
 		}
 		else {
@@ -73,7 +76,7 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 
 	@Override
 	public String getDebugString() {
-		return null;
+		return item.toString();
 	}
 
 	public PREREQUISITE getItem() {

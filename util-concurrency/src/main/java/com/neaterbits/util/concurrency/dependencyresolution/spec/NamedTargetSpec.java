@@ -66,4 +66,9 @@ public final class NamedTargetSpec<CONTEXT extends TaskContext> extends TargetSp
 
         return new NamedTargetSpec<CONTEXT>(this, additionalPrerequisites);
     }
+
+    @Override
+    public String toString() {
+        return "NamedTargetSpec [name=" + name + "]";
+    }
 }

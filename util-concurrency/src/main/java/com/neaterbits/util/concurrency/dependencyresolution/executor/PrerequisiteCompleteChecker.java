@@ -13,7 +13,7 @@ class PrerequisiteCompleteChecker {
 			ExecutorState<CONTEXT> targetState,
 			TargetDefinition<?> target) {
 		
-		final PrerequisiteCompletion completion = hasCompletedPrerequisites(targetState::getTargetCompletion, targetState::printTargetKeys, target);
+		final PrerequisiteCompletion completion = hasCompletedPrerequisites(targetState::getTargetCompletion, null, target);
 		
 		/*
 		if (completion.getStatus() == Status.FAILED) {
@@ -60,7 +60,7 @@ class PrerequisiteCompleteChecker {
 					
 						final PrerequisiteCompletion subStatus = hasCompletedPrerequisites(
 								targetState,
-								printTargetKeys,
+								null,
 								targetDefinition);
 						
 						if (subStatus.getStatus() != Status.SUCCESS) {

@@ -10,8 +10,6 @@ final class TargetStateMachine<CONTEXT extends TaskContext> extends TargetStateM
 
 	private final TargetDefinition<?> target;
 	private final TargetExecutorLogger logger;
-	// private Status status;
-	// private Exception exception;
 	
 	TargetStateMachine(TargetDefinition<?> target, TargetExecutorLogger logger) {
 		super(target, logger);
@@ -39,7 +37,12 @@ final class TargetStateMachine<CONTEXT extends TaskContext> extends TargetStateM
 	@Override
 	protected void onStateChange(BaseTargetState<CONTEXT> curState, BaseTargetState<CONTEXT> nextState) {
 
-		logger.onStateChange(target, curState.getClass().getSimpleName(), nextState.getClass().getSimpleName());
+	    Objects.requireNonNull(curState);
+	    Objects.requireNonNull(nextState);
+	    
+	    if (logger != null) {
+	        logger.onStateChange(target, curState.getClass().getSimpleName(), nextState.getClass().getSimpleName());
+	    }
 	}
 
 	@Override

@@ -263,17 +263,6 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		return targetState.getStatus();
 	}
-
-	public final void printTargetKeys() {
-		
-		System.out.println("## targets " + targets.size());
-		
-		for (TargetKey<?> key : targets.keySet()) {
-		
-			System.out.println("## target " + key);
-			
-		}
-	}
 	
 	PrerequisiteCompletion getTargetCompletion(TargetDefinition<?> target) {
 
@@ -468,4 +457,15 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			}
 		}
 	}
+
+    private void printTargetKeys() {
+        
+        System.out.println("targets " + targets.size());
+        
+        for (TargetKey<?> key : targets.keySet()) {
+        
+            System.out.println("target " + key);
+            
+        }
+    }
 }

@@ -35,6 +35,10 @@ public final class Prerequisites extends BuildEntity implements Loggable {
 			RecursiveBuildInfo<?, ?, ?> recursiveBuildInfo,
 			Producers<?> collectors) {
 		
+	    if (prerequisites.contains(null)) {
+	        throw new IllegalArgumentException();
+	    }
+	    
 		final String identifier = getLogIdentifierValue();
 		
 		this.constructorLogSequenceNo = logConstructor(
