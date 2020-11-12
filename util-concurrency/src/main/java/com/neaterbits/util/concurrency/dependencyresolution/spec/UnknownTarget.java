@@ -21,26 +21,6 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
     @Override
-    public String getLogIdentifier() {
-        return null;
-    }
-
-    @Override
-    public String getLogLocalIdentifier() {
-        return null;
-    }
-
-    @Override
-    public String targetSimpleLogString() {
-        return null;
-    }
-
-    @Override
-    public String targetToLogString() {
-        return null;
-    }
-
-    @Override
     public String getDebugString() {
         return getTargetObject().toString();
     }

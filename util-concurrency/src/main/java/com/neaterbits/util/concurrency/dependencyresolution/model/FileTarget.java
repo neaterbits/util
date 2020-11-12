@@ -46,16 +46,6 @@ public final class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 	}
 
 	@Override
-	public String getLogIdentifier() {
-		return getLogIdentifier(file);
-	}
-	
-	@Override
-	public String getLogLocalIdentifier() {
-		return getLogLocalIdentifier(file);
-	}
-
-	@Override
 	public String getDebugString() {
 		return file.getName();
 	}
@@ -87,16 +77,6 @@ public final class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 		} else if (!file.equals(other.file))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String targetSimpleLogString() {
-		return file.getName();
-	}
-
-	@Override
-	public String targetToLogString() {
-		return file.getPath();
 	}
 
 	@Override

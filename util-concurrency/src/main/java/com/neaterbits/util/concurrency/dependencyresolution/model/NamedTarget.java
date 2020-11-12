@@ -35,16 +35,6 @@ public final class NamedTarget extends TargetDefinition<String> {
     }
     
     @Override
-    public String getLogIdentifier() {
-        return name;
-    }
-
-    @Override
-    public String getLogLocalIdentifier() {
-        return name;
-    }
-
-    @Override
     public String getDebugString() {
         return getLogIdentifier();
     }
@@ -78,16 +68,6 @@ public final class NamedTarget extends TargetDefinition<String> {
         return true;
     }
     
-    @Override
-    public String targetSimpleLogString() {
-        return name;
-    }
-
-    @Override
-    public String targetToLogString() {
-        return name;
-    }
-
     @Override
     public String toString() {
         return "NamedTarget [name=" + name + ", description=" + getDescription() + "]";

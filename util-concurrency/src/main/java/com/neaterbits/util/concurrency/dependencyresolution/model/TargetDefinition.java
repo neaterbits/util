@@ -16,6 +16,10 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private static final String LOG_FIELD_PREREQUISITES = "prerequisites";
 
 	private final LogContext logContext;
+	
+    private final String logIdentifier;
+    private final String logLocalIdentifier;
+    
 	private final int constructorLogSequenceNo;
 
 	private final TargetKey<TARGET> targetKey;
@@ -24,9 +28,6 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private List<Prerequisites> prerequisites;
 	private final Action<TARGET> action;
 	private final ActionWithResult<TARGET> actionWithResult;
-
-	public abstract String targetSimpleLogString();
-	public abstract String targetToLogString();
 
 	protected TargetDefinition(
 			LogContext logContext,
@@ -58,6 +59,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				description);
 		
 		this.logContext = logContext;
+		this.logIdentifier = logIdentifier;
+		this.logLocalIdentifier = logLocalIdentifier;
         this.targetKey = targetKey;
 		this.description = description;
 		this.prerequisites = logConstructorListField(logContext, LOG_FIELD_PREREQUISITES, prerequisites);
@@ -157,6 +160,29 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	}
 	
 	@Override
+    public final String getLogIdentifier() {
+        return logIdentifier;
+    }
+
+    @Override
+    public final String getLogLocalIdentifier() {
+        return logLocalIdentifier;
+    }
+
+    public final String targetSimpleLogString() {
+        return getLogIdentifier();
+    }
+    
+    public final String targetToLogString() {
+        return getLogLocalIdentifier();
+    }
+
+    @Override
+    public String getDebugString() {
+        return getLogIdentifier();
+    }
+
+    @Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;

@@ -37,28 +37,8 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 	}
 	
 	@Override
-	public String getLogIdentifier() {
-	    return identifier;
-	}
-
-	@Override
-	public String getLogLocalIdentifier() {
-	    return identifier;
-	}
-
-	@Override
 	public String getDebugString() {
 		return getLogIdentifier();
-	}
-
-	@Override
-	public String targetSimpleLogString() {
-		return identifier;
-	}
-
-	@Override
-	public String targetToLogString() {
-		return identifier;
 	}
 
 	@Override
