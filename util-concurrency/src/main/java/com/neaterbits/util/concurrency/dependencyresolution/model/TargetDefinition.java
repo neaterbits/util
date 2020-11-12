@@ -1,6 +1,7 @@
 package com.neaterbits.util.concurrency.dependencyresolution.model;
 
 import java.io.PrintStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,6 +30,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private final Action<TARGET> action;
 	private final ActionWithResult<TARGET> actionWithResult;
 
+    protected abstract boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites);
+	
 	protected TargetDefinition(
 			LogContext logContext,
 			String logIdentifier,
@@ -49,7 +52,6 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 			throw new IllegalArgumentException("No action or prerequisites for target " + targetToLogString());
 		}
 		
-		
 		this.constructorLogSequenceNo = logConstructor(
 				logContext,
 				this,
@@ -68,6 +70,11 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		this.actionWithResult = actionWithResult;
 		
 		updatePrerequisites(prerequisites);
+	}
+	
+	public final boolean isUpToDate() {
+	    
+	    return isUpToDate(getTargetObject(), getPrerequisites());
 	}
 
 	@Override

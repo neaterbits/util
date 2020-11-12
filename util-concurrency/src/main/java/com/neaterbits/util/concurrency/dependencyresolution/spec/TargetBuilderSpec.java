@@ -2,10 +2,9 @@ package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
-import com.neaterbits.util.concurrency.dependencyresolution.executor.TargetBuildResult;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.OnBuildResult;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.TargetExecutor;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogger;
 import com.neaterbits.util.concurrency.dependencyresolution.model.NamedTarget;
@@ -35,7 +34,7 @@ public abstract class TargetBuilderSpec<CONTEXT extends TaskContext> {
 	        String targetName,
 	        TargetExecutorLogger logger,
 	        AsyncExecutor executor,
-	        Consumer<TargetBuildResult> onResult) {
+	        OnBuildResult onResult) {
 		
 		try {
 			final List<TargetSpec<CONTEXT, ?>> targetSpecs = buildTargetSpecs();

@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.model.UpToDate;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 final class TypedSubTargetBuilderImpl<CONTEXT extends TaskContext, TARGET>
@@ -58,7 +59,17 @@ final class TypedSubTargetBuilderImpl<CONTEXT extends TaskContext, TARGET>
 		return set(new PrerequisitesOrActionBuilderImpl<CONTEXT, TARGET, FILE_TARGET>(type, fileTargetType, getFileTarget, file, description));
 	}
 
-	TargetBuilderState<CONTEXT, TARGET, ?> build() {
+	@Override
+    public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFilesSubTarget(
+            Class<TARGET> type,
+            UpToDate<TARGET> upToDate,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+
+        return set(new PrerequisitesOrActionBuilderImpl<>(type, upToDate, getIdentifier, getDescription));
+    }
+
+    TargetBuilderState<CONTEXT, TARGET, ?> build() {
 		return builder.build();
 	}
 }

@@ -99,7 +99,7 @@ public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 		return list;
 	}
 	
-	public Class<TARGET> getType() {
+	public final Class<TARGET> getType() {
 		return type;
 	}
 

@@ -43,10 +43,7 @@ final class TargetStateToExecute<CONTEXT extends TaskContext>
 				nextState = new TargetStatePerformingActions<>(target, logger);
 			}
 			else {
-				
-				onCompletedTarget(context, target, null, false);
-				
-				nextState = new TargetStateDone<>(target, logger);
+			    nextState = testForRecursiveTargets(context);
 			}
 		}
 		else if (status.getStatus() == Status.FAILED) {
@@ -66,29 +63,34 @@ final class TargetStateToExecute<CONTEXT extends TaskContext>
 		return nextState;
 	}
 	private boolean runAnyActionsAndCallOnCompleted(
-			TargetExecutionContext<CONTEXT> context, TargetDefinition<?> target,
+			TargetExecutionContext<CONTEXT> context,
+			TargetDefinition<?> target,
 			BiConsumer<Exception, Boolean> onCompleted) {
 
-		final Action<?> action = target.getAction();
-		final ActionWithResult<?> actionWithResult = target.getActionWithResult();
-		
-		final boolean actionRun;
-		
-		
-		if (action != null) {
-			Actions.runOrScheduleAction(context, action, target, onCompleted);
-			
-			actionRun = true;
-		}
-		else if (actionWithResult != null) {
-			Actions.runOrScheduleActionWithResult(context, actionWithResult, target, onCompleted);
-			
-			actionRun = true;
-			
-		}
-		else {
-			actionRun = false;
-		}
+        final boolean actionRun;
+
+        if (target.isUpToDate()) {
+            actionRun = false;
+	    }
+        else {
+    		final Action<?> action = target.getAction();
+    		final ActionWithResult<?> actionWithResult = target.getActionWithResult();
+    		
+    		if (action != null) {
+    			Actions.runOrScheduleAction(context, action, target, onCompleted);
+    			
+    			actionRun = true;
+    		}
+    		else if (actionWithResult != null) {
+    			Actions.runOrScheduleActionWithResult(context, actionWithResult, target, onCompleted);
+    			
+    			actionRun = true;
+    			
+    		}
+    		else {
+    			actionRun = false;
+    		}
+        }
 		
 		return actionRun;
 	}

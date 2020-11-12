@@ -10,7 +10,10 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 public interface TargetIteratingBuilder<CONTEXT extends TaskContext, TARGET> {
 
 	<PREREQUISITE>
-	PrerequisiteActionBuilder<CONTEXT, TARGET, PREREQUISITE> fromIterating(Constraint constraint, BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites);
+	PrerequisiteActionOrTargetActionBuilder<CONTEXT, TARGET, PREREQUISITE>
+	    fromIterating(
+	            Constraint constraint,
+	            BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites);
 
 	<PREREQUISITE, SUB_TARGET>
 	PrerequisiteActionBuilder<CONTEXT, TARGET, PREREQUISITE> fromIteratingAndBuildingRecursively(

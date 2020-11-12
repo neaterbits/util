@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.model.UpToDate;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisitesBuilderSpec;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
@@ -28,6 +29,15 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 			Function<TARGET, String> getDescription) {
 
 		super(type, fileTargetType, getFileTarget, file, getDescription);
+	}
+	
+	PrerequisitesOrActionBuilderImpl(
+	        Class<TARGET> type,
+            UpToDate<TARGET> upToDate,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+
+	    super(type, upToDate, getIdentifier, getDescription);
 	}
 
 	PrerequisitesOrActionBuilderImpl(TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState) {

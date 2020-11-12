@@ -22,9 +22,13 @@ class PrerequisiteActionBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TA
 		this.targetBuilderState = targetBuilderState;
 		this.prerequisiteBuilderState = prerequisiteBuilderState;
 	}
+	
+	final TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> getTargetBuilderState() {
+        return targetBuilderState;
+    }
 
-	@Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> buildBy(
+    @Override
+	public final PrerequisitesOrActionBuilder<CONTEXT, TARGET> buildBy(
 			Consumer<TypedSubTargetBuilder<CONTEXT, PREREQUISITE>> prerequisiteTargets) {
 
 		final TypedSubTargetBuilderImpl<CONTEXT, PREREQUISITE> typedSubTargetBuilder = new TypedSubTargetBuilderImpl<>();

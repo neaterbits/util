@@ -1,9 +1,11 @@
 package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
+import java.util.Collection;
 import java.util.Collections;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
+import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetKey;
 
@@ -18,6 +20,11 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
                 Collections.emptyList(),
                 new Action<>(null, (context, target, params) -> null),
                 null);
+    }
+
+    @Override
+    protected boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites) {
+        return false;
     }
 
     @Override

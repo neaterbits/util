@@ -1,5 +1,6 @@
 package com.neaterbits.util.concurrency.dependencyresolution.model;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,6 +37,11 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 		this.identifier = identifier;
 	}
 	
+	@Override
+    protected boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites) {
+        return false;
+    }
+
 	@Override
 	public String getDebugString() {
 		return getLogIdentifier();

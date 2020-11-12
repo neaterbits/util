@@ -1,5 +1,6 @@
 package com.neaterbits.util.concurrency.dependencyresolution.model;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,6 +35,11 @@ public final class NamedTarget extends TargetDefinition<String> {
         this.name = name;
     }
     
+    @Override
+    protected boolean isUpToDate(String target, Collection<Prerequisites> prerequisites) {
+        return false;
+    }
+
     @Override
     public String getDebugString() {
         return getLogIdentifier();

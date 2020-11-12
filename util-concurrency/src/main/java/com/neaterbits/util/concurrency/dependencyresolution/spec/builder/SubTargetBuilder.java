@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.model.UpToDate;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public interface SubTargetBuilder<CONTEXT extends TaskContext, TARGET, PREREQUISITES_BUILDER> {
@@ -21,4 +22,9 @@ public interface SubTargetBuilder<CONTEXT extends TaskContext, TARGET, PREREQUIS
 			getFileTarget, Function<FILE_TARGET, File> file,
 			Function<TARGET, String> description);
 
+    PREREQUISITES_BUILDER addFilesSubTarget(
+            Class<TARGET> type,
+            UpToDate<TARGET> upToDate,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription);
 }

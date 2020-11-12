@@ -23,6 +23,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisite;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.CommandLineActionLog;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.FunctionActionLog;
 import com.neaterbits.util.concurrency.scheduling.QueueAsyncExecutor;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -46,9 +47,16 @@ public class TargetExecutorTest {
 		                targetObject,
 		                prerequisitesList,
 		                new Action<File>(null, (c, t, params) -> {
-		                    return new CommandLineActionLog("1234", 0);
+		                    return FunctionActionLog.OK;
 		                }),
-		                null);
+		                null) {
+
+                            @Override
+                            protected boolean isUpToDate(File target, Collection<Prerequisites> prerequisites) {
+                                return false;
+                            }
+		            
+		        };
 	    };
 
 	    final File targetObject = new File("/");
@@ -107,7 +115,7 @@ public class TargetExecutorTest {
 				targetObject,
 				Collections.emptyList(),
 				new Action<File>(null, (context, target, params) -> {
-					return new CommandLineActionLog("1234", 0);
+					return FunctionActionLog.OK;
 				}),
 				null);
 
@@ -141,7 +149,7 @@ public class TargetExecutorTest {
 						}
 						
 						if (files.size() != targetObject.listFiles().length + 1) { // +1 for root directory
-							throw new AssertionError();
+							throw new AssertionError("files " + files.size() + ", targets " + (targetObject.listFiles().length + 1));
 						}
 					}
 					catch (Exception ex) {

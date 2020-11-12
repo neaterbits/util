@@ -27,7 +27,7 @@ class TargetIteratingBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGE
 	}
 
 	@Override
-	public final <PREREQUISITE> PrerequisiteActionBuilder<CONTEXT, TARGET, PREREQUISITE> fromIterating(
+	public final <PREREQUISITE> PrerequisiteActionOrTargetActionBuilder<CONTEXT, TARGET, PREREQUISITE> fromIterating(
 			Constraint constraint,
 			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites) {
 
@@ -37,7 +37,7 @@ class TargetIteratingBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGE
 		
 		targetBuilderState.addPrerequisiteBuilder(prerequisiteBuilderState);
 		
-		return new PrerequisiteActionBuilderImpl<>(targetBuilderState, prerequisiteBuilderState);
+		return new PrerequisiteActionOrTargetActionBuilderImpl<>(targetBuilderState, prerequisiteBuilderState);
 	}
 
 	@Override

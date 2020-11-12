@@ -3,7 +3,6 @@ package com.neaterbits.util.concurrency.dependencyresolution.executor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogger;
@@ -26,7 +25,7 @@ public final class TargetExecutor {
 			CONTEXT context,
 			TargetDefinition<TARGET> rootTarget,
 			TargetExecutorLogger logger,
-			Consumer<TargetBuildResult> onResult) {
+			OnBuildResult onResult) {
 
 		final ExecutorState<CONTEXT> state = ExecutorState.createFromTargetTree(rootTarget, this, logger);
 
@@ -92,7 +91,7 @@ public final class TargetExecutor {
 		}
 
 		if (context.onResult != null) {
-			context.onResult.accept(context.state);
+			context.onResult.onResult(context.state);
 		}
 	}
 }

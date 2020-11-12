@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.model.UpToDate;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 class PrerequisitesBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
@@ -26,6 +27,16 @@ class PrerequisitesBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 
 		this.targetBuilderState = new TargetBuilderState<>(type, fileTargetType, getFileTarget, file, getDescription);
 	}
+	
+	PrerequisitesBuilderImpl(
+            Class<TARGET> type,
+            UpToDate<TARGET> upToDate,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+
+        this.targetBuilderState = new TargetBuilderState<>(type, upToDate, getIdentifier, getDescription);
+    }
+	
 	
 	PrerequisitesBuilderImpl(TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState) {
 

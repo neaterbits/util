@@ -7,11 +7,13 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.model.UpToDate;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.FileTargetSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.InfoTargetSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.NamedTargetSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisiteSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.spec.UpToDateTargetSpec;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.ProcessResult;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
@@ -27,6 +29,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	private final Function<FILE_TARGET, File> file;
 	private final Function<TARGET, String> getIdentifier;
 	private final Function<TARGET, String> getDescription;
+	
+	private final UpToDate<TARGET> upToDate;
 	
 	private final List<PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?>> prerequisites;
 	
@@ -48,9 +52,10 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
         this.fileTargetType = null;
         this.file = null;
 
+        this.upToDate = null;
+        
         this.getDescription = target -> description;
         this.prerequisites = new ArrayList<>();
-
     }
 
 	TargetBuilderState(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
@@ -63,6 +68,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		this.getFileTarget = null;
 		this.fileTargetType = null;
 		this.file = null;
+		
+		this.upToDate = null;
 		
 		this.getDescription = getDescription;
 		this.prerequisites = new ArrayList<>();
@@ -79,8 +86,36 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		this.fileTargetType = fileTargetType;
 		this.file = file;
 		
+		this.upToDate = null;
+		
 		this.getDescription = description;
 		this.prerequisites = new ArrayList<>();
+	}
+	
+	TargetBuilderState(
+	        Class<TARGET> type,
+            UpToDate<TARGET> upToDate,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+
+	    Objects.requireNonNull(type);
+	    Objects.requireNonNull(upToDate);
+	    Objects.requireNonNull(getIdentifier);
+	    Objects.requireNonNull(getDescription);
+	    
+	    this.targetType = type;
+	    this.targetName = null;
+
+	    this.getIdentifier = getIdentifier;
+	    
+	    this.getFileTarget = null;
+	    this.fileTargetType = null;
+	    this.file = null;
+
+	    this.upToDate = upToDate;
+	    
+	    this.getDescription = getDescription;
+	    this.prerequisites = new ArrayList<>();
 	}
 	
 	final void addPrerequisiteBuilder(PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?> builder) {
@@ -158,6 +193,19 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
                     actionFunction,
                     actionWithResult,
                     onResult);
+		}
+		else if (upToDate != null) {
+		    
+		    targetSpec = new UpToDateTargetSpec<>(
+		            targetType,
+		            upToDate,
+		            getIdentifier,
+		            getDescription,
+		            prerequisites,
+		            constraint,
+		            actionFunction,
+		            actionWithResult,
+		            onResult);
 		}
 		else if (targetType != null) {
 		
