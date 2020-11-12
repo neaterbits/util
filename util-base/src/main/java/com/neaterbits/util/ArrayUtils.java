@@ -59,4 +59,25 @@ public class ArrayUtils {
 		
 		return false;
 	}
+	
+	public static <T> boolean startsWith(T [] array, T [] start) {
+	    
+	    boolean startsWith;
+	    
+	    if (start.length > array.length) {
+	        startsWith = false;
+	    }
+	    else {
+	        startsWith = true;
+	        
+	        for (int i = 0; i < start.length; ++ i) {
+	            if (!array[i].equals(start[i])) {
+	                startsWith = false;
+	                break;
+	            }
+	        }
+	    }
+
+	    return startsWith;
+	}
 }
