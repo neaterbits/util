@@ -33,7 +33,7 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 	
 	PrerequisitesOrActionBuilderImpl(
 	        Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 

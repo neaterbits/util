@@ -60,7 +60,7 @@ public abstract class BaseTargetState<CONTEXT extends TaskContext>
 
 	final BaseTargetState<CONTEXT> testForRecursiveTargets(TargetExecutionContext<CONTEXT> context) {
 
-	    final boolean targetsAdded = addRecursiveBuildTargetsIfAny(context.state, context.context, target, context.logger);
+	    final boolean targetsAdded = addRecursiveBuildTargetsIfAny(context.state, context.taskContext, target, context.logger);
 	        
         final BaseTargetState<CONTEXT> nextState;
         

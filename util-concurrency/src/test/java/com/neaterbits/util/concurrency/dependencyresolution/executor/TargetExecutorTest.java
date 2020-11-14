@@ -52,7 +52,8 @@ public class TargetExecutorTest {
 		                null) {
 
                             @Override
-                            protected boolean isUpToDate(File target, Collection<Prerequisites> prerequisites) {
+                            protected <CONTEXT extends TaskContext>
+                            boolean isUpToDate(CONTEXT context, File target, Collection<Prerequisites> prerequisites) {
                                 return false;
                             }
 		            

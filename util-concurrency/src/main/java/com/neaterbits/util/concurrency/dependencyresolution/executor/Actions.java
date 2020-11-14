@@ -49,7 +49,7 @@ class Actions {
 			@SuppressWarnings({ "unchecked", "rawtypes" })
 			final ProcessResult<CONTEXT, Object, Object> processResult = (ProcessResult)actionWithResult.getOnResult();
 			
-			processResult.process(context.context, target.getTargetObject(), result.result);
+			processResult.process(context.taskContext, target.getTargetObject(), result.result);
 			
 			onCompleted.accept(result.exception, false);
 		}
@@ -64,7 +64,7 @@ class Actions {
 						@SuppressWarnings({ "unchecked", "rawtypes" })
 						final ProcessResult<CONTEXT, Object, Object> processResult = (ProcessResult)actionWithResult.getOnResult();
 						
-						processResult.process(context.context, target.getTargetObject(), result.result);
+						processResult.process(context.taskContext, target.getTargetObject(), result.result);
 						
 						onCompleted.accept(result.exception, true);
 					});
@@ -80,7 +80,7 @@ class Actions {
 		final ActionFunction<CONTEXT, Object> actionFunction = (ActionFunction)action.getActionFunction();
 		
 		try {
-			final ActionLog actionLog = actionFunction.perform(context.context, target.getTargetObject(), context.state);
+			final ActionLog actionLog = actionFunction.perform(context.taskContext, target.getTargetObject(), context.state);
 
 			if (context.logger != null) {
 				context.logger.onActionCompleted(target, context.state, actionLog);
@@ -111,7 +111,7 @@ class Actions {
 		Object result = null;
 		
 		try {
-			final ActionResult<Object> actionResult = actionFunction.perform(context.context, target.getTargetObject());
+			final ActionResult<Object> actionResult = actionFunction.perform(context.taskContext, target.getTargetObject());
 
 			if (context.logger != null) {
 				context.logger.onActionCompleted(target, context.state, actionResult.getLog());

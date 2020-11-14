@@ -7,6 +7,7 @@ import java.util.Objects;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ActionWithResult;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public final class NamedTarget extends TargetDefinition<String> {
 
@@ -36,7 +37,8 @@ public final class NamedTarget extends TargetDefinition<String> {
     }
     
     @Override
-    protected boolean isUpToDate(String target, Collection<Prerequisites> prerequisites) {
+    protected <CONTEXT extends TaskContext>
+    boolean isUpToDate(CONTEXT context, String target, Collection<Prerequisites> prerequisites) {
         return false;
     }
 

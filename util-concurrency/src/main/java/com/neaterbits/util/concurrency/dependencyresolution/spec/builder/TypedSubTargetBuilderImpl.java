@@ -62,7 +62,7 @@ final class TypedSubTargetBuilderImpl<CONTEXT extends TaskContext, TARGET>
 	@Override
     public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFilesSubTarget(
             Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 

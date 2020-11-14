@@ -30,7 +30,7 @@ class PrerequisitesBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	
 	PrerequisitesBuilderImpl(
             Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 

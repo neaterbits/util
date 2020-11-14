@@ -85,7 +85,7 @@ public class UpToDateTargetTest {
                     .buildBy(st -> 
                         st.addFilesSubTarget(
                                 String.class,
-                                (t, p) -> isUpToDate,
+                                (c, t, p) -> isUpToDate,
                                 Function.identity(),
                                 t -> "Up to date test")
 

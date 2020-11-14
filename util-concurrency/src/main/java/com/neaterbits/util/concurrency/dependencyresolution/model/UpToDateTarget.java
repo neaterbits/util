@@ -7,10 +7,11 @@ import java.util.Objects;
 import com.neaterbits.structuredlog.binary.logging.LogContext;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ActionWithResult;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
 
-    private final UpToDate<TARGET> upToDate;
+    private final UpToDate<?, TARGET> upToDate;
     
     public UpToDateTarget(
             LogContext logContext,
@@ -18,7 +19,7 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
             TargetKey<TARGET> targetKey,
             String description,
             List<Prerequisites> prerequisites,
-            UpToDate<TARGET> upToDate,
+            UpToDate<?, TARGET> upToDate,
             Action<TARGET> action,
             ActionWithResult<TARGET> actionWithResult) {
 
@@ -30,9 +31,13 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
     @Override
-    protected boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites) {
+    protected <CONTEXT extends TaskContext>
+    boolean isUpToDate(CONTEXT context, TARGET target, Collection<Prerequisites> prerequisites) {
 
-        return upToDate.isUpToDate(target, prerequisites);
+        @SuppressWarnings({ "unchecked", "rawtypes" })
+        final UpToDate<CONTEXT, TARGET> call = (UpToDate)upToDate;
+        
+        return call.isUpToDate(context, target, prerequisites);
     }
 
     @Override

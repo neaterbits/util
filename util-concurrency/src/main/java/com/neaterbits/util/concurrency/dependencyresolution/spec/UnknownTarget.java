@@ -8,6 +8,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.model.TargetKey;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
 
@@ -23,7 +24,8 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
     @Override
-    protected boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites) {
+    protected <CONTEXT extends TaskContext>
+    boolean isUpToDate(CONTEXT context, TARGET target, Collection<Prerequisites> prerequisites) {
         return false;
     }
 

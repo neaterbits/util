@@ -69,7 +69,7 @@ final class TargetStateToExecute<CONTEXT extends TaskContext>
 
         final boolean actionRun;
 
-        if (target.isUpToDate()) {
+        if (target.isUpToDate(context.taskContext)) {
             actionRun = false;
 	    }
         else {

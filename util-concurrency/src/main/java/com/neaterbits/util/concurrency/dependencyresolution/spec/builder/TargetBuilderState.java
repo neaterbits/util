@@ -30,7 +30,7 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	private final Function<TARGET, String> getIdentifier;
 	private final Function<TARGET, String> getDescription;
 	
-	private final UpToDate<TARGET> upToDate;
+	private final UpToDate<CONTEXT, TARGET> upToDate;
 	
 	private final List<PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?>> prerequisites;
 	
@@ -94,7 +94,7 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	
 	TargetBuilderState(
 	        Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 

@@ -24,7 +24,7 @@ public interface SubTargetBuilder<CONTEXT extends TaskContext, TARGET, PREREQUIS
 
     PREREQUISITES_BUILDER addFilesSubTarget(
             Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription);
 }

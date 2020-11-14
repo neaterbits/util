@@ -19,12 +19,12 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 public final class UpToDateTargetSpec<CONTEXT extends TaskContext, TARGET>
     extends TargetSpec<CONTEXT, TARGET> {
 
-    private final UpToDate<TARGET> upToDate;
+    private final UpToDate<CONTEXT, TARGET> upToDate;
     private final Function<TARGET, String> getIdentifier;
     
     public UpToDateTargetSpec(
             Class<TARGET> type,
-            UpToDate<TARGET> upToDate,
+            UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription,
             List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisites, Constraint constraint,

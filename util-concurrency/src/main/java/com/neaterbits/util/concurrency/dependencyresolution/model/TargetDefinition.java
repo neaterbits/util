@@ -11,6 +11,7 @@ import com.neaterbits.structuredlog.binary.logging.Loggable;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Action;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ActionWithResult;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.BuildEntity;
+import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public abstract class TargetDefinition<TARGET> extends BuildEntity implements Loggable {
 
@@ -30,7 +31,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	private final Action<TARGET> action;
 	private final ActionWithResult<TARGET> actionWithResult;
 
-    protected abstract boolean isUpToDate(TARGET target, Collection<Prerequisites> prerequisites);
+    protected abstract <CONTEXT extends TaskContext>
+    boolean isUpToDate(CONTEXT context, TARGET target, Collection<Prerequisites> prerequisites);
 	
 	protected TargetDefinition(
 			LogContext logContext,
@@ -72,9 +74,9 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		updatePrerequisites(prerequisites);
 	}
 	
-	public final boolean isUpToDate() {
+	public final <CONTEXT extends TaskContext> boolean isUpToDate(CONTEXT context) {
 	    
-	    return isUpToDate(getTargetObject(), getPrerequisites());
+	    return isUpToDate(context, getTargetObject(), getPrerequisites());
 	}
 
 	@Override
