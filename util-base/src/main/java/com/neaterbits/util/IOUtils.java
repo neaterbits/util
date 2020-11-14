@@ -5,27 +5,33 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 public class IOUtils {
 
+    private static void applyAll(InputStream inputStream, OutputStream outputStream) throws IOException {
+        
+        final byte [] tmp = new byte[10000];
+        
+        for (;;) {
+            int read = inputStream.read(tmp, 0, tmp.length);
+            
+            if (read >= 0) {
+                outputStream.write(tmp, 0, read);
+            }
+            else {
+                break;
+            }
+        }
+    }
+
 	public static byte [] readAll(InputStream inputStream) throws IOException {
+
 		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		
-		final byte [] tmp = new byte[10000];
-		
-		
-		for (;;) {
-			int read = inputStream.read(tmp, 0, tmp.length);
-			
-			if (read >= 0) {
-				baos.write(tmp, 0, read);
-			}
-			else {
-				break;
-			}
-		}
-		
+	
+		applyAll(inputStream, baos);
+	
 		return baos.toByteArray();
 	}
 
@@ -42,6 +48,14 @@ public class IOUtils {
 
 		return ret;
 	}
+
+    public static void write(File file, InputStream inputStream) throws IOException {
+
+        try (FileOutputStream outputStream = new FileOutputStream(file)) {
+
+            applyAll(inputStream, outputStream);
+        }
+    }
 
     public static void write(File file, String data) throws IOException {
         
