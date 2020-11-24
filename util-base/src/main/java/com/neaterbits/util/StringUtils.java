@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
 
-import com.neaterbits.util.compat.function.CFunction;
-
 public class StringUtils {
 
 	private static final String EMPTY = "";
@@ -235,45 +233,65 @@ public class StringUtils {
 		return strings.toArray(new String[strings.size()]);
 	}
 
-	private static final CFunction<Character, Character> toUpper = new CFunction<Character, Character>() {
-
-		@Override
-		public Character apply(Character t) {
-			return Character.toUpperCase(t);
-		}
-	};
-
-	private static final CFunction<Character, Character> toLower = new CFunction<Character, Character>() {
-
-		@Override
-		public Character apply(Character t) {
-			return Character.toLowerCase(t);
-		}
-	};
+	public static String capitalize(String s) {
+	    return toUpperFirst(s);
+	}
 
 	public static String toUpperFirst(String s) {
-		return changeFirst(s, toUpper);
+		return changeFirst(s, Character::isUpperCase, Character::isLowerCase, Character::toUpperCase);
 	}
 
 	public static String toLowerFirst(String s) {
-		return changeFirst(s, toLower);
+		return changeFirst(s, Character::isLowerCase, Character::isUpperCase, Character::toLowerCase);
+	}
+	
+	@FunctionalInterface
+	interface TestIsCase {
+	    
+	    boolean test(char c);
 	}
 
-	private static String changeFirst(String s, CFunction<Character, Character> func) {
-		String ret;
+	@FunctionalInterface
+	interface ChangeCase {
+	    
+	    char change(char c);
+	    
+	}
 
-		if (s == null || s.isEmpty()) {
-			ret = s;
-		}
-		else  {
-			ret = "" + func.apply(s.charAt(0));
+	private static String changeFirst(
+	        String string,
+	        TestIsCase testIsCase,
+	        TestIsCase testIsOppositeCase,
+	        ChangeCase changeCase) {
 
-			if (s.length() > 1) {
-				ret += s.substring(1, s.length());
-			}
-		}
+	    final String result;
+        
+        if (string == null || string.isEmpty()) {
+            result = string;
+        }
+        else {
+            final char initial = string.charAt(0);
+            
+            if (testIsCase.test(initial)) {
+                result = string;
+            }
+            else if (testIsOppositeCase.test(initial)) {
+                
+                final String upperCase = String.valueOf(changeCase.change(initial));
+                
+                if (string.length() == 1) {
+                    result = upperCase;
+                }
+                else {
+                    result = upperCase + string.substring(1);
+                }
+            }
+            else {
+                throw new IllegalArgumentException();
+            }
+        }
 
-		return ret;
+		return result;
 	}
 
 	public static boolean isBlank(String s) {
