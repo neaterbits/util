@@ -45,6 +45,7 @@
 		<module>util-parse</module>
 		<module>util-concurrency</module>
 		<module>structured-log-model</module>
+		<module>util-di</module>
 	</modules>
 
 	<build>
