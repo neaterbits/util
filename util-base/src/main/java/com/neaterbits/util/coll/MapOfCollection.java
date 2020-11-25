@@ -1,4 +1,4 @@
-package com.neaterbits.util.compat;
+package com.neaterbits.util.coll;
 
 import java.util.Collection;
 import java.util.EnumSet;
@@ -6,12 +6,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
-import com.neaterbits.util.compat.function.CBiConsumer;
-import com.neaterbits.util.compat.function.CBinaryOperator;
-import com.neaterbits.util.compat.function.CConsumer;
-import com.neaterbits.util.compat.function.CFunction;
-import com.neaterbits.util.compat.stream.CCollector;
+import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collector;
 
 public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 
@@ -75,7 +74,7 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		return map.get(key);
 	}
 
-	public final void forEach(CConsumer<V> consumer) {
+	public final void forEach(Consumer<V> consumer) {
 		for (C c : map.values()) {
 			for (V v : c) {
 				consumer.accept(v);
@@ -122,7 +121,7 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 	
 	protected static abstract class MapOfCollectionCollector<K, V, C extends Collection<V>, 
 			MOC extends MapOfCollection<K, V, C>, T>
-		implements CCollector<T, MOC, MOC> {
+		implements Collector<T, MOC, MOC> {
 
 		@Override
 		public Set<Characteristics> characteristics() {
@@ -130,8 +129,8 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		}
 
 		@Override
-		public CBinaryOperator<MOC> combiner() {
-			return new CBinaryOperator<MOC>() {
+		public BinaryOperator<MOC> combiner() {
+			return new BinaryOperator<MOC>() {
 				@Override
 				public MOC apply(MOC left, MOC right) {
 					left.addAll(right);
@@ -142,9 +141,9 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		}
 
 		@Override
-		public CFunction<MOC, MOC> finisher() {
+		public Function<MOC, MOC> finisher() {
 
-			return new CFunction<MOC, MOC>() {
+			return new Function<MOC, MOC>() {
 
 				@Override
 				public MOC apply(MOC t) {
@@ -159,17 +158,16 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 			
 			extends MapOfCollectionCollector<K, T, C, MOC, T>  {
 		
-		private final CFunction<T, K> valueToKey;
+		private final Function<T, K> valueToKey;
 
-		public KeyOnlyMapOfCollectionCollector(CFunction<T, K> valueToKey) {
-			super();
+		public KeyOnlyMapOfCollectionCollector(Function<T, K> valueToKey) {
 			this.valueToKey = valueToKey;
 		}
 
 		@Override
-		public CBiConsumer<MOC, T> accumulator() {
+		public BiConsumer<MOC, T> accumulator() {
 			
-			return new CBiConsumer<MOC, T>() {
+			return new BiConsumer<MOC, T>() {
 
 				@Override
 				public void accept(MOC ml, T t) {
@@ -184,17 +182,17 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		
 			extends MapOfCollectionCollector<K, V, C, MOC, T>  {
 	
-		private final CFunction<T, K> valueToKey;
-		private final CFunction<T, V> valueToValue;
+		private final Function<T, K> valueToKey;
+		private final Function<T, V> valueToValue;
 
-		public KeyValueMapOfCollectionCollector(CFunction<T, K> valueToKey, CFunction<T, V> valueToValue) {
+		public KeyValueMapOfCollectionCollector(Function<T, K> valueToKey, Function<T, V> valueToValue) {
 			this.valueToKey = valueToKey;
 			this.valueToValue = valueToValue;
 		}
 
 		@Override
-		public CBiConsumer<MOC, T> accumulator() {
-			return new CBiConsumer<MOC, T>() {
+		public BiConsumer<MOC, T> accumulator() {
+			return new BiConsumer<MOC, T>() {
 				@Override
 				public void accept(MOC ml, T t) {
 					ml.add(valueToKey.apply(t), valueToValue.apply(t));	

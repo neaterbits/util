@@ -1,12 +1,11 @@
-package com.neaterbits.util.compat;
+package com.neaterbits.util.coll;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import com.neaterbits.util.compat.function.CFunction;
-import com.neaterbits.util.compat.function.CSupplier;
-import com.neaterbits.util.compat.stream.CCollector;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collector;
 
 public class MapOfList<K, V> extends MapOfCollection<K, V, List<V>> {
 
@@ -28,13 +27,13 @@ public class MapOfList<K, V> extends MapOfCollection<K, V, List<V>> {
 		return new ArrayList<V>(values);
 	}
 
-	public static <K, T> CCollector<T, MapOfList<K, T>, MapOfList<K, T>> keyCollector(CFunction<T, K> keyFunc) {
+	public static <K, T> Collector<T, MapOfList<K, T>, MapOfList<K, T>> keyCollector(Function<T, K> keyFunc) {
 		return new KeyOnlyMapOfCollectionCollector<K, T, List<T>, MapOfList<K, T>>(keyFunc) {
 
 			@Override
-			public CSupplier<MapOfList<K, T>> supplier() {
+			public Supplier<MapOfList<K, T>> supplier() {
 				
-				return new CSupplier<MapOfList<K,T>>() {
+				return new Supplier<MapOfList<K,T>>() {
 					@Override
 					public MapOfList<K, T> get() {
 						return new MapOfList<K, T>();
@@ -44,14 +43,14 @@ public class MapOfList<K, V> extends MapOfCollection<K, V, List<V>> {
 		};
 	}
 
-	public static <K, V, T> CCollector<T, MapOfList<K, V>, MapOfList<K, V>> 
-		keyValueCollector(CFunction<T, K> keyFunc, CFunction<T, V> valueFunc) {
+	public static <K, V, T> Collector<T, MapOfList<K, V>, MapOfList<K, V>> 
+		keyValueCollector(Function<T, K> keyFunc, Function<T, V> valueFunc) {
 		
 		return new KeyValueMapOfCollectionCollector<K, V, List<V>, MapOfList<K, V>, T>(keyFunc, valueFunc) {
 
 			@Override
-			public CSupplier<MapOfList<K, V>> supplier() {
-				return new CSupplier<MapOfList<K,V>>() {
+			public Supplier<MapOfList<K, V>> supplier() {
+				return new Supplier<MapOfList<K,V>>() {
 
 					@Override
 					public MapOfList<K, V> get() {

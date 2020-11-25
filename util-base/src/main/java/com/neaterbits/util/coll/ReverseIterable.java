@@ -1,4 +1,4 @@
-package com.neaterbits.util.compat;
+package com.neaterbits.util.coll;
 
 import java.util.Iterator;
 import java.util.List;

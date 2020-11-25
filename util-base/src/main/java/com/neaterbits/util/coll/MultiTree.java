@@ -1,15 +1,14 @@
-package com.neaterbits.util.compat;
+package com.neaterbits.util.coll;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.neaterbits.util.compat.function.CConsumer;
-import com.neaterbits.util.compat.function.CFunction;
-import com.neaterbits.util.compat.stream.CCollectors;
-import com.neaterbits.util.compat.stream.CStream;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MultiTree<K, T> {
 
@@ -17,7 +16,7 @@ public class MultiTree<K, T> {
 	private final MapOfList<K, T> entitiesByParent;
 	private final MapOfList<K, T> parentsByEntity;
 	
-	public MultiTree(Iterable<T> values, CFunction<T, K> keyFunction, CFunction<T, CStream<K>> recursor) {
+	public MultiTree(Iterable<T> values, Function<T, K> keyFunction, Function<T, Stream<K>> recursor) {
 		int size = makeEntitiesHierarchial(values, keyFunction, recursor);
 		
 		this.entityById = new HashMap<K, T>(size);
@@ -26,8 +25,8 @@ public class MultiTree<K, T> {
 	}
 	
 	private int makeEntitiesHierarchial(Iterable<T> entities,
-			final CFunction<T, K> keyFunction,
-			final CFunction<T, CStream<K>> recursor) {
+			final Function<T, K> keyFunction,
+			final Function<T, Stream<K>> recursor) {
 		
 		int size = 0;
 		
@@ -45,9 +44,9 @@ public class MultiTree<K, T> {
 				
 		for (T entity : entities) {
 			final T e = entity;
-			final CStream<K> sub = recursor.apply(entity);
+			final Stream<K> sub = recursor.apply(entity);
 			
-			final CConsumer<K> s = new CConsumer<K>() {
+			final Consumer<K> s = new Consumer<K>() {
 				@Override
 				public void accept(K k) {
 					final T subEntity = entityById.get(k);
@@ -75,16 +74,10 @@ public class MultiTree<K, T> {
 
 		allKeys.removeAll(parentsByEntity.keys());
 
-		final CFunction<K, T> mapper = new CFunction<K, T>() {
-
-			@Override
-			public T apply(K k) {
-				return entityById.get(k);
-			}
-		};
+		final Function<K, T> mapper = entityById::get;
 		
-		return Coll.stream(allKeys)
+		return allKeys.stream()
 				.map(mapper)
-				.collect(CCollectors.<T>toList());
+				.collect(Collectors.toList());
 	}
 }

@@ -1,15 +1,13 @@
-package com.neaterbits.util.compat;
+package com.neaterbits.util.coll;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
-
-import com.neaterbits.util.compat.function.CBiConsumer;
-import com.neaterbits.util.compat.function.CBiFunction;
-import com.neaterbits.util.compat.function.CConsumer;
-import com.neaterbits.util.compat.stream.CStream;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 public class Coll {
 
@@ -42,7 +40,7 @@ public class Coll {
 		return ret;
 	}
 	
-	public static <T extends ForEachable<T>> void safeForEach(Collection<T> coll, CConsumer<T> consumer) {
+	public static <T extends ForEachable<T>> void safeForEach(Collection<T> coll, Consumer<T> consumer) {
 		if (coll != null) {
 			for (T widget : coll) {
 				widget.forEach(consumer);
@@ -50,7 +48,7 @@ public class Coll {
 		}
 	}
 
-	public static <S, T extends StackForeachable<T>> void safeForEachStack(Collection<? extends StackForeachable<T>> coll, CBiFunction<T, S, S> function, S s) {
+	public static <S, T extends StackForeachable<T>> void safeForEachStack(Collection<? extends StackForeachable<T>> coll, BiFunction<T, S, S> function, S s) {
 		if (coll != null) {
 			for (StackForeachable<T> widget : coll) {
 				widget.forEachStack(function, s);
@@ -59,7 +57,7 @@ public class Coll {
 	}
 
 	
-	public static <T extends ForeachIteratorable<T>> void foreEachIterator(List<T> list, CBiConsumer<ListIterator<T>, T> consumer) {
+	public static <T extends ForeachIteratorable<T>> void foreEachIterator(List<T> list, BiConsumer<ListIterator<T>, T> consumer) {
 		if (list != null) {
 			ListIterator<T> iter = list.listIterator();
 			
@@ -73,11 +71,8 @@ public class Coll {
 		}
 	}
 
-	public static <T> CStream<T> stream(Iterable<T> coll) {
-		return null;
-	}
-	
-	public static <T> T [] arrayOfNonNulls(T ... args) {
+	@SafeVarargs
+    public static <T> T [] arrayOfNonNulls(T ... args) {
 		
 		int nonNulls = 0;
 		
