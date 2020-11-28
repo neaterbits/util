@@ -221,7 +221,6 @@ final class ClassAwareComponentSpecs {
         }
     }
 
-    
     private static ClassAwareComponentSpec resolve(
             ClassAwareComponentRequirement requirement,
             Function<Class<?>, List<ClassAwareComponentSpec>> byRole)

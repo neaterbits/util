@@ -1,6 +1,6 @@
 package com.neaterbits.util.di;
 
-final class UnknownFieldException extends ResolveException {
+public final class UnknownFieldException extends ResolveException {
 
     private static final long serialVersionUID = 1L;
 

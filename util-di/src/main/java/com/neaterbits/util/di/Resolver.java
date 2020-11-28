@@ -4,7 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.neaterbits.util.reflection.FieldUtil;
 
-final class Resolver extends TypeResolver {
+public final class Resolver extends TypeResolver {
     
     private final ComponentsImpl components;
 
@@ -14,8 +14,12 @@ final class Resolver extends TypeResolver {
         
         this.components = new ComponentsImpl();
     }
+    
+    public Components getComponents() {
+        return components;
+    }
 
-    <T> T instantiate(Class<T> type) {
+    public <T> T instantiate(Class<T> type) {
         
         final ClassAwareComponentSpec spec = getByType(type);
 
@@ -26,7 +30,17 @@ final class Resolver extends TypeResolver {
         return instantiate(spec);
     }
 
+    public <T> T instantiate(Class<T> role, Object roleHint) {
         
+        final ClassAwareComponentSpec spec = resolve(role, roleHint);
+
+        if (spec == null) {
+            throw new IllegalArgumentException("No spec for role '" + role.getName() + "', role hint '" + roleHint + "'");
+        }
+        
+        return instantiate(spec);
+    }
+
     private <T> T instantiate(ClassAwareComponentSpec spec) {
         
         T instance;

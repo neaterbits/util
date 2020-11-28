@@ -1,6 +1,6 @@
 package com.neaterbits.util.di;
 
-final class AmbiguousRequirementException extends ResolveException {
+public final class AmbiguousRequirementException extends ResolveException {
 
     private static final long serialVersionUID = 1L;
 

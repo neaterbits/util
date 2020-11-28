@@ -8,15 +8,19 @@ import java.util.List;
 import com.neaterbits.util.di.componentsource.ComponentsSource;
 import com.neaterbits.util.di.componentsource.ComponentsSourceException;
 import com.neaterbits.util.di.componentsource.ComponentsSourceLoader;
+import com.neaterbits.util.di.componentsource.DelegatingComponentSource;
 
-public class JarComponentsSource implements ComponentsSource<Object> {
+public class JarComponentsSource
+        extends DelegatingComponentSource
+        implements ComponentsSource<Object> {
 
     private final List<URL> jarFiles;
-    private final List<ComponentsSourceLoader<?>> scanLoaders;
     
     public JarComponentsSource(List<URL> jarFiles, List<ComponentsSourceLoader<?>> scanLoaders) {
+    
+        super(scanLoaders);
+        
         this.jarFiles = jarFiles;
-        this.scanLoaders = scanLoaders;
     }
 
     @Override
@@ -24,24 +28,8 @@ public class JarComponentsSource implements ComponentsSource<Object> {
         
         for (URL url : jarFiles) {
             try (URLClassLoader classLoader = URLClassLoader.newInstance(new URL [] { url })) {
-
-                for (ComponentsSourceLoader<?> sourceLoader : scanLoaders) {
-
-                    @SuppressWarnings({ "unchecked", "rawtypes" })
-                    final List<ComponentsSource<Object>> loaded = (List<ComponentsSource<Object>>)(List) sourceLoader.load(classLoader);
-                    
-                    for (ComponentsSource<Object> source : loaded) {
-                        source.scanForComponentSpecs((componentSpec, reqSource, type, role, roleHint, instantiation)
-                                            -> processor.onComponentSpec(componentSpec, reqSource, type, role, roleHint, instantiation));
-                    }
-                }
+                scanForComponentSpecs(classLoader, processor);
             }
         }
-    }
-
-    @Override
-    public void scanForRequirements(Object componentSpec, RequirementProcessor processor) {
-        
-        throw new UnsupportedOperationException("Should call source from processor");
     }
 }
