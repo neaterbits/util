@@ -1,6 +1,7 @@
 package com.neaterbits.util;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class ArrayStack<T> implements Stack<T>, StackView<T> {
@@ -72,4 +73,22 @@ public class ArrayStack<T> implements Stack<T>, StackView<T> {
 	public String toString() {
 		return list.toString();
 	}
+
+    @Override
+    public String toString(Function<T, String> entryToString) {
+
+        final StringBuilder sb = new StringBuilder('[');
+        
+        for (int i = 0; i < list.size(); ++ i) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            
+            sb.append(entryToString.apply(list.get(i)));
+        }
+        
+        sb.append(']');
+        
+        return sb.toString();
+    }
 }

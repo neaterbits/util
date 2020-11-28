@@ -10,7 +10,7 @@ import java.nio.charset.Charset;
 
 public class IOUtils {
 
-    private static void applyAll(InputStream inputStream, OutputStream outputStream) throws IOException {
+    public static void applyAll(InputStream inputStream, OutputStream outputStream) throws IOException {
         
         final byte [] tmp = new byte[10000];
         

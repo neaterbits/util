@@ -1,5 +1,7 @@
 package com.neaterbits.util;
 
+import java.util.function.Function;
+
 public interface StackView<T> {
 
 	T get();
@@ -13,5 +15,6 @@ public interface StackView<T> {
 	boolean isEmpty();
 	
 	int size();
-	
+
+	String toString(Function<T, String> entryToString);
 }
