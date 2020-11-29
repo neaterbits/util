@@ -28,7 +28,7 @@ public final class JSR330ClassComponentsSourceLoader
                 classLoader,
                 "META-INF/sisu/javax.inject.Named",
                 (url, inputStream) -> readComponentSet(classLoader, url, inputStream),
-                JSR330ClassComponentsSource::new);
+                (spec, url) -> new JSR330ClassComponentsSource(spec, url));
         
         return sources;
     }

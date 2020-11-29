@@ -1,6 +1,7 @@
 package com.neaterbits.util.di.componentsource;
 
 import java.io.IOException;
+import java.net.URL;
 
 import com.neaterbits.util.di.Instantiation;
 
@@ -21,6 +22,8 @@ public interface ComponentsSource<COMPONENT_SPEC> {
         
         void onRequirement(String role, Object roleHint, String fieldName);
     }
+    
+    URL getSource();
     
     void scanForComponentSpecs(ComponentSpecProcessor<COMPONENT_SPEC> processor) throws IOException, ComponentsSourceException;
     

@@ -7,8 +7,6 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public abstract class BaseComponentsSourceLoader<
             COMPONENT_SPEC,
@@ -21,18 +19,27 @@ public abstract class BaseComponentsSourceLoader<
         
         COMPONENTS_SPEC read(URL url, InputStream inputStream) throws IOException, ComponentsSourceException;
     }
+    
+    @FunctionalInterface
+    protected interface CreateSource<
+            COMPONENT_SPEC,
+            COMPONENT_SET_SPEC,
+            COMPONENTS_SOURCE extends ComponentsSource<COMPONENT_SPEC>> {
+        
+        COMPONENTS_SOURCE create(COMPONENT_SET_SPEC componentSet, URL source);
+    }
         
     protected final List<COMPONENTS_SOURCE>
     processAll(
             URLClassLoader classLoader,
             String name,
             ReadSpec<COMPONENT_SET_SPEC> readSpec,
-            Function<COMPONENT_SET_SPEC, COMPONENTS_SOURCE> createSource
+            CreateSource<COMPONENT_SPEC, COMPONENT_SET_SPEC, COMPONENTS_SOURCE> createSource
             ) throws IOException, ComponentsSourceException {
 
         final Enumeration<URL> resources = classLoader.findResources(name);
         
-        final List<COMPONENT_SET_SPEC> componentSpecs = new ArrayList<>();
+        final List<COMPONENTS_SOURCE> sources = new ArrayList<>();
         
         while (resources.hasMoreElements()) {
             
@@ -42,13 +49,17 @@ public abstract class BaseComponentsSourceLoader<
                 
                 final COMPONENT_SET_SPEC spec = readSpec.read(url, inputStream);
 
-                componentSpecs.add(spec);
+                final COMPONENTS_SOURCE source = createSource.create(spec, url);
+                
+                if (source == null) {
+                    throw new IllegalStateException();
+                }
+
+                sources.add(source);
             }
         }
         
-        return componentSpecs.stream()
-                .map(createSource)
-                .collect(Collectors.toList());
+        return sources;
         
     }
 }

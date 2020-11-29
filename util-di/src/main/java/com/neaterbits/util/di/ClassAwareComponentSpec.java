@@ -15,12 +15,11 @@ final class ClassAwareComponentSpec extends BaseComponentSpec {
     private final List<ClassAwareComponentRequirement> requirements;
     
     ClassAwareComponentSpec(
+            CollectedComponentSpec collectedComponentSpec,
             Class<?> type,
             List<Class<?>> roles,
-            Object roleHint,
-            Instantiation instantiation,
             List<ClassAwareComponentRequirement> requirements) {
-        super(roleHint, instantiation);
+        super(collectedComponentSpec);
         
         Objects.requireNonNull(type);
         Objects.requireNonNull(roles);

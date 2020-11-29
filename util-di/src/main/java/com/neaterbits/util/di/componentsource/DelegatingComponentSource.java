@@ -1,6 +1,7 @@
 package com.neaterbits.util.di.componentsource;
 
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.List;
 import java.util.Objects;
@@ -31,6 +32,12 @@ public abstract class DelegatingComponentSource implements ComponentsSource<Obje
         }
     }
     
+    @Override
+    public final URL getSource() {
+
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public final void scanForRequirements(Object componentSpec, RequirementProcessor processor) {
         

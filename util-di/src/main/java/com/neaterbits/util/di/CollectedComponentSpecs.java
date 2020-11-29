@@ -1,5 +1,6 @@
 package com.neaterbits.util.di;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +25,7 @@ final class CollectedComponentSpecs {
         this.byType = new HashMap<>();
     }
 
-    CollectedComponentSpec addSpec(String type, String role, Object roleHint, Instantiation instantiation) {
+    CollectedComponentSpec addSpec(URL source, String type, String role, Object roleHint, Instantiation instantiation) {
         
         Objects.requireNonNull(type);
         Objects.requireNonNull(instantiation);
@@ -33,7 +34,7 @@ final class CollectedComponentSpecs {
             throw new IllegalArgumentException("Already contains type " + type);
         }
         
-        final CollectedComponentSpec spec = new CollectedComponentSpec(type, role, roleHint, instantiation);
+        final CollectedComponentSpec spec = new CollectedComponentSpec(source, type, role, roleHint, instantiation);
         
         specs.add(spec);
         

@@ -1,6 +1,7 @@
 package com.neaterbits.util.di;
 
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,19 +123,19 @@ final class ClassAwareComponentSpecs {
         }
         
         return new ClassAwareComponentSpec(
+                            spec,
                             cl,
                             Collections.unmodifiableList(roles),
-                            spec.getRoleHint(),
-                            spec.getInstantiation(),
                             spec.getRequirements() != null
-                                ? convertRequirements(cl, spec.getRequirements(), classLoader)
+                                ? convertRequirements(cl, spec.getRequirements(), classLoader, spec.getSource())
                                 : null);
     }
     
     private static List<ClassAwareComponentRequirement> convertRequirements(
                                                                     Class<?> componentCl,
                                                                     List<CollectedComponentRequirement> collectedRequirements,
-                                                                    ClassLoader classLoader) throws ClassNotFoundException, UnknownFieldException {
+                                                                    ClassLoader classLoader,
+                                                                    URL source) throws ClassNotFoundException, UnknownFieldException {
         
         final List<ClassAwareComponentRequirement> list = new ArrayList<>(collectedRequirements.size());
         
@@ -146,7 +147,7 @@ final class ClassAwareComponentSpecs {
             
             if (field == null) {
                 throw new UnknownFieldException("No accessible field '" + collected.getFieldName()
-                                                    + "' in class '" + componentCl.getName() + "'");
+                                                    + "' in class '" + componentCl.getName() + "' from " + source);
             }
             
             final ClassAwareComponentRequirement requirement

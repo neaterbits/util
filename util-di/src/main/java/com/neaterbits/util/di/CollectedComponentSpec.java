@@ -1,5 +1,6 @@
 package com.neaterbits.util.di;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,9 +12,9 @@ final class CollectedComponentSpec extends BaseComponentSpec {
     
     private final List<CollectedComponentRequirement> requirements;
 
-    CollectedComponentSpec(String type, String role, Object roleHint, Instantiation instantiation) {
+    CollectedComponentSpec(URL source, String type, String role, Object roleHint, Instantiation instantiation) {
         
-        super(roleHint, instantiation);
+        super(source, roleHint, instantiation);
         
         Objects.requireNonNull(type);
         

@@ -2,6 +2,7 @@ package com.neaterbits.util.di.componentsource.jsr330;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -14,12 +15,19 @@ import com.neaterbits.util.di.componentsource.ComponentsSource;
 final class JSR330ClassComponentsSource implements ComponentsSource<Class<?>> {
 
     private final Collection<Class<?>> classes;
+    private final URL source;
     
-    public JSR330ClassComponentsSource(Collection<Class<?>> classes) {
+    public JSR330ClassComponentsSource(Collection<Class<?>> classes, URL source) {
         
         Objects.requireNonNull(classes);
         
         this.classes = classes;
+        this.source = source;
+    }
+
+    @Override
+    public URL getSource() {
+        return source;
     }
 
     @Override

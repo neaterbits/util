@@ -14,7 +14,12 @@ abstract class DelegatingScanner {
         
         componentSource.scanForComponentSpecs((spec, reqSource, type, role, roleHint, instantiation) -> {
 
-            final CollectedComponentSpec componentSpec = componentSpecs.addSpec(type, role, roleHint, instantiation);
+            final CollectedComponentSpec componentSpec = componentSpecs.addSpec(
+                                                                    reqSource.getSource(),
+                                                                    type,
+                                                                    role,
+                                                                    roleHint,
+                                                                    instantiation);
             
             reqSource.scanForRequirements(spec, (reqRole, reqRoleHint, reqFieldName) -> {
                 

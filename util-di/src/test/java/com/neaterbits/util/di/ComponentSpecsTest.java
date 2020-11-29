@@ -3,6 +3,9 @@ package com.neaterbits.util.di;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import org.junit.Test;
 
 public class ComponentSpecsTest {
@@ -26,6 +29,16 @@ public class ComponentSpecsTest {
 
     static class Type2 implements OtherRole {
         
+    }
+    
+    private static final URL TEST_URL;
+    
+    static {
+        try {
+            TEST_URL = new URL("file:source.jar");
+        } catch (MalformedURLException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 
     @Test
@@ -192,7 +205,12 @@ public class ComponentSpecsTest {
             Object roleHint,
             Instantiation instantiation) {
         
-        return specs.addSpec(type.getName(), role.getName(), roleHint, instantiation);
+        return specs.addSpec(
+                TEST_URL,
+                type.getName(),
+                role.getName(),
+                roleHint,
+                instantiation);
     }
     
     private static void addRequirement(
