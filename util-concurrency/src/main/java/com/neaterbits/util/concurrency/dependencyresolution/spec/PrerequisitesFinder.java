@@ -124,7 +124,6 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					});
 				}
 				else {
-					
 				    
 					final Prerequisite<PREREQUISITE> subPrerequisite;
 					
@@ -142,7 +141,7 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					
 					prerequisiteSet.add(subPrerequisite);
 	
-					if (prerequisiteSet.size() == sub.size()) {
+					if (prerequisiteSet.size() == subSet.size()) {
 						listener.accept(prerequisiteSet);
 					}
 				}
