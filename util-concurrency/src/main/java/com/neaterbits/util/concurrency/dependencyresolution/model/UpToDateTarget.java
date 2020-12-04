@@ -45,4 +45,9 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
 
         return getTargetObject().toString();
     }
+
+    @Override
+    public String toString() {
+        return "UpToDateTarget [debugString=" + getDebugString() + "]";
+    }
 }

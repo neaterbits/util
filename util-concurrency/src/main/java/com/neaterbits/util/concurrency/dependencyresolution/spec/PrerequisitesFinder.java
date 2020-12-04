@@ -48,6 +48,13 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					},
 					(param, result) -> {
 
+					    if (config.logger != null) {
+			                config.logger.onGetPrerequisites(
+			                        config.indent,
+			                        targetSpec.getDescription(target),
+			                        result);
+			            }
+
 						getPrerequisites(config, prerequisiteSpec, result, prerequisites -> {
 						
 							if (config.logger != null) {
@@ -59,6 +66,10 @@ abstract class PrerequisitesFinder extends TargetSpecApplier {
 					});
 		} else {
 			final Collection<PREREQUISITE> sub = prerequisiteSpec.getPrerequisites(config.context, target);
+
+            if (config.logger != null) {
+                config.logger.onGetPrerequisites(config.indent, targetSpec.getDescription(target), sub);
+            }
 
 			getPrerequisites(config, prerequisiteSpec, sub, prerequisites -> {
 				

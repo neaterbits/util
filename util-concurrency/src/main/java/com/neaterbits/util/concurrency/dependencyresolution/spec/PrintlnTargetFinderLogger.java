@@ -1,6 +1,7 @@
 package com.neaterbits.util.concurrency.dependencyresolution.spec;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -13,6 +14,9 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 public class PrintlnTargetFinderLogger implements TargetFinderLogger {
 
+    private static final Boolean DEBUG_FIND_PREREREQUISITE = false;
+    private static final Boolean DEBUG_FOUND_PREREREQUISITES = true;
+    
 	@Override
 	public <CONTEXT extends TaskContext, TARGET> void onFindTarget(
 			int indent,
@@ -23,7 +27,6 @@ public class PrintlnTargetFinderLogger implements TargetFinderLogger {
 		final String targetType = targetSpec.getType() != null
 				? targetSpec.getType().getSimpleName()
 				: "null";
-
 
 		final String targetFile;
 
@@ -48,31 +51,54 @@ public class PrintlnTargetFinderLogger implements TargetFinderLogger {
 			System.out.println(Indent.indent(indent) + "Find file target type=" + targetType + ", file=" + targetFile);
 		}
 		else if (targetSpec instanceof InfoTargetSpec) {
+		    
+		    final InfoTargetSpec<CONTEXT, TARGET> infoTargetSpec = (InfoTargetSpec<CONTEXT, TARGET>)targetSpec;
 
-			System.out.println(Indent.indent(indent) + "Find info target type=" + targetType);
+			System.out.println(Indent.indent(indent) + "Find info target type=" + targetType + ", " + infoTargetSpec.getDescription(target));
 		}
         else if (targetSpec instanceof NamedTargetSpec) {
             
             @SuppressWarnings("unchecked")
             final NamedTargetSpec<CONTEXT> namedTargetSpec = (NamedTargetSpec<CONTEXT>)targetSpec;
 
-            System.out.println(Indent.indent(indent) + "Find info target type=" + targetType + ", name=" + namedTargetSpec.getName());
+            System.out.println(Indent.indent(indent) + "Find name target type=" + targetType + ", name=" + namedTargetSpec.getName());
+        }
+        else if (targetSpec instanceof UpToDateTargetSpec<?, ?>) {
+            
+            final UpToDateTargetSpec<CONTEXT, TARGET> upToDateTargetSpec = (UpToDateTargetSpec<CONTEXT, TARGET>)targetSpec;
+
+            System.out.println(Indent.indent(indent) + "Find up to date target type=" + upToDateTargetSpec.getDescription(target));
+        }
+        else {
+            throw new IllegalStateException();
         }
 	}
 
 	@Override
+    public void onGetPrerequisites(int indent, String target, Collection<?> prerequisites) {
+        
+        System.out.println(Indent.indent(indent) + "Got " + prerequisites.size() + " prerequisites for target " + target
+                    + " " + prerequisites);
+    }
+
+    @Override
 	public <CONTEXT extends TaskContext, TARGET, PREREQUISITE> void onPrerequisites(
 			int indent,
 			TargetSpec<CONTEXT, TARGET> targetSpec, TARGET target,
 			PrerequisiteSpec<CONTEXT, TARGET, PREREQUISITE> prerequisiteSpec, Set<Prerequisite<?>> prerequisites) {
 
-		System.out.println(Indent.indent(indent) + "Prerequisites " + prerequisiteSpec.getDescription());
+	    if (DEBUG_FIND_PREREREQUISITE) {
+	        System.out.println(Indent.indent(indent) + "Prerequisites " + prerequisiteSpec.getDescription());
+	    }
 	}
-
-
 
 	@Override
 	public void onFoundPrerequisites(int indent, TargetDefinition<?> target, List<Prerequisites> prerequisites) {
-		System.out.println(Indent.indent(indent) + "Found target " + target + " with prerequisites " + prerequisites);
+
+	    if (DEBUG_FOUND_PREREREQUISITES) {
+	        System.out.println(Indent.indent(indent) + "Found prerequisites for target " + target.getDescription() + " prerequisites " 
+	    
+	                    + prerequisites.size());
+	    }
 	}
 }
