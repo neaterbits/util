@@ -109,6 +109,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		toExecuteTargets.put(rootTarget.getTargetKey(), targetState);
 		
 		getSubTargets(
+		        0,
 		        rootTarget,
 		        toExecuteTargets,
 		        targetState.paths,
@@ -418,37 +419,35 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 
 	private static <CTX extends TaskContext, TARGET>
 	void getSubTargets(
+	        int indent,
 	        TargetDefinition<TARGET> target,
 	        Map<TargetKey<?>, TargetState<CTX>> toExecuteTargets,
 	        TargetPaths paths,
 	        TargetExecutorLogger logger) {
-		
+	    
 		for (Prerequisites prerequisites : target.getPrerequisites()) {
 		    
 			for (Prerequisite<?> prerequisite : prerequisites.getPrerequisites()) {
-			    
-				if (prerequisite.getSubTarget() != null) {
 
-					final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget();
+                final TargetDefinition<?> targetDefinition = prerequisite.getSubTarget();
 
-					// System.out.println("## add subtarget " + prerequisite.getSubTarget() + "/" + targetDefinition);
-					
-					if (targetDefinition != null) {
+				if (targetDefinition != null) {
 
-					    final TargetPaths targetDefinitionPath = paths.add(prerequisites, prerequisite, targetDefinition);
+				    final TargetPaths targetDefinitionPath = paths.add(prerequisites, prerequisite, targetDefinition);
+				    
+				    if (toExecuteTargets.containsKey(targetDefinition.getTargetKey())) {
+				        
+						// e.g. external modules are prerequisites via multiple paths
+					}
+					else {
+		                // System.out.println(Indent.indent(indent) + "## add subtarget " + prerequisite.getSubTarget() + "/" + targetDefinition);
 					    
-					    if (toExecuteTargets.containsKey(targetDefinition.getTargetKey())) {
-							// eg external modules are prerequisites via multiple paths
-						}
-						else {
-						    
-						    final TargetStateMachine<CTX> stateMachine = new TargetStateMachine<>(targetDefinition, logger);
-						    final TargetState<CTX> targetState = new TargetState<>(targetDefinition, stateMachine, targetDefinitionPath);
+					    final TargetStateMachine<CTX> stateMachine = new TargetStateMachine<>(targetDefinition, logger);
+					    final TargetState<CTX> targetState = new TargetState<>(targetDefinition, stateMachine, targetDefinitionPath);
 
-							toExecuteTargets.put(targetDefinition.getTargetKey(), targetState);
-						}
+						toExecuteTargets.put(targetDefinition.getTargetKey(), targetState);
 
-						getSubTargets(targetDefinition, toExecuteTargets, targetDefinitionPath, logger);
+						getSubTargets(indent + 1, targetDefinition, toExecuteTargets, targetDefinitionPath, logger);
 					}
 				}
 				else {
