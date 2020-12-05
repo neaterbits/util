@@ -2,6 +2,7 @@ package com.neaterbits.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,6 +25,17 @@ public class IOUtils {
                 break;
             }
         }
+    }
+
+    public static byte [] readAll(File file) throws IOException {
+        
+        final byte [] data;
+        
+        try (FileInputStream inputStream = new FileInputStream(file)) {
+            data = readAll(inputStream);
+        }
+        
+        return data;
     }
 
 	public static byte [] readAll(InputStream inputStream) throws IOException {
