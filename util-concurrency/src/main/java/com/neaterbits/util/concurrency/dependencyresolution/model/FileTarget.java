@@ -95,9 +95,10 @@ public class FileTarget<TARGET> extends TargetDefinition<TARGET> {
         return !rebuild;
 	}
 
-	public final String getDebugString() {
-		return file.getName();
-	}
+	@Override
+    protected String getTypeString() {
+        return "file";
+    }
 
 	final File getFile() {
 		return file;

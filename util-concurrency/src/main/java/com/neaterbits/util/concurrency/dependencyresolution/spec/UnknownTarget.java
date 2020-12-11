@@ -31,7 +31,7 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
     @Override
-    public String getDebugString() {
-        return getTargetObject().toString();
+    protected String getTypeString() {
+        return "unknown";
     }
 }

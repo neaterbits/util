@@ -55,9 +55,8 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
     @Override
-    public String getDebugString() {
-
-        return getTargetObject().toString();
+    protected String getTypeString() {
+        return "uptodate";
     }
 
     @Override

@@ -76,7 +76,10 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 
 	@Override
 	public String getDebugString() {
-		return item.toString();
+
+		return subTarget != null
+		        ? subTarget.getDebugString()
+                : item.toString();
 	}
 
 	public PREREQUISITE getItem() {

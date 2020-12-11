@@ -49,8 +49,8 @@ public final class NamedTarget extends TargetDefinition<String> {
     }
 
     @Override
-    public String getDebugString() {
-        return getLogIdentifier();
+    protected String getTypeString() {
+        return "named";
     }
 
     public String getName() {

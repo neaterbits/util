@@ -31,6 +31,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	
     protected abstract <CONTEXT extends TaskContext>
     boolean isUpToDate(CONTEXT context, TARGET target, Collection<Prerequisites> prerequisites);
+    
+    protected abstract String getTypeString();
 	
 	protected TargetDefinition(
 	        LogContext logContext,
@@ -182,8 +184,8 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
     }
 
     @Override
-    public String getDebugString() {
-        return getLogIdentifier();
+    public final String getDebugString() {
+        return targetDebug.getDebugString(getTypeString());
     }
 
     @Override

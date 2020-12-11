@@ -51,9 +51,9 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
     }
 
 	@Override
-	public String getDebugString() {
-		return getLogIdentifier();
-	}
+    protected String getTypeString() {
+        return "info";
+    }
 
 	@Override
 	public String toString() {
