@@ -10,6 +10,14 @@ import com.neaterbits.util.concurrency.dependencyresolution.spec.builder.ActionL
 
 public interface TargetExecutorLogger {
 
+    default String targetString(TargetDefinition<?> target) {
+        return target.getDebugString();
+    }
+
+    default String targetLogString(TargetDefinition<?> target) {
+        return target.getDebugString();
+    }
+
 	void onScheduleTargets(int numScheduledJobs, TargetExecutorLogState logState);
 
 	void onStateChange(TargetDefinition<?> target, String oldState, String newState);

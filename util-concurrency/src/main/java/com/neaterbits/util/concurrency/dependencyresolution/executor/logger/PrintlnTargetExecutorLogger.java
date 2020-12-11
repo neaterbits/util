@@ -19,7 +19,7 @@ public class PrintlnTargetExecutorLogger implements TargetExecutorLogger {
 	@Override
 	public final void onStateChange(TargetDefinition<?> target, String oldState, String newState) {
 
-		System.out.println("State change target " + target.targetToLogString() + " from " + oldState + " to " + newState);
+		System.out.println("State change target " + targetLogString(target) + " from " + oldState + " to " + newState);
 	}
 
 	@Override
@@ -39,22 +39,22 @@ public class PrintlnTargetExecutorLogger implements TargetExecutorLogger {
 	@Override
 	public final void onAddSubRecursionCollected(TargetDefinition<?> topOfRecursionTarget, TargetDefinition<?> target, CollectedTargetObjects subTargetObjects) {
 
-		System.out.println("Add recursion collected to " + topOfRecursionTarget.targetSimpleLogString()
-			+ " from " + target.targetSimpleLogString() + " with objects " + subTargetObjects);
+		System.out.println("Add recursion collected to " + targetString(topOfRecursionTarget)
+			+ " from " + targetString(target) + " with objects " + subTargetObjects);
 		
 	}
 
 	@Override
 	public final void onAddTopRecursionCollected(TargetDefinition<?> aboveRecursionTarget, Prerequisites prerequisites, CollectedTargetObjects targetObjects) {
 
-		System.out.println("Top of recursion collected to " + aboveRecursionTarget.targetSimpleLogString() + " from " + targetObjects + "/" + prerequisites);
+		System.out.println("Top of recursion collected to " + targetString(aboveRecursionTarget) + " from " + targetObjects + "/" + prerequisites);
 		
 	}
 
 	@Override
 	public final void onScheduleTarget(TargetDefinition<?> target, Status status, TargetExecutorLogState logState) {
 
-		System.out.println("Schedule target " + target.targetToLogString() + ", status=" + status);
+		System.out.println("Schedule target " + targetLogString(target) + ", status=" + status);
 		
 	}
 	
@@ -62,14 +62,14 @@ public class PrintlnTargetExecutorLogger implements TargetExecutorLogger {
 	public final void onCollectProducts(TargetDefinition<?> target, CollectedProducts subProducts, CollectedProduct collected,
 			TargetExecutorLogState logState) {
 
-		System.out.println("Collect " + collected + " to target " + target.targetToLogString() + " from " + subProducts.getCollectedObjects());
+		System.out.println("Collect " + collected + " to target " + targetLogString(target) + " from " + subProducts.getCollectedObjects());
 	}
 
 	@Override
 	public final void onCollectTargetObjects(TargetDefinition<?> target, CollectedTargetObjects targetObjects,
 			CollectedProduct collected, TargetExecutorLogState logState) {
 
-		System.out.println("Collect " + collected + " to target " + target.targetToLogString() + " from " + targetObjects.getCollectedObjects());
+		System.out.println("Collect " + collected + " to target " + targetLogString(target) + " from " + targetObjects.getCollectedObjects());
 	}
 
 	@Override
@@ -88,10 +88,10 @@ public class PrintlnTargetExecutorLogger implements TargetExecutorLogger {
 	public void onTargetDone(TargetDefinition<?> target, Exception exception, TargetExecutorLogState logState) {
 		
 		if (exception == null) {
-			System.out.println("Complete " + target.targetToLogString());
+			System.out.println("Complete " + targetLogString(target));
 		}
 		else {
-			System.out.println("Failed " + target.targetToLogString());
+			System.out.println("Failed " + targetLogString(target));
 			
 			exception.printStackTrace();
 		}

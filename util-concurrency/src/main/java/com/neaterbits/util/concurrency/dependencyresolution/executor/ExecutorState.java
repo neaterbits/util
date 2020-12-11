@@ -259,7 +259,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 
 			printTargetKeys();
 			
-			throw new IllegalArgumentException("No target state for " + target.targetSimpleLogString() + " of type " + target.getTargetKey());
+			throw new IllegalArgumentException("No target state for " + target.getDebugString() + " of type " + target.getTargetKey());
 		}
 		
 		return targetState.getStatus();
@@ -275,7 +275,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 			
 			printTargetKeys();
 			
-			throw new IllegalStateException("No target state for " + target.targetSimpleLogString() + "/" + target.getTargetKey());
+			throw new IllegalStateException("No target state for " + target.getDebugString() + "/" + target.getTargetKey());
 		}
 		
 		final TargetStateMachine<?> stateMachine = targetState.stateMachine;

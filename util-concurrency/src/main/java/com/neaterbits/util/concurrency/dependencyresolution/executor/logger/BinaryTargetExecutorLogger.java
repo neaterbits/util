@@ -21,7 +21,7 @@ public final class BinaryTargetExecutorLogger implements TargetExecutorLogger {
 
 		this.logContext = logContext;
 	}
-
+	
 	@Override
 	public void onScheduleTargets(int numScheduledJobs, TargetExecutorLogState logState) {
 
@@ -30,20 +30,20 @@ public final class BinaryTargetExecutorLogger implements TargetExecutorLogger {
 	@Override
 	public void onStateChange(TargetDefinition<?> target, String oldState, String newState) {
 		target.debug(logContext,
-				"State change target " + target.targetSimpleLogString() + " from " + oldState + " to " + newState);
+				"State change target " + targetString(target) + " from " + oldState + " to " + newState);
 	}
 
 	@Override
 	public void onAddRecursiveTarget(TargetDefinition<?> target, TargetDefinition<?> subTarget) {
 
-		target.debug(logContext, "Add recursive subtarget " + subTarget.targetSimpleLogString() + " from "
-				+ target.targetSimpleLogString());
+		target.debug(logContext, "Add recursive subtarget " + targetString(subTarget) + " from "
+				+ targetString(target));
 	}
 
 	@Override
 	public void onCheckRecursiveTargetsComplete(TargetDefinition<?> target, Status status) {
 
-		target.debug(logContext, "Check recursive subtarget complete " + target.targetSimpleLogString()
+		target.debug(logContext, "Check recursive subtarget complete " + targetString(target)
 				+ " with status " + status + " from prerequisites " + target.getPrerequisites());
 	}
 
@@ -51,21 +51,21 @@ public final class BinaryTargetExecutorLogger implements TargetExecutorLogger {
 	public void onAddSubRecursionCollected(TargetDefinition<?> topOfRecursionTarget, TargetDefinition<?> target, CollectedTargetObjects subTargetObjects) {
 
 		topOfRecursionTarget.debug(logContext, "Add recursion collected to "
-				+ topOfRecursionTarget.targetSimpleLogString() + " from " + target.targetSimpleLogString() + " with objects " + subTargetObjects);
+				+ targetString(topOfRecursionTarget) + " from " + targetString(target) + " with objects " + subTargetObjects);
 
 	}
 
 	@Override
 	public void onAddTopRecursionCollected(TargetDefinition<?> aboveRecursionTarget, Prerequisites prerequisites, CollectedTargetObjects targetObjects) {
 
-		aboveRecursionTarget.debug(logContext, "Top of recursion collected to " + aboveRecursionTarget.targetSimpleLogString() + " from " + targetObjects + "/" + prerequisites);
+		aboveRecursionTarget.debug(logContext, "Top of recursion collected to " + targetString(aboveRecursionTarget) + " from " + targetObjects + "/" + prerequisites);
 		
 	}
 
 	@Override
 	public void onScheduleTarget(TargetDefinition<?> target, Status status, TargetExecutorLogState logState) {
 
-		target.debug(logContext, "Schedule target " + target.targetSimpleLogString() + ", status=" + status);
+		target.debug(logContext, "Schedule target " + targetString(target) + ", status=" + status);
 
 	}
 
@@ -73,7 +73,7 @@ public final class BinaryTargetExecutorLogger implements TargetExecutorLogger {
 	public void onCollectProducts(TargetDefinition<?> target, CollectedProducts subProducts, CollectedProduct collected,
 			TargetExecutorLogState logState) {
 
-		target.debug(logContext, "Collect " + collected + " to target " + target.targetSimpleLogString() + " from "
+		target.debug(logContext, "Collect " + collected + " to target " + targetString(target) + " from "
 				+ subProducts.getCollectedObjects());
 	}
 
@@ -81,29 +81,29 @@ public final class BinaryTargetExecutorLogger implements TargetExecutorLogger {
 	public void onCollectTargetObjects(TargetDefinition<?> target, CollectedTargetObjects targetObjects,
 			CollectedProduct collected, TargetExecutorLogState logState) {
 
-		target.debug(logContext, "Collect " + collected + " to target " + target.targetSimpleLogString() + " from "
+		target.debug(logContext, "Collect " + collected + " to target " + targetString(target) + " from "
 				+ targetObjects.getCollectedObjects());
 	}
 
 	@Override
 	public void onActionCompleted(TargetDefinition<?> target, TargetExecutorLogState logState, ActionLog actionLog) {
 
-		target.debug(logContext, "Action " + target.targetSimpleLogString());
+		target.debug(logContext, "Action " + targetString(target));
 
 	}
 
 	@Override
 	public void onActionException(TargetDefinition<?> target, TargetExecutorLogState logState, Exception exception) {
-		target.debug(logContext, "Action failed " + target.targetSimpleLogString());
+		target.debug(logContext, "Action failed " + targetString(target));
 	}
 
 	@Override
 	public void onTargetDone(TargetDefinition<?> target, Exception exception, TargetExecutorLogState logState) {
 
 		if (exception == null) {
-			target.debug(logContext, "Complete " + target.targetSimpleLogString());
+			target.debug(logContext, "Complete " + targetString(target));
 		} else {
-			target.debug(logContext, "Failed " + target.targetSimpleLogString());
+			target.debug(logContext, "Failed " + targetString(target));
 		}
 	}
 

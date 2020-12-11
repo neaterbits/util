@@ -49,7 +49,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				
 				) {
 
-			throw new IllegalArgumentException("No action or prerequisites for target " + targetToLogString());
+			throw new IllegalArgumentException("No action or prerequisites for target " + getDebugString());
 		}
 		
 		this.constructorLogSequenceNo = logConstructor(
@@ -173,14 +173,6 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
     @Override
     public final String getLogLocalIdentifier() {
         return targetDebug.getLocalIdentifier();
-    }
-
-    public final String targetSimpleLogString() {
-        return getLogIdentifier();
-    }
-    
-    public final String targetToLogString() {
-        return getLogLocalIdentifier();
     }
 
     @Override
