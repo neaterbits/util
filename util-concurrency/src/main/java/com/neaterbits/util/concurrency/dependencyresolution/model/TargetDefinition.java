@@ -42,7 +42,13 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 			String description,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,
-			ActionWithResult<TARGET> actionWithResult) {
+			ActionWithResult<TARGET> actionWithResult,
+			boolean verifyDebugStrings) {
+	    
+	    if (verifyDebugStrings) {
+    	    verifyIsNotToString(logIdentifier);
+            verifyIsNotToString(logLocalIdentifier);
+	    }
 		
 		if (
 				(prerequisites == null || prerequisites.isEmpty())
@@ -72,6 +78,13 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		this.actionWithResult = actionWithResult;
 		
 		updatePrerequisites(prerequisites);
+	}
+	
+	private static void verifyIsNotToString(String debugString) {
+	    
+	    if (debugString.contains("@")) {
+	        throw new IllegalArgumentException();
+	    }
 	}
 	
 	public final <CONTEXT extends TaskContext> boolean isUpToDate(CONTEXT context) {

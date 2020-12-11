@@ -23,7 +23,16 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
             Action<TARGET> action,
             ActionWithResult<TARGET> actionWithResult) {
 
-        super(logContext, identifier, identifier, targetKey, description, prerequisites, action, actionWithResult);
+        super(
+                logContext,
+                identifier,
+                identifier,
+                targetKey,
+                description,
+                prerequisites,
+                action,
+                actionWithResult,
+                true);
 
         Objects.requireNonNull(upToDate);
 

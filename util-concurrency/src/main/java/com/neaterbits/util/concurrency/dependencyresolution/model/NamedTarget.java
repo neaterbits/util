@@ -29,7 +29,8 @@ public final class NamedTarget extends TargetDefinition<String> {
                 description,
                 prerequisites,
                 action,
-                actionWithResult);
+                actionWithResult,
+                true);
         
         Objects.requireNonNull(name);
         

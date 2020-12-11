@@ -31,7 +31,8 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 				description,
 				prerequisites,
 				action,
-				actionWithResult);
+				actionWithResult,
+				true);
 		
 		Objects.requireNonNull(identifier);
 	

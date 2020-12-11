@@ -20,7 +20,8 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
                 null,
                 Collections.emptyList(),
                 new Action<>(null, (context, target, params) -> null),
-                null);
+                null,
+                false);
     }
 
     @Override
