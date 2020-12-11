@@ -25,14 +25,15 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
 
         super(
                 logContext,
-                identifier,
-                identifier,
                 targetKey,
-                description,
                 prerequisites,
                 action,
                 actionWithResult,
-                true);
+                new TargetDebug(
+                        identifier,
+                        identifier,
+                        description,
+                        true));
 
         Objects.requireNonNull(upToDate);
 

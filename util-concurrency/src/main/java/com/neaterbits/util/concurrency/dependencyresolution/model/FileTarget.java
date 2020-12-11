@@ -34,14 +34,15 @@ public class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 		
 		super(
 				logContext,
-				getLogIdentifier(file),
-				getLogLocalIdentifier(file),
 				new TargetKey<>(type, targetObject),
-				description,
 				prerequisites,
 				action,
 				actionWithResult,
-				true);
+                new TargetDebug(
+                        getLogIdentifier(file),
+                        getLogLocalIdentifier(file),
+                        description,
+                        true));
 
 		Objects.requireNonNull(file);
 		

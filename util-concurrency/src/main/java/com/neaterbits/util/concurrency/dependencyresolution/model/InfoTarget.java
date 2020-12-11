@@ -25,14 +25,15 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 
 		super(
 				logContext,
-				identifier,
-				identifier,
 				new TargetKey<>(type, targetObject),
-				description,
 				prerequisites,
 				action,
 				actionWithResult,
-				true);
+				new TargetDebug(
+		                identifier,
+		                identifier,
+		                description,
+		                true));
 		
 		Objects.requireNonNull(identifier);
 	

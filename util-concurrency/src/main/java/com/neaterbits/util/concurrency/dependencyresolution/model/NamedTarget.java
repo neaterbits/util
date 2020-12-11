@@ -23,14 +23,15 @@ public final class NamedTarget extends TargetDefinition<String> {
 
         super(
                 logContext,
-                name,
-                name,
                 new TargetKey<>(String.class, name),
-                description,
                 prerequisites,
                 action,
                 actionWithResult,
-                true);
+                new TargetDebug(
+                        name,
+                        name,
+                        description,
+                        true));
         
         Objects.requireNonNull(name);
         

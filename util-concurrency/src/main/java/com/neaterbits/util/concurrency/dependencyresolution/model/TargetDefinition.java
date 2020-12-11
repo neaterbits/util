@@ -19,36 +19,26 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 
 	private final LogContext logContext;
 	
-    private final String logIdentifier;
-    private final String logLocalIdentifier;
-    
 	private final int constructorLogSequenceNo;
 
 	private final TargetKey<TARGET> targetKey;
-	private final String description;
 
 	private List<Prerequisites> prerequisites;
 	private final Action<TARGET> action;
 	private final ActionWithResult<TARGET> actionWithResult;
 
+	private final TargetDebug targetDebug;
+	
     protected abstract <CONTEXT extends TaskContext>
     boolean isUpToDate(CONTEXT context, TARGET target, Collection<Prerequisites> prerequisites);
 	
 	protected TargetDefinition(
-			LogContext logContext,
-			String logIdentifier,
-			String logLocalIdentifier,
-            TargetKey<TARGET> targetKey,
-			String description,
+	        LogContext logContext,
+	        TargetKey<TARGET> targetKey,
 			List<Prerequisites> prerequisites,
 			Action<TARGET> action,
 			ActionWithResult<TARGET> actionWithResult,
-			boolean verifyDebugStrings) {
-	    
-	    if (verifyDebugStrings) {
-    	    verifyIsNotToString(logIdentifier);
-            verifyIsNotToString(logLocalIdentifier);
-	    }
+            TargetDebug targetDebug) {
 		
 		if (
 				(prerequisites == null || prerequisites.isEmpty())
@@ -64,27 +54,19 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 				logContext,
 				this,
 				TargetDefinition.class,
-				logIdentifier,
-				logLocalIdentifier,
-				description);
+				targetDebug.getIdentifier(),
+				targetDebug.getLocalIdentifier(),
+				targetDebug.getDescription());
 		
 		this.logContext = logContext;
-		this.logIdentifier = logIdentifier;
-		this.logLocalIdentifier = logLocalIdentifier;
         this.targetKey = targetKey;
-		this.description = description;
 		this.prerequisites = logConstructorListField(logContext, LOG_FIELD_PREREQUISITES, prerequisites);
 		this.action = action;
 		this.actionWithResult = actionWithResult;
 		
+		this.targetDebug = targetDebug;
+		
 		updatePrerequisites(prerequisites);
-	}
-	
-	private static void verifyIsNotToString(String debugString) {
-	    
-	    if (debugString.contains("@")) {
-	        throw new IllegalArgumentException();
-	    }
 	}
 	
 	public final <CONTEXT extends TaskContext> boolean isUpToDate(CONTEXT context) {
@@ -162,7 +144,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 
 	@Override
 	public final String getDescription() {
-		return description;
+		return targetDebug.getDescription();
 	}
 
 	public final TARGET getTargetObject() {
@@ -183,12 +165,12 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 	
 	@Override
     public final String getLogIdentifier() {
-        return logIdentifier;
+        return targetDebug.getIdentifier();
     }
 
     @Override
     public final String getLogLocalIdentifier() {
-        return logLocalIdentifier;
+        return targetDebug.getLocalIdentifier();
     }
 
     public final String targetSimpleLogString() {
