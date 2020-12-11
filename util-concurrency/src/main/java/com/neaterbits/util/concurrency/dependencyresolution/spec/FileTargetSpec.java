@@ -24,6 +24,8 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 
 	public FileTargetSpec(
 			Class<TARGET> type,
+			String semanticType,
+			String semanticAction,
 			Class<FILE_TARGET> fileTargetType,
 			BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
 			Function<FILE_TARGET, File> file,
@@ -34,7 +36,16 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 			ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult,
 			ProcessResult<CONTEXT, TARGET, ?> onResult) {
 		
-		super(type, description, prerequisites, constraint, actionFunction, actionWithResult, onResult);
+		super(
+		        type,
+		        semanticType,
+		        semanticAction,
+		        description,
+		        prerequisites,
+		        constraint,
+		        actionFunction,
+		        actionWithResult,
+		        onResult);
 		
 		this.fileTargetType = fileTargetType;
 		this.getFileTarget = getFileTarget;
@@ -75,7 +86,9 @@ public final class FileTargetSpec<CONTEXT extends TaskContext, TARGET, FILE_TARG
 		return new FileTarget<>(
 				logContext,
 				getType(),
+				getSemanticType(),
 				file.apply(fileTarget),
+                getSemanticAction(),
 				getDescriptionFunction().apply(target),
 				target,
 				prerequisitesList,

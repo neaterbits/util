@@ -25,7 +25,9 @@ public class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 	public FileTarget(
 			LogContext logContext,
 			Class<TARGET> type,
+			String semanticType,
 			File file,
+            String semanticAction,
 			String description,
 			TARGET targetObject,
 			List<Prerequisites> prerequisites,
@@ -39,8 +41,10 @@ public class FileTarget<TARGET> extends TargetDefinition<TARGET> {
 				action,
 				actionWithResult,
                 new TargetDebug(
+                        semanticType,
                         getLogIdentifier(file),
                         getLogLocalIdentifier(file),
+                        semanticAction,
                         description,
                         true));
 

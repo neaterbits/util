@@ -9,16 +9,23 @@ final class NoTargetPrerequisitesBuilderImpl<CONTEXT extends TaskContext>
 	implements NoTargetPrerequisitesBuilder<CONTEXT> {
 
 	private final String targetName;
-	private final String description;
+    
+	private final String semanticType;
+    private final String semanticAction;
+
+    private final String description;
 	
 	private TargetBuilderState<CONTEXT, ?, ?> targetBuilderState;
 	
-	NoTargetPrerequisitesBuilderImpl(String targetName, String description) {
+	NoTargetPrerequisitesBuilderImpl(String targetName, String semanticType, String semanticAction, String description) {
 
 		Objects.requireNonNull(targetName);
+		Objects.requireNonNull(semanticType);
 		Objects.requireNonNull(description);
 		
 		this.targetName = targetName;
+		this.semanticType = semanticType;
+		this.semanticAction = semanticAction;
 		this.description = description;
 	}
 
@@ -26,7 +33,11 @@ final class NoTargetPrerequisitesBuilderImpl<CONTEXT extends TaskContext>
 	public NoTargetIteratingBuilder<CONTEXT> withPrerequisites(String description) {
 		final TargetBuilderState<CONTEXT, Object, Object> targetBuilderState;
 		
-		this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(targetName, this.description);
+		this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(
+		                                                                    targetName,
+		                                                                    semanticType,
+		                                                                    semanticAction,
+		                                                                    this.description);
 
 		return new NoTargetIteratingBuilderImpl<>(targetBuilderState, description);
 	}

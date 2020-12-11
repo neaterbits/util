@@ -21,7 +21,7 @@ final class UnknownTarget<TARGET> extends TargetDefinition<TARGET> {
                 Collections.emptyList(),
                 new Action<>(null, (context, target, params) -> null),
                 null,
-                new TargetDebug(null, null, null, false));
+                new TargetDebug("unknown", null, null, null, null, false));
     }
 
     @Override

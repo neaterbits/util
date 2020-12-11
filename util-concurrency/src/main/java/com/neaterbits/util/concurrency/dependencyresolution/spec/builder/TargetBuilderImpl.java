@@ -21,9 +21,13 @@ public final class TargetBuilderImpl<CONTEXT extends TaskContext> implements Tar
 	}
 	
 	@Override
-	public NoTargetPrerequisitesBuilder<CONTEXT> addTarget(String targetName, String description) {
+	public NoTargetPrerequisitesBuilder<CONTEXT> addTarget(String targetName, String semanticType, String semanticAction, String description) {
 		
-		final NoTargetPrerequisitesBuilderImpl<CONTEXT> builder = new NoTargetPrerequisitesBuilderImpl<>(targetName, description);
+		final NoTargetPrerequisitesBuilderImpl<CONTEXT> builder = new NoTargetPrerequisitesBuilderImpl<>(
+		                                                                                targetName,
+		                                                                                semanticType,
+		                                                                                semanticAction,
+		                                                                                description);
 
 		builders.add(builder);
 		

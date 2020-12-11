@@ -22,6 +22,9 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 
 	private final Class<TARGET> targetType;
 	
+	private final String semanticType;
+	private final String semanticAction;
+
 	private final String targetName;
 
 	private final BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget;
@@ -41,9 +44,12 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	private ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult;
 	private ProcessResult<CONTEXT, TARGET, ?> onResult;
 
-    TargetBuilderState(String targetName, String description) {
+    TargetBuilderState(String targetName, String semanticType, String semanticAction, String description) {
 
         this.targetType = null;
+
+        this.semanticType = semanticType;
+        this.semanticAction = semanticAction;
 
         this.targetName = targetName;
         this.getIdentifier = null;
@@ -58,11 +64,19 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
         this.prerequisites = new ArrayList<>();
     }
 
-	TargetBuilderState(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
+	TargetBuilderState(
+	        Class<TARGET> type,
+	        String semanticType,
+	        String semanticAction,
+	        Function<TARGET, String> getIdentifier,
+	        Function<TARGET, String> getDescription) {
 
 	    this.targetType = type;
 		
-		this.targetName = null;
+        this.semanticType = semanticType;
+        this.semanticAction = semanticAction;
+
+	    this.targetName = null;
 		this.getIdentifier = getIdentifier;
 		
 		this.getFileTarget = null;
@@ -75,10 +89,20 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		this.prerequisites = new ArrayList<>();
 	}
 	
-	TargetBuilderState(Class<TARGET> type, Class<FILE_TARGET> fileTargetType, BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget, Function<FILE_TARGET, File> file, Function<TARGET, String> description) {
+	TargetBuilderState(
+	        Class<TARGET> type,
+	        String semanticType,
+	        String semanticAction,
+	        Class<FILE_TARGET> fileTargetType,
+	        BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
+	        Function<FILE_TARGET, File> file,
+	        Function<TARGET, String> description) {
 
 	    this.targetType = type;
-		
+
+        this.semanticType = semanticType;
+        this.semanticAction = semanticAction;
+	    
 		this.targetName = null;
 		this.getIdentifier = null;
 		
@@ -93,7 +117,7 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	}
 	
 	TargetBuilderState(
-	        Class<TARGET> type,
+	        Class<TARGET> type, String semanticType, String semanticAction,
             UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
@@ -105,6 +129,9 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	    
 	    this.targetType = type;
 	    this.targetName = null;
+	    
+	    this.semanticType = semanticType;
+	    this.semanticAction = semanticAction;
 
 	    this.getIdentifier = getIdentifier;
 	    
@@ -170,6 +197,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
             final TargetSpec<CONTEXT, TARGET> spec
 		        = (TargetSpec)new NamedTargetSpec<CONTEXT>(
 		                targetName,
+		                semanticType,
+		                semanticAction,
 		                getDescription.apply(null),
 		                (List)prerequisites,
 		                constraint,
@@ -184,6 +213,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		    targetSpec = new FileTargetSpec<>(
                     
                     targetType,
+                    semanticType,
+                    semanticAction,
                     fileTargetType,
                     getFileTarget,
                     file,
@@ -198,6 +229,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		    
 		    targetSpec = new UpToDateTargetSpec<>(
 		            targetType,
+                    semanticType,
+                    semanticAction,
 		            upToDate,
 		            getIdentifier,
 		            getDescription,
@@ -211,6 +244,8 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 		
 		    targetSpec = new InfoTargetSpec<>(
 						targetType,
+	                    semanticType,
+	                    semanticAction,
 						getIdentifier,
 						getDescription,
 						prerequisites,

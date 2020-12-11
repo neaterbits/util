@@ -78,13 +78,15 @@ public class UpToDateTargetTest {
             @Override
             protected void buildSpec(TargetBuilder<TaskContext> targetBuilder) {
             
-                targetBuilder.addTarget("root", "Root target")
+                targetBuilder.addTarget("root", "rootType", "rootAction", "Root target")
 
                     .withPrerequisites("Target")
                     .fromIterating(context -> Arrays.asList("123"))
                     .buildBy(st -> 
                         st.addFilesSubTarget(
                                 String.class,
+                                "filesType",
+                                "fileAction",
                                 (c, t, p) -> isUpToDate,
                                 Function.identity(),
                                 t -> "Up to date test")

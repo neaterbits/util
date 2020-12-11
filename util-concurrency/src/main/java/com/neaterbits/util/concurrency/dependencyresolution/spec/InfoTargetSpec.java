@@ -20,6 +20,8 @@ public final class InfoTargetSpec<CONTEXT extends TaskContext, TARGET> extends T
 
 	public InfoTargetSpec(
 			Class<TARGET> type,
+			String semanticType,
+            String semanticAction,
 			Function<TARGET, String> getIdentifier,
 			Function<TARGET, String> getDescription,
 			List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisites,
@@ -28,7 +30,16 @@ public final class InfoTargetSpec<CONTEXT extends TaskContext, TARGET> extends T
 			ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult,
 			ProcessResult<CONTEXT, TARGET, ?> onResult) {
 		
-		super(type, getDescription, prerequisites, constraint, actionFunction, actionWithResult, onResult);
+		super(
+		        type,
+		        semanticType,
+		        semanticAction,
+		        getDescription,
+		        prerequisites,
+		        constraint,
+		        actionFunction,
+		        actionWithResult,
+		        onResult);
 
 		Objects.requireNonNull(type);
 		Objects.requireNonNull(getIdentifier);
@@ -57,7 +68,9 @@ public final class InfoTargetSpec<CONTEXT extends TaskContext, TARGET> extends T
 		return new InfoTarget<>(
 				logContext,
 				getType(),
+				getSemanticType(),
 				getIdentifier.apply(target),
+                getSemanticAction(),
 				getDescriptionFunction().apply(target),
 				target,
 				prerequisitesList,

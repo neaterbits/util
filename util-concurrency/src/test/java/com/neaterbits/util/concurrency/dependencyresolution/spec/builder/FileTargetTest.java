@@ -168,13 +168,15 @@ public class FileTargetTest {
                 @Override
                 protected void buildSpec(TargetBuilder<TaskContext> targetBuilder) {
                 
-                    targetBuilder.addTarget("root", "Root target")
+                    targetBuilder.addTarget("root", "rootType", "rootAction", "Root target")
                         .withPrerequisites("Target")
                         .fromIterating(context -> Arrays.asList(testFiles.targetFile))
                         
                         .buildBy(st -> 
                             st.addFileSubTarget(
                                     File.class,
+                                    "fileType",
+                                    "fileAction",
                                     Function.identity(),
                                     t -> "Rebuild multiple files")
 

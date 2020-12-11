@@ -28,45 +28,74 @@ final class TypedSubTargetBuilderImpl<CONTEXT extends TaskContext, TARGET>
 	}
 	
 	@Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addNamedSubTarget(String name, String description) {
-		return set(new PrerequisitesOrActionBuilderImpl<>(name, description));
+	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addNamedSubTarget(
+	                                                            String name,
+	                                                            String semanticType,
+	                                                            String semanticAction,
+	                                                            String description) {
+	    
+		return set(new PrerequisitesOrActionBuilderImpl<>(name, semanticType, semanticAction, description));
 	}
 
     @Override
     public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addInfoSubTarget(
             Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
         
-        return set(new PrerequisitesOrActionBuilderImpl<>(type, getIdentifier, getDescription));
+        return set(new PrerequisitesOrActionBuilderImpl<>(type, semanticType, semanticAction, getIdentifier, getDescription));
     }
 
     @Override
-	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFileSubTarget(Class<TARGET> type, Function<TARGET, File> file,
+	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFileSubTarget(
+	        Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
+	        Function<TARGET, File> file,
 			Function<TARGET, String> description) {
 
-		return set(new PrerequisitesOrActionBuilderImpl<>(type, type, (context, target) -> target, file, description));
+		return set(new PrerequisitesOrActionBuilderImpl<>(
+		                            type,
+		                            semanticType,
+		                            semanticAction,
+		                            type,
+		                            (context, target) -> target,
+		                            file,
+		                            description));
 	}
 
 	@Override
 	public <FILE_TARGET> PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFileSubTarget(
 			Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
 			Class<FILE_TARGET> fileTargetType,
 			BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
 			Function<FILE_TARGET, File> file,
 			Function<TARGET, String> description) {
 		
-		return set(new PrerequisitesOrActionBuilderImpl<CONTEXT, TARGET, FILE_TARGET>(type, fileTargetType, getFileTarget, file, description));
+		return set(new PrerequisitesOrActionBuilderImpl<CONTEXT, TARGET, FILE_TARGET>(
+		                                            type,
+		                                            semanticType,
+		                                            semanticAction,
+		                                            fileTargetType,
+		                                            getFileTarget,
+		                                            file,
+		                                            description));
 	}
 
 	@Override
     public PrerequisitesOrActionBuilder<CONTEXT, TARGET> addFilesSubTarget(
             Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
             UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 
-        return set(new PrerequisitesOrActionBuilderImpl<>(type, upToDate, getIdentifier, getDescription));
+        return set(new PrerequisitesOrActionBuilderImpl<>(type, semanticType, semanticAction, upToDate, getIdentifier, getDescription));
     }
 
     TargetBuilderState<CONTEXT, TARGET, ?> build() {

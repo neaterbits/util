@@ -19,6 +19,8 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 
 	private final Class<TARGET> type;
+    private final String semanticType;
+    private final String semanticAction;
 
 	private final Function<TARGET, String> description;
 	
@@ -36,6 +38,8 @@ public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 	
 	TargetSpec(
 			Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
 			Function<TARGET, String> description,
 			List<PrerequisiteSpec<CONTEXT, TARGET, ?>> prerequisites,
 			Constraint constraint,
@@ -44,6 +48,9 @@ public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 			ProcessResult<CONTEXT, TARGET, ?> onResult) {
 
 		this.type = type;
+
+		this.semanticType = semanticType;
+		this.semanticAction = semanticAction;
 		
 		this.description = description;
 		this.prerequisites = prerequisites != null ? Collections.unmodifiableList(prerequisites) : null;
@@ -55,7 +62,15 @@ public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 		this.onResult = onResult;
 	}
 
-	final String getDescription(TARGET target) {
+	final String getSemanticType() {
+        return semanticType;
+    }
+
+    final String getSemanticAction() {
+        return semanticAction;
+    }
+
+    final String getDescription(TARGET target) {
 		return description.apply(target);
 	}
 	
@@ -71,6 +86,8 @@ public abstract class TargetSpec<CONTEXT extends TaskContext, TARGET> {
 		
 		this(
 				other.type,
+				other.semanticType,
+				other.semanticAction,
 				other.description,
 				merge(other.prerequisites, additionalPrerequisites),
 				other.constraint,

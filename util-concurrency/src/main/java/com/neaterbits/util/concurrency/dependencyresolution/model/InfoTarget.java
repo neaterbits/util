@@ -16,7 +16,9 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 	public InfoTarget(
 			LogContext logContext,
 			Class<TARGET> type,
+			String semanticType,
 			String identifier,
+			String semanticAction,
 			String description,
 			TARGET targetObject,
 			List<Prerequisites> prerequisites,
@@ -30,8 +32,10 @@ public final class InfoTarget<TARGET> extends TargetDefinition<TARGET> {
 				action,
 				actionWithResult,
 				new TargetDebug(
+				        semanticType,
 		                identifier,
 		                identifier,
+		                semanticAction,
 		                description,
 		                true));
 		

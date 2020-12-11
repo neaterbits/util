@@ -19,6 +19,8 @@ public final class NamedTargetSpec<CONTEXT extends TaskContext> extends TargetSp
     
     public NamedTargetSpec(
             String name,
+            String semanticType,
+            String semanticAction,
             String description,
             List<PrerequisiteSpec<CONTEXT, String, ?>> prerequisites,
             Constraint constraint,
@@ -26,7 +28,16 @@ public final class NamedTargetSpec<CONTEXT extends TaskContext> extends TargetSp
             ActionWithResultFunction<CONTEXT, String, ?> actionWithResult,
             ProcessResult<CONTEXT, String, ?> onResult) {
         
-        super(null, target -> description, prerequisites, constraint, actionFunction, actionWithResult, onResult);
+        super(
+                null,
+                semanticType,
+                semanticAction,
+                target -> description,
+                prerequisites,
+                constraint,
+                actionFunction,
+                actionWithResult,
+                onResult);
 
         Objects.requireNonNull(name);
 
@@ -53,7 +64,9 @@ public final class NamedTargetSpec<CONTEXT extends TaskContext> extends TargetSp
 
         return new NamedTarget(
                 logContext,
+                getSemanticType(),
                 name,
+                getSemanticAction(),
                 getDescription(null),
                 prerequisitesList,
                 makeAction(),

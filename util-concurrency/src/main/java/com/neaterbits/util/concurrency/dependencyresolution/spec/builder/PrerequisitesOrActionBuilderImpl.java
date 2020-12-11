@@ -13,31 +13,41 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 		extends PrerequisitesBuilderImpl<CONTEXT, TARGET, FILE_TARGET>
 		implements PrerequisitesOrActionBuilder<CONTEXT, TARGET> {
 
-    PrerequisitesOrActionBuilderImpl(String name, String description) {
-        super(name, description);
+    PrerequisitesOrActionBuilderImpl(String name, String semanticType, String semanticAction, String description) {
+        super(name, semanticType, semanticAction, description);
     }
 	
-    PrerequisitesOrActionBuilderImpl(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
-		super(type, getIdentifier, getDescription);
+    PrerequisitesOrActionBuilderImpl(
+            Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
+            Function<TARGET, String> getIdentifier,
+            Function<TARGET, String> getDescription) {
+        
+		super(type, semanticType, semanticAction, getIdentifier, getDescription);
 	}
 
 	PrerequisitesOrActionBuilderImpl(
 			Class<TARGET> type,
+			String semanticType,
+			String semanticAction,
 			Class<FILE_TARGET> fileTargetType,
 			BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
 			Function<FILE_TARGET, File> file,
 			Function<TARGET, String> getDescription) {
 
-		super(type, fileTargetType, getFileTarget, file, getDescription);
+		super(type, semanticType, semanticAction, fileTargetType, getFileTarget, file, getDescription);
 	}
 	
 	PrerequisitesOrActionBuilderImpl(
 	        Class<TARGET> type,
+	        String semanticType,
+	        String semanticAction,
             UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 
-	    super(type, upToDate, getIdentifier, getDescription);
+	    super(type, semanticType, semanticAction, upToDate, getIdentifier, getDescription);
 	}
 
 	PrerequisitesOrActionBuilderImpl(TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState) {

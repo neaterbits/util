@@ -15,7 +15,9 @@ public final class NamedTarget extends TargetDefinition<String> {
 
     public NamedTarget(
             LogContext logContext,
+            String semanticType,
             String name,
+            String semanticAction,
             String description,
             List<Prerequisites> prerequisites,
             Action<String> action,
@@ -28,8 +30,10 @@ public final class NamedTarget extends TargetDefinition<String> {
                 action,
                 actionWithResult,
                 new TargetDebug(
+                        semanticType,
                         name,
                         name,
+                        semanticAction,
                         description,
                         true));
         

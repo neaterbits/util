@@ -21,9 +21,11 @@ public class PrerequisiteCompleteCheckerTest {
 	private static Prerequisite<File> makePrerequisite(LogContext logContext, File targetObject) {
 		
 		final FileTarget<File> fileTarget = new FileTarget<File>(
-				logContext, 
+				logContext,
 				File.class,
+                "semanticType",
 				targetObject,
+                "semanticAction",
 				"File target " + targetObject.getName(),
 				targetObject,
 				Collections.emptyList(),
@@ -66,7 +68,9 @@ public class PrerequisiteCompleteCheckerTest {
 		final TargetDefinition<String> infoTarget = new InfoTarget<>(
 				logContext, 
 				String.class,
+				"semanticType",
 				"target_identifier",
+				"semanticAction",
 				"Target object " + infoTargetObj,
 				infoTargetObj,
 				Arrays.asList(prerequisites),

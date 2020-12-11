@@ -42,7 +42,9 @@ public class TargetExecutorTest {
 		        return new FileTarget<File>(
 		                logContext,
 		                File.class,
+		                "semanticType",
 		                targetObject,
+		                "semanticAction",
 		                "File target " + targetObject.getName(),
 		                targetObject,
 		                prerequisitesList,
@@ -111,7 +113,9 @@ public class TargetExecutorTest {
 		final FileTarget<File> fileTarget = new FileTarget<File>(
 				logContext,
 				File.class,
+                "semanticType",
 				targetObject,
+				"semanticAction",
 				"File target " + targetObject.getName(),
 				targetObject,
 				Collections.emptyList(),
@@ -136,7 +140,9 @@ public class TargetExecutorTest {
 		final TargetDefinition<String> infoTarget = new InfoTarget<>(
 				logContext,
 				String.class,
+                "semanticType",
 				"target_identifier",
+				"semanticAction",
 				"Target object " + infoTargetObj,
 				infoTargetObj,
 				Arrays.asList(prerequisites),

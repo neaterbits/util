@@ -13,28 +13,50 @@ class PrerequisitesBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	
 	private final TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState;
 	
-    PrerequisitesBuilderImpl(String name, String description) {
+    PrerequisitesBuilderImpl(String name, String semanticType, String semanticAction, String description) {
 
-        this.targetBuilderState = new TargetBuilderState<>(name, description);
+        this.targetBuilderState = new TargetBuilderState<>(name, semanticType, semanticAction, description);
     }
 	
-	PrerequisitesBuilderImpl(Class<TARGET> type, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
+	PrerequisitesBuilderImpl(Class<TARGET> type, String semanticType, String semanticAction, Function<TARGET, String> getIdentifier, Function<TARGET, String> getDescription) {
 
-		this.targetBuilderState = new TargetBuilderState<>(type, getIdentifier, getDescription);
+		this.targetBuilderState = new TargetBuilderState<>(type, semanticType, semanticAction, getIdentifier, getDescription);
 	}
 
-	PrerequisitesBuilderImpl(Class<TARGET> type, Class<FILE_TARGET> fileTargetType, BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget, Function<FILE_TARGET, File> file, Function<TARGET, String> getDescription) {
+	PrerequisitesBuilderImpl(
+	        Class<TARGET> type,
+	        String semanticType,
+	        String semanticAction,
+	        Class<FILE_TARGET> fileTargetType,
+	        BiFunction<CONTEXT, TARGET, FILE_TARGET> getFileTarget,
+	        Function<FILE_TARGET, File> file,
+	        Function<TARGET, String> getDescription) {
 
-		this.targetBuilderState = new TargetBuilderState<>(type, fileTargetType, getFileTarget, file, getDescription);
+		this.targetBuilderState = new TargetBuilderState<>(
+		                                    type,
+		                                    semanticType,
+		                                    semanticAction,
+		                                    fileTargetType,
+		                                    getFileTarget,
+		                                    file,
+		                                    getDescription);
 	}
 	
 	PrerequisitesBuilderImpl(
             Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
             UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription) {
 
-        this.targetBuilderState = new TargetBuilderState<>(type, upToDate, getIdentifier, getDescription);
+        this.targetBuilderState = new TargetBuilderState<>(
+                                            type,
+                                            semanticType,
+                                            semanticAction,
+                                            upToDate,
+                                            getIdentifier,
+                                            getDescription);
     }
 	
 	

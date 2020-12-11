@@ -15,8 +15,10 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
     
     public UpToDateTarget(
             LogContext logContext,
+            String semanticType,
             String identifier,
             TargetKey<TARGET> targetKey,
+            String semanticAction,
             String description,
             List<Prerequisites> prerequisites,
             UpToDate<?, TARGET> upToDate,
@@ -30,8 +32,10 @@ public final class UpToDateTarget<TARGET> extends TargetDefinition<TARGET> {
                 action,
                 actionWithResult,
                 new TargetDebug(
+                        semanticType,
                         identifier,
                         identifier,
+                        semanticAction,
                         description,
                         true));
 

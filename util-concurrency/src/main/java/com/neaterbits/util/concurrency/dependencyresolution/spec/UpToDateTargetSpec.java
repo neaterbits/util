@@ -24,6 +24,8 @@ public final class UpToDateTargetSpec<CONTEXT extends TaskContext, TARGET>
     
     public UpToDateTargetSpec(
             Class<TARGET> type,
+            String semanticType,
+            String semanticAction,
             UpToDate<CONTEXT, TARGET> upToDate,
             Function<TARGET, String> getIdentifier,
             Function<TARGET, String> getDescription,
@@ -31,7 +33,17 @@ public final class UpToDateTargetSpec<CONTEXT extends TaskContext, TARGET>
             ActionFunction<CONTEXT, TARGET> actionFunction,
             ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult,
             ProcessResult<CONTEXT, TARGET, ?> onResult) {
-        super(type, getDescription, prerequisites, constraint, actionFunction, actionWithResult, onResult);
+
+        super(
+                type,
+                semanticType,
+                semanticAction,
+                getDescription,
+                prerequisites,
+                constraint,
+                actionFunction,
+                actionWithResult,
+                onResult);
 
         Objects.requireNonNull(upToDate);
         Objects.requireNonNull(getIdentifier);
@@ -39,7 +51,6 @@ public final class UpToDateTargetSpec<CONTEXT extends TaskContext, TARGET>
         this.upToDate = upToDate;
         this.getIdentifier = getIdentifier;
     }
-
     
     public UpToDateTargetSpec(UpToDateTargetSpec<CONTEXT, TARGET> other,
             List<PrerequisiteSpec<CONTEXT, TARGET, ?>> additionalPrerequisites) {
@@ -59,8 +70,10 @@ public final class UpToDateTargetSpec<CONTEXT extends TaskContext, TARGET>
         
         return new UpToDateTarget<>(
                 logContext,
+                getSemanticType(),
                 getIdentifier.apply(target),
                 new TargetKey<>(getType(), target),
+                getSemanticAction(),
                 getDescriptionFunction().apply(target),
                 prerequisitesList,
                 upToDate,
