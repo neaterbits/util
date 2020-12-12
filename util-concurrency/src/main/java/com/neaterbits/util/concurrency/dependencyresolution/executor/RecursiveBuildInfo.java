@@ -1,6 +1,5 @@
 package com.neaterbits.util.concurrency.dependencyresolution.executor;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
@@ -37,7 +36,7 @@ public class RecursiveBuildInfo<CONTEXT extends TaskContext, TARGET, PREREQUISIT
     }
 
     public RecursiveBuildInfo(
-			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getSubPrerequisites,
+			BiFunction<CONTEXT, TARGET, SubPrerequisites<PREREQUISITE>> getSubPrerequisites,
 			Function<PREREQUISITE, TARGET> getDependencyFromPrerequisite,
 			CreateTargetDefinition<CONTEXT, PREREQUISITE> createSubTarget) {
 

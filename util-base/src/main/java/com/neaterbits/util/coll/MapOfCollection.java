@@ -11,6 +11,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collector;
+import java.util.stream.Stream;
 
 public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 
@@ -38,6 +39,14 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 		for (Map.Entry<K, C> e : other.map.entrySet()) {
 			add(e.getKey(), e.getValue());
 		}
+	}
+	
+	public final Set<Map.Entry<K, C>> entrySet() {
+	    return map.entrySet();
+	}
+	
+	public final Stream<V> valuesStream() {
+	    return map.values().stream().flatMap(c -> c.stream());
 	}
 
 	protected final void add(K key, Collection<V> values) {

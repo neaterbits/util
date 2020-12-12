@@ -85,7 +85,7 @@ public class TargetExecutorTest {
 						result = files != null ? Arrays.asList(files) : Collections.emptyList();
 					}
 
-					return result;
+					return new SubPrerequisites<>(File.class, result);
 				},
 				Function.identity(),
 				createTargetDefinition);

@@ -11,6 +11,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFrom
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.BuildSpec;
 import com.neaterbits.util.concurrency.dependencyresolution.spec.PrerequisiteSpec;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
@@ -65,7 +66,7 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 	final <PREREQUISITE, SUB_TARGET> void setIteratingAndBuildingRecursively(
 			Constraint constraint,
 			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites,
-			BiFunction<CONTEXT, SUB_TARGET, Collection<PREREQUISITE>> getSubPrerequisites,
+			BiFunction<CONTEXT, SUB_TARGET, SubPrerequisites<PREREQUISITE>> getSubPrerequisites,
 			Function<PREREQUISITE, SUB_TARGET> getDependencyFromPrerequisite) {
 		
 		Objects.requireNonNull(getPrerequisites);

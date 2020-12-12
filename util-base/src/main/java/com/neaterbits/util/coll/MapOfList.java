@@ -7,7 +7,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class MapOfList<K, V> extends MapOfCollection<K, V, List<V>> {
+public final class MapOfList<K, V> extends MapOfCollection<K, V, List<V>> {
 
 	public MapOfList() {
 		super();

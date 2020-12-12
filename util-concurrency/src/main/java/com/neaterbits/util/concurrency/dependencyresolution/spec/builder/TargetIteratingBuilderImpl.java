@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -47,7 +48,7 @@ class TargetIteratingBuilderImpl<CONTEXT extends TaskContext, TARGET, FILE_TARGE
 			Constraint constraint,
 			Class<SUB_TARGET> subTargetType,
 			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites,
-			BiFunction<CONTEXT, SUB_TARGET, Collection<PREREQUISITE>> getSubPrerequisites,
+			BiFunction<CONTEXT, SUB_TARGET, SubPrerequisites<PREREQUISITE>> getSubPrerequisites,
 			Function<PREREQUISITE, SUB_TARGET> getDependencyFromPrerequisite) {
 
 		final PrerequisiteBuilderState<CONTEXT, TARGET, Void, Void> prerequisiteBuilderState = new PrerequisiteBuilderState<>(description, null, null);

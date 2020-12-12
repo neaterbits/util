@@ -14,6 +14,7 @@ import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFrom
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildSpec;
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.RecursiveBuildInfo.CreateTargetDefinition;
 import com.neaterbits.util.concurrency.dependencyresolution.model.Prerequisites;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
@@ -155,7 +156,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		return getPrerequisites;
 	}
 	
-	BiFunction<CONTEXT, ?, Collection<PREREQUISITE>> getSubPrerequisitesFunction() {
+	BiFunction<CONTEXT, ?, SubPrerequisites<PREREQUISITE>> getSubPrerequisitesFunction() {
 		return recursiveBuildInfo.getSubPrerequisitesFunction();
 	}
 	

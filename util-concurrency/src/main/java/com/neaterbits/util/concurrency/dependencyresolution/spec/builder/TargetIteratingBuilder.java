@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.neaterbits.util.concurrency.dependencyresolution.executor.SubPrerequisites;
 import com.neaterbits.util.concurrency.scheduling.Constraint;
 import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
@@ -20,6 +21,6 @@ public interface TargetIteratingBuilder<CONTEXT extends TaskContext, TARGET> {
 			Constraint constraint,
 			Class<SUB_TARGET> subTargetType,
 			BiFunction<CONTEXT, TARGET, Collection<PREREQUISITE>> getPrerequisites,
-			BiFunction<CONTEXT, SUB_TARGET, Collection<PREREQUISITE>> getSubPrerequisites,
+			BiFunction<CONTEXT, SUB_TARGET, SubPrerequisites<PREREQUISITE>> getSubPrerequisites,
 			Function<PREREQUISITE, SUB_TARGET> getDependencyFromPrerequisite);
 }
