@@ -19,26 +19,36 @@ public final class Prerequisite<PREREQUISITE> extends BuildEntity implements Log
 	private final File sourceFile;
 	private final TargetDefinition<PREREQUISITE> subTarget;
 	
+    public Prerequisite(LogContext logContext, PREREQUISITE item) {
+        this(logContext, item, null, null, true);
+    }
+	
 	public Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile) {
-		this(logContext, item, sourceFile, null);
+		this(logContext, item, sourceFile, null, false);
 	}
 
 	public Prerequisite(LogContext logContext, PREREQUISITE item, TargetDefinition<PREREQUISITE> subTarget) {
-		this(logContext, item, null, subTarget);
+		this(logContext, item, null, subTarget, false);
 	}
 		
-	private Prerequisite(LogContext logContext, PREREQUISITE item, File sourceFile, TargetDefinition<PREREQUISITE> subTarget) {
+	private Prerequisite(
+	        LogContext logContext,
+	        PREREQUISITE item,
+	        File sourceFile,
+	        TargetDefinition<PREREQUISITE> subTarget,
+	        boolean recursive) {
+
 		this.constructorLogSequenceNo = logConstructor(logContext, this, getClass(), null, null, null);
 		
 		Objects.requireNonNull(item);
 		
 		this.item = item;
-		
 		this.sourceFile = sourceFile;
 		
 		if (subTarget == null) {
-		    
-		    Objects.requireNonNull(sourceFile);
+		    if (sourceFile == null && !recursive) {
+		        throw new IllegalStateException("Sourcefile not set for " + item);
+		    }
 		    
 			this.subTarget = null;
 		}

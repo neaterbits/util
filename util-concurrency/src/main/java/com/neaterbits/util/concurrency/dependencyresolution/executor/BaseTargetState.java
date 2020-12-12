@@ -1,6 +1,5 @@
 package com.neaterbits.util.concurrency.dependencyresolution.executor;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -130,7 +129,7 @@ public abstract class BaseTargetState<CONTEXT extends TaskContext>
         return anyAdded;
     }
 
-    private static final Boolean DEBUG = false;
+    private static final Boolean DEBUG = true;
     
     private
     void addRecursiveBuildTargets(
@@ -180,7 +179,7 @@ public abstract class BaseTargetState<CONTEXT extends TaskContext>
             final Collection<Object> subPrerequisitesList = getSubPrerequisites.apply(context, subPrerequisiteObject);
 
             final List<Prerequisite<?>> list = subPrerequisitesList.stream()
-                    .map(sp -> new Prerequisite<>(logContext, sp, (File)null))
+                    .map(sp -> new Prerequisite<>(logContext, sp))
                     .collect(Collectors.toList());
             
             final Prerequisites subPrerequisites = new Prerequisites(
