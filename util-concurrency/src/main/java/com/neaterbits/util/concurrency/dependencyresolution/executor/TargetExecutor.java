@@ -1,8 +1,11 @@
 package com.neaterbits.util.concurrency.dependencyresolution.executor;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.neaterbits.util.concurrency.dependencyresolution.executor.logger.TargetExecutorLogger;
@@ -72,20 +75,23 @@ public final class TargetExecutor {
 				&& priorNumScheduled == asyncExecutor.getNumScheduledJobs()) {
 
 				// No target scheduled
-				System.err.println("Not able to trigger more target builds: " + context.state.getNonCompletedTargets().size());
-				
-				for (TargetStateMachine<CONTEXT> targetState : context.state.getNonCompletedTargets()) {
-					
-					final List<String> prerequisitesList = targetState.getTarget().getPrerequisites().stream()
-							.flatMap(prerequisites -> prerequisites.getPrerequisites().stream())
-							.map(prerequisite -> prerequisite.getSubTarget().getTargetObject().toString())
-							.collect(Collectors.toList());
-					
-					System.err.println("Target " + targetState.getObjectDebugString()
-						+ " in state " + targetState.getCurStateName()
-						+ " with prerequisites " + prerequisitesList);
-				}
-				
+				System.err.println("Not able to trigger more target builds");
+
+                System.err.println("Completed targets");
+                printTargetDefinitions(context.state.getCompletedTargets(), System.err);
+
+                System.err.println();
+                
+                System.err.println("Failed targets");
+                printTargetDefinitions(context.state.getFailedTargets().keySet(), System.err);
+
+                System.err.println();
+
+                System.err.println("Remaining targets");
+                printTargets(
+                        context.state.getNonCompletedTargets(),
+                        context.state.getCompletedTargets(),
+                        System.err);
 				break;
 			}
 		}
@@ -93,6 +99,81 @@ public final class TargetExecutor {
 		if (context.onResult != null) {
 			context.onResult.onResult(context.state);
 		}
+	}
+
+    private static
+    void printTargetDefinitions(Collection<TargetDefinition<?>> targetDefinitions, PrintStream printStream) {
+
+        for (TargetDefinition<?> targetDefinition : targetDefinitions) {
+            printTarget(targetDefinition, printStream);
+        }
+    }
+	
+	private static <CONTEXT extends TaskContext>
+	void printTargets(Collection<TargetStateMachine<CONTEXT>> targetStates, Set<TargetDefinition<?>> completed, PrintStream printStream) {
+	    
+        for (TargetStateMachine<CONTEXT> targetState : targetStates) {
+            printTargetState(targetState, completed, printStream);
+        }
+	}
+
+    private static List<String> getPrerequisites(TargetDefinition<?> targetDefinition) {
+        return getPrerequisites(targetDefinition, null);
+    }
+	
+	private static List<String> getPrerequisites(
+	        TargetDefinition<?> targetDefinition,
+	        Set<TargetDefinition<?>> prefixIfNotInSet) {
+	    
+	    return targetDefinition.getPrerequisites().stream()
+                .flatMap(prerequisites -> prerequisites.getPrerequisites().stream())
+                .map(prerequisite -> {
+                    
+                    final String debugString = prerequisite.getDebugString();
+                    
+                    final String result;
+                    
+                    if (prefixIfNotInSet != null) {
+
+                        final String prefix;
+
+                        if (prerequisite.getSubTarget() == null) {
+                            prefix = "?";
+                        }
+                        else {
+                            prefix = !prefixIfNotInSet.contains(prerequisite.getSubTarget())
+                                    ? "!" 
+                                    : "";
+                        }
+
+                        result = prefix + debugString;
+                    }
+                    else {
+                        result = debugString;
+                    }
+                            
+                    return result;
+                })
+                .collect(Collectors.toList());
+	}
+
+    private static
+    void printTarget(TargetDefinition<?> targetDefinition, PrintStream printStream) {
+        
+        final List<String> prerequisitesList = getPrerequisites(targetDefinition);
+        
+        System.err.println("Target " + targetDefinition.getDebugString()
+            + " with prerequisites " + prerequisitesList);
+    }
+
+    private static <CONTEXT extends TaskContext>
+    void printTargetState(TargetStateMachine<CONTEXT> targetState, Set<TargetDefinition<?>> completed, PrintStream printStream) {
+	    
+        final List<String> prerequisitesList = getPrerequisites(targetState.getTarget(), completed);
+        
+        System.err.println("Target " + targetState.getTarget().getDebugString()
+            + " in state " + targetState.getCurStateName()
+            + " with prerequisites " + prerequisitesList);
 	}
 }
 
