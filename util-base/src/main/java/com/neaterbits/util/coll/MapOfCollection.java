@@ -37,7 +37,7 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 
 	public final void addAll(MapOfCollection<K, V, C> other) {
 		for (Map.Entry<K, C> e : other.map.entrySet()) {
-			add(e.getKey(), e.getValue());
+			addCollection(e.getKey(), e.getValue());
 		}
 	}
 	
@@ -49,7 +49,7 @@ public abstract class MapOfCollection<K, V, C extends Collection<V>> {
 	    return map.values().stream().flatMap(c -> c.stream());
 	}
 
-	protected final void add(K key, Collection<V> values) {
+	public final void addCollection(K key, Collection<V> values) {
 		final C existing = map.get(key);
 		
 		if (existing == null) {
