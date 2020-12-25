@@ -44,7 +44,21 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
 	private ActionWithResultFunction<CONTEXT, TARGET, ?> actionWithResult;
 	private ProcessResult<CONTEXT, TARGET, ?> onResult;
 
-    TargetBuilderState(String targetName, String semanticType, String semanticAction, String description) {
+	TargetBuilderState(
+	        String targetName,
+	        String semanticType,
+	        String semanticAction,
+	        String description) {
+	    
+	    this(targetName, semanticType, semanticAction, description, null);
+	}
+	
+    TargetBuilderState(
+            String targetName,
+            String semanticType,
+            String semanticAction,
+            String description,
+            List<PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?>> prerequisites) {
 
         this.targetType = null;
 
@@ -61,7 +75,9 @@ final class TargetBuilderState<CONTEXT extends TaskContext, TARGET, FILE_TARGET>
         this.upToDate = null;
         
         this.getDescription = target -> description;
-        this.prerequisites = new ArrayList<>();
+        this.prerequisites = prerequisites != null
+                ? new ArrayList<>(prerequisites)
+                : new ArrayList<>();
     }
 
 	TargetBuilderState(

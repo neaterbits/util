@@ -45,9 +45,7 @@ public abstract class TargetDefinition<TARGET> extends BuildEntity implements Lo
 		if (
 				(prerequisites == null || prerequisites.isEmpty())
 			&& action == null
-			&& actionWithResult == null
-				
-				) {
+			&& actionWithResult == null) {
 
 			throw new IllegalArgumentException("No action or prerequisites for target " + getDebugString());
 		}

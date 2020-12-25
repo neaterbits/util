@@ -7,6 +7,8 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 public interface PrerequisitesOrActionBuilder<CONTEXT extends TaskContext, TARGET>
 		extends PrerequisitesBuilder<CONTEXT, TARGET>,
 		        ActionBuilder<CONTEXT, TARGET> {
+    
+    PrerequisitesOrActionBuilder<CONTEXT, TARGET> withNamedPrerequisite(String name);
 	
 	PrerequisitesOrActionBuilder<CONTEXT, TARGET> withPrerequisites(PrerequisitesBuilderSpec<CONTEXT, TARGET> buildSpec);
 

@@ -62,13 +62,14 @@ final class TargetStateToExecute<CONTEXT extends TaskContext>
 
 		return nextState;
 	}
+
 	private boolean runAnyActionsAndCallOnCompleted(
 			TargetExecutionContext<CONTEXT> context,
 			TargetDefinition<?> target,
 			BiConsumer<Exception, Boolean> onCompleted) {
 
         final boolean actionRun;
-
+        
         if (target.isUpToDate(context.taskContext)) {
             actionRun = false;
 	    }

@@ -1,5 +1,7 @@
 package com.neaterbits.util.concurrency.dependencyresolution.spec.builder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import com.neaterbits.util.concurrency.dependencyresolution.spec.TargetSpec;
@@ -14,6 +16,8 @@ final class NoTargetPrerequisitesBuilderImpl<CONTEXT extends TaskContext>
     private final String semanticAction;
 
     private final String description;
+    
+    private List<PrerequisiteBuilderState<CONTEXT, Object, ?, ?>> prerequisites;
 	
 	private TargetBuilderState<CONTEXT, ?, ?> targetBuilderState;
 	
@@ -30,14 +34,35 @@ final class NoTargetPrerequisitesBuilderImpl<CONTEXT extends TaskContext>
 	}
 
 	@Override
+    public NoTargetPrerequisitesBuilder<CONTEXT> withNamedPrerequisite(String name) {
+	    
+	    if (targetBuilderState != null) {
+	        throw new IllegalStateException();
+	    }
+	    
+	    final PrerequisiteBuilderState<CONTEXT, Object, ?, ?> prerequisite
+	            = new PrerequisiteBuilderState<>(name);
+	    
+	    if (prerequisites == null) {
+	        this.prerequisites = new ArrayList<>();
+	    }
+	    
+	    prerequisites.add(prerequisite);
+
+	    return this;
+    }
+
+    @Override
 	public NoTargetIteratingBuilder<CONTEXT> withPrerequisites(String description) {
-		final TargetBuilderState<CONTEXT, Object, Object> targetBuilderState;
-		
-		this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(
-		                                                                    targetName,
-		                                                                    semanticType,
-		                                                                    semanticAction,
-		                                                                    this.description);
+
+        final TargetBuilderState<CONTEXT, Object, Object> targetBuilderState;
+    
+        this.targetBuilderState = targetBuilderState = new TargetBuilderState<CONTEXT, Object, Object>(
+	                                                                    targetName,
+	                                                                    semanticType,
+	                                                                    semanticAction,
+	                                                                    this.description,
+	                                                                    prerequisites);
 
 		return new NoTargetIteratingBuilderImpl<>(targetBuilderState, description);
 	}

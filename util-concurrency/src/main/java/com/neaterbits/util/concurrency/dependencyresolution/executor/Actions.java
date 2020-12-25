@@ -47,9 +47,12 @@ class Actions {
 			final Result result = performActionWithResult(context, actionWithResult, target);
 			
 			@SuppressWarnings({ "unchecked", "rawtypes" })
-			final ProcessResult<CONTEXT, Object, Object> processResult = (ProcessResult)actionWithResult.getOnResult();
+			final ProcessResult<CONTEXT, Object, Object> processResult
+			    = (ProcessResult)actionWithResult.getOnResult();
 			
-			processResult.process(context.taskContext, target.getTargetObject(), result.result);
+			if (processResult != null) {
+			    processResult.process(context.taskContext, target.getTargetObject(), result.result);
+			}
 			
 			onCompleted.accept(result.exception, false);
 		}
@@ -60,13 +63,24 @@ class Actions {
 					param -> {
 						return performActionWithResult(context, actionWithResult, target);
 					},
-					(param, result) -> {
+					(param, r) -> {
 						@SuppressWarnings({ "unchecked", "rawtypes" })
-						final ProcessResult<CONTEXT, Object, Object> processResult = (ProcessResult)actionWithResult.getOnResult();
+						final ProcessResult<CONTEXT, Object, Object> processResult
+						    = (ProcessResult)actionWithResult.getOnResult();
 						
-						processResult.process(context.taskContext, target.getTargetObject(), result.result);
+						if (target == null) {
+						    throw new IllegalStateException();
+						}
 						
-						onCompleted.accept(result.exception, true);
+						if (r == null) {
+						    throw new IllegalStateException();
+						}
+						
+						if (processResult != null) {
+						    processResult.process(context.taskContext, target.getTargetObject(), r.result);
+						}
+						
+						onCompleted.accept(r.exception, true);
 					});
 		}
 	}
@@ -111,15 +125,18 @@ class Actions {
 		Object result = null;
 		
 		try {
-			final ActionResult<Object> actionResult = actionFunction.perform(context.taskContext, target.getTargetObject());
+			final ActionResult<Object> actionResult = actionFunction.perform(context.taskContext, target.getTargetObject(), context.state);
 
 			if (context.logger != null) {
 				context.logger.onActionCompleted(target, context.state, actionResult.getLog());
 			}
 			
 			result = actionResult.getResult();
+			
+			context.state.setActionResult(target.getTargetKey(), result);
 		}
 		catch (Exception ex) {
+		    
 			if (context.logger != null) {
 				context.logger.onActionException(target, context.state, ex);
 			}

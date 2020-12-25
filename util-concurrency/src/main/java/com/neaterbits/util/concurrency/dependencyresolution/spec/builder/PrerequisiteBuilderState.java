@@ -19,6 +19,8 @@ import com.neaterbits.util.concurrency.scheduling.task.TaskContext;
 
 final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUCT, ITEM> {
 
+    private final String named;
+    
 	private final String description;
 	private final Class<PRODUCT> productType;
 	private final Class<ITEM> itemType;
@@ -37,7 +39,18 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 	private BiFunction<TARGET, List<ITEM>, PRODUCT> produceFromSubProducts;
 
 	private BuildSpec<CONTEXT, ?> build;
-	
+
+	PrerequisiteBuilderState(String named) {
+
+	    Objects.requireNonNull(named);
+	    
+	    this.named = named;
+
+	    this.description = null;
+	    this.productType = null;
+	    this.itemType = null;
+	}
+
 	PrerequisiteBuilderState(String description, Class<PRODUCT> productType, Class<ITEM> itemType) {
 		
 		Objects.requireNonNull(description);
@@ -45,6 +58,8 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 		this.description = description;
 		this.productType = productType;
 		this.itemType = itemType;
+		
+		this.named = null;
 	}
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -131,7 +146,7 @@ final class PrerequisiteBuilderState<CONTEXT extends TaskContext, TARGET, PRODUC
 	final PrerequisiteSpec<CONTEXT, TARGET, ?> build() {
 	    
 		return new PrerequisiteSpec<>(
-				null,
+				named,
 				description,
 				productType,
 				itemType,

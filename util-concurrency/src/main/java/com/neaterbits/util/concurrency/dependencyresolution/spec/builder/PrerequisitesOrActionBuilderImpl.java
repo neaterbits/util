@@ -55,6 +55,19 @@ final class PrerequisitesOrActionBuilderImpl<CONTEXT extends TaskContext, TARGET
 	}
 
 	@Override
+    public PrerequisitesOrActionBuilder<CONTEXT, TARGET> withNamedPrerequisite(String name) {
+
+	    final TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState = getTargetBuilderState();
+
+	    final PrerequisiteBuilderState<CONTEXT, TARGET, ?, ?> prerequisite
+	        = new PrerequisiteBuilderState<>(name);
+	    
+	    targetBuilderState.addPrerequisiteBuilder(prerequisite);
+	    
+        return this;
+    }
+
+    @Override
 	public PrerequisitesOrActionBuilder<CONTEXT, TARGET> withPrerequisites(PrerequisitesBuilderSpec<CONTEXT, TARGET> buildSpec) {
 
 		final TargetBuilderState<CONTEXT, TARGET, FILE_TARGET> targetBuilderState = getTargetBuilderState();

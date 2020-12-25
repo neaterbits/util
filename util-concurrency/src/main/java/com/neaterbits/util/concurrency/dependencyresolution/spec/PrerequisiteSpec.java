@@ -9,6 +9,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import com.neaterbits.structuredlog.binary.logging.LogContext;
+import com.neaterbits.util.coll.Coll;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubProducts;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.ProduceFromSubTargets;
 import com.neaterbits.util.concurrency.dependencyresolution.executor.Producers;
@@ -102,10 +103,6 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		this.collectors = collectors;
 	}
 	
-	String getNamed() {
-		return named;
-	}
-
 	String getDescription() {
 		return description;
 	}
@@ -131,7 +128,7 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 		if (getPrerequisites != null) {
 			result = getPrerequisites.apply(context, target);
 			
-			if (result.contains(null)) {
+			if (Coll.containsNull(result)) {
 			    throw new IllegalStateException();
 			}
 		}
@@ -145,8 +142,14 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 			
 			result = Arrays.asList(prerequisite);
 		}
+		else if (named != null) {
+		    @SuppressWarnings("unchecked")
+            final PREREQUISITE prerequisite = (PREREQUISITE)named;
+		    
+		    result = Arrays.asList(prerequisite);
+		}
 		else {
-			throw new UnsupportedOperationException();
+			throw new UnsupportedOperationException("Cannot get prerequisites for " + this);
 		}
 		
 		return result;
@@ -193,4 +196,10 @@ public final class PrerequisiteSpec<CONTEXT extends TaskContext, TARGET, PREREQU
 	ProduceFromSubProducts<TARGET> getCollectSubProducts() {
 		return collectors.getProduceFromSubProducts();
 	}
+
+    @Override
+    public String toString() {
+        return "PrerequisiteSpec [named=" + named + ", description=" + description + ", productType=" + productType
+                + ", itemType=" + itemType + ", constraint=" + constraint + "]";
+    }
 }

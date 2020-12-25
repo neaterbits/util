@@ -91,6 +91,8 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 	private final Map<TargetKey<?>, CollectedTargetObjects> recursiveTargetCollected;
 
 	private final Map<TargetKey<?>, List<CollectedProduct>> collectedProductObjects;
+
+    private final Map<TargetKey<?>, Object> targetActionResults;
 	
 	static <CTX extends TaskContext> ExecutorState<CTX> createFromTargetTree(
 			TargetDefinition<?> rootTarget,
@@ -152,6 +154,8 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 		
 		// this.collectedTargetObjects = new HashMap<>();
 		this.collectedProductObjects = new HashMap<>();
+		
+		this.targetActionResults = new HashMap<>();
 	}
 
 	public boolean hasUnfinishedTargets() {
@@ -393,7 +397,7 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public <T> T getCollectedProduct(Object targetObject, Class<T> type) {
+	public <TARGET, T> T getCollectedProduct(TARGET targetObject, Class<T> type) {
 
 		Objects.requireNonNull(targetObject);
 		Objects.requireNonNull(type);
@@ -417,7 +421,37 @@ final class ExecutorState<CONTEXT extends TaskContext> implements ActionParamete
 					: null;
 	}
 
-	private static <CTX extends TaskContext, TARGET>
+	void setActionResult(TargetKey<?> target, Object result) {
+       
+        Objects.requireNonNull(target);
+        Objects.requireNonNull(result);
+
+        if (targetActionResults.containsKey(target)) {
+            throw new IllegalStateException();
+        }
+
+        targetActionResults.put(target, result);
+    }
+
+	@Override
+    public <TARGET, T> T getTargetActionResult(TARGET target, Class<T> type) {
+
+	    Objects.requireNonNull(target);
+	    Objects.requireNonNull(type);
+	    
+	    final TargetKey<?> targetKey = targetsByTargetObject.get(target);
+	    
+	    if (targetKey == null) {
+	        throw new IllegalStateException("No such target " + target);
+	    }
+	    
+        @SuppressWarnings("unchecked")
+        final T result = (T)targetActionResults.get(targetKey);
+        
+        return result;
+    }
+
+    private static <CTX extends TaskContext, TARGET>
 	void getSubTargets(
 	        int indent,
 	        TargetDefinition<TARGET> target,

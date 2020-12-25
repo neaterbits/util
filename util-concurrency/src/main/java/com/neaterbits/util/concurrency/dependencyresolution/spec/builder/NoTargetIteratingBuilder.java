@@ -15,4 +15,10 @@ public interface NoTargetIteratingBuilder<CONTEXT extends TaskContext> {
 	<PREREQUISITE>
 	NoTargetPrerequisiteBuilder<CONTEXT, PREREQUISITE> fromIterating(Function<CONTEXT, Collection<PREREQUISITE>> getPrerequisites);
 
+	/*
+    <PRODUCT, PREREQUISITE>
+    NoTargetPrerequisiteBuilder<CONTEXT, PREREQUISITE> fromIteratingProduct(
+            Class<PRODUCT> productType,
+            BiFunction<CONTEXT, PrerequisitesMap<PRODUCT>, Collection<PREREQUISITE>> getPrerequisites);
+    */
 }
