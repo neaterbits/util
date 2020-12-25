@@ -33,6 +33,17 @@ public class Coll {
 	public static <T> Iterable<T> reverse(List<T> list, boolean readOnly) {
 		return new ReverseIterable<T>(list, readOnly);
 	}
+	
+	public static boolean containsNull(Collection<?> collection) {
+	    
+	    for (Object o : collection) {
+	        if (o == null) {
+	            return true;
+	        }
+	    }
+	    
+	    return false;
+	}
 
 	public static <T, S extends T> Collection<T> downConvert(Collection<S> coll) {
 		final List<T> ret = new ArrayList<T>(coll.size()); 
