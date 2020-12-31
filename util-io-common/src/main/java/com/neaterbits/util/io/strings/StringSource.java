@@ -8,6 +8,16 @@ public interface StringSource extends StringRef {
 
 	String asString(long stringRef);
 
+    /**
+     * As a String counted as offset from the beginning of the stream
+     *
+     * @param startOffset index from beginning of stream
+     * @param endOffset index from end of stream,
+     *
+     * @return the resulting {@link String}
+     */
+    String asStringFromOffset(int startOffset, int endOffset);
+	
     default Integer asInteger(long stringRef) {
 
         return Integer.parseInt(asString(stringRef));

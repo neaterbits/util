@@ -10,6 +10,8 @@ public interface Context {
 	
 	int getEndOffset();
 	
+	Context makeImmutable();
+	
 	default int getLength() {
 	    return getEndOffset() - getStartOffset() + 1;
 	}

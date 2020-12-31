@@ -1,6 +1,8 @@
 package com.neaterbits.util.parse.context;
 
-public class ImmutableFullContext extends ImmutableContext implements FullContext {
+public final class ImmutableFullContext
+        extends ImmutableContext
+        implements FullContext {
 
 	private final String file;
 	private final int startLine;
@@ -20,7 +22,7 @@ public class ImmutableFullContext extends ImmutableContext implements FullContex
 		this.text = text;
 	}
 	
-	public ImmutableFullContext(ImmutableFullContext context) {
+	public ImmutableFullContext(FullContext context) {
 	    this(
 	            context.getFile(),
 	            context.getStartLine(),
@@ -67,9 +69,8 @@ public class ImmutableFullContext extends ImmutableContext implements FullContex
 		return text;
 	}
 
-	@Override
+    @Override
 	public String toString() {
-		return "ImmutableContext [file=" + file + ", startLine=" + startLine + ", startPosInLine=" + startPosInLine + ", endLine=" + endLine
-				+ ", endPosInLine=" + endPosInLine + "]";
+		return "ImmutableContext [file=" + file + ", startLine=" + startLine + ", startPosInLine=" + startPosInLine + ", endLine=" + endLine + ", endPosInLine=" + endPosInLine + "]";
 	}
 }

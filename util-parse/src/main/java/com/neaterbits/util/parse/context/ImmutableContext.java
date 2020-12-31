@@ -23,4 +23,14 @@ public class ImmutableContext implements Context {
     public final int getEndOffset() {
         return endOffset;
     }
+
+    @Override
+    public final Context makeImmutable() {
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        return "ImmutableContext [startOffset=" + startOffset + ", endOffset=" + endOffset + "]";
+    }
 }

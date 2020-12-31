@@ -36,4 +36,9 @@ public final class MutableContext implements Context {
     public final int getEndOffset() {
         return endOffset;
     }
+
+    @Override
+    public Context makeImmutable() {
+        return new ImmutableContext(this);
+    }
 }

@@ -56,4 +56,9 @@ public class StringSourceInputStream extends InputStream implements StringSource
 				OffsetLengthStringRef.decodeLength(stringRef),
 				charset);
 	}
+
+    @Override
+    public String asStringFromOffset(int startOffset, int endOffset) {
+        return new String(data, startOffset, endOffset - startOffset + 1, charset);
+    }
 }

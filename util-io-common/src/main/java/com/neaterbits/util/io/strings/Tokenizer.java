@@ -46,16 +46,6 @@ public interface Tokenizer extends StringSource, StringBufferAdder {
 	 */
 	String asString(long startStringRef, long endStringRef);
 
-	/**
-	 * As a String counted as offset from the beginning of the stream
-	 *
-	 * @param startOffset index from beginning of stream
-	 * @param endOffset index from end of stream,
-	 *
-	 * @return the resulting {@link String}
-	 */
-	String asStringFromOffset(int startOffset, int endOffset);
-
 	default boolean equals(long stringRef1, long stringRef2) {
 
 	    return asString(stringRef1).equals(asString(stringRef2));
