@@ -8,7 +8,7 @@ public class PathUtil {
 		
 		String path = file.getPath().substring(directory.getPath().length());
 	
-		if (path.startsWith("/")) {
+		if (path.startsWith(File.separator)) {
 			path = path.substring(1);
 		}
 
