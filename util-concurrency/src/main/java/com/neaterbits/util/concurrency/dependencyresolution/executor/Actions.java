@@ -137,6 +137,8 @@ class Actions {
 		}
 		catch (Exception ex) {
 		    
+		    ex.printStackTrace();
+		    
 			if (context.logger != null) {
 				context.logger.onActionException(target, context.state, ex);
 			}
