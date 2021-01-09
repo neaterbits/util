@@ -2,6 +2,8 @@ package com.neaterbits.util.concurrency.scheduling;
 
 import java.util.function.Function;
 
+import com.neaterbits.util.threads.ForwardResultToCaller;
+
 public abstract class BaseAsyncExecutor<QUEUE> implements AsyncExecutor {
 
 	private int scheduledJobs;

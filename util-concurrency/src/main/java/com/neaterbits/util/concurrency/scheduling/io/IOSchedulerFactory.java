@@ -1,7 +1,7 @@
 package com.neaterbits.util.concurrency.scheduling.io;
 
-import com.neaterbits.util.concurrency.scheduling.ForwardResultToCaller;
 import com.neaterbits.util.concurrency.scheduling.ScheduleFunction;
+import com.neaterbits.util.threads.ForwardResultToCaller;
 
 public interface IOSchedulerFactory {
 

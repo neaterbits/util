@@ -3,6 +3,7 @@ package com.neaterbits.util.concurrency.scheduling;
 import com.neaterbits.util.concurrency.scheduling.cpu.CPUScheduler;
 import com.neaterbits.util.concurrency.scheduling.cpu.ThreadCPUScheduler;
 import com.neaterbits.util.concurrency.scheduling.io.ThreadIOSchedulerImpl;
+import com.neaterbits.util.threads.ForwardResultToCaller;
 
 public class AsynchronousSchedulerFactory implements SchedulerFactory {
 

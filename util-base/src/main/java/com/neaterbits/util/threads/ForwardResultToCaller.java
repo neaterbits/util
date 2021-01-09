@@ -1,4 +1,4 @@
-package com.neaterbits.util.concurrency.scheduling;
+package com.neaterbits.util.threads;
 
 public interface ForwardResultToCaller {
 

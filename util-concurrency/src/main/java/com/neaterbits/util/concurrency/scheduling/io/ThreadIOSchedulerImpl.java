@@ -2,9 +2,9 @@ package com.neaterbits.util.concurrency.scheduling.io;
 
 import java.util.Objects;
 
-import com.neaterbits.util.concurrency.scheduling.ForwardResultToCaller;
 import com.neaterbits.util.concurrency.scheduling.ScheduleFunction;
 import com.neaterbits.util.concurrency.scheduling.ScheduleListener;
+import com.neaterbits.util.threads.ForwardResultToCaller;
 
 public final class ThreadIOSchedulerImpl {
 	

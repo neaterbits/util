@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import com.neaterbits.util.concurrency.scheduling.ForwardResultToCaller;
+import com.neaterbits.util.threads.ForwardResultToCaller;
 
 public final class ThreadCPUScheduler implements CPUScheduler {
 

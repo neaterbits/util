@@ -2,6 +2,8 @@ package com.neaterbits.util.concurrency.scheduling;
 
 import java.util.Objects;
 
+import com.neaterbits.util.threads.ForwardResultToCaller;
+
 final class SynchronousSchedulerImpl implements Scheduler {
 
 	private final ForwardResultToCaller forwardToCaller;
