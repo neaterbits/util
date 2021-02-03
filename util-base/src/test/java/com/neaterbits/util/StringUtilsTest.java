@@ -81,5 +81,21 @@ public class StringUtilsTest {
 		assertThat(StringUtils.removeBlanks(" 1234 ")).isEqualTo("1234");
 		assertThat(StringUtils.removeBlanks("  ")).isEqualTo("");
 	}
+	
+	@Test
+	public void testTokenize() {
+	    
+	    assertThat(StringUtils.tokenize("")).isEqualTo(new String[0]);
+        assertThat(StringUtils.tokenize("abc")).isEqualTo(new String[] { "abc" });
+        assertThat(StringUtils.tokenize(" abc")).isEqualTo(new String[] { "abc" });
+        assertThat(StringUtils.tokenize("abc ")).isEqualTo(new String[] { "abc" });
+        assertThat(StringUtils.tokenize(" abc ")).isEqualTo(new String[] { "abc" });
+        assertThat(StringUtils.tokenize("abc def")).isEqualTo(new String[] { "abc", "def" });
+        assertThat(StringUtils.tokenize("abc  def")).isEqualTo(new String[] { "abc", "def" });
+        assertThat(StringUtils.tokenize("abc   def")).isEqualTo(new String[] { "abc", "def" });
+        assertThat(StringUtils.tokenize(" abc   def ")).isEqualTo(new String[] { "abc", "def" });
+        assertThat(StringUtils.tokenize("  abc   def  ")).isEqualTo(new String[] { "abc", "def" });
+	    
+	}
 }
 

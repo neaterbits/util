@@ -359,4 +359,44 @@ public class StringUtils {
 
         return c >= '0' && c <= '8';
     }
+
+    public static String [] tokenize(String s) {
+        
+        final String [] result;
+        
+        if (s.isBlank()) {
+            result = EMPTY_ARRAY;
+        }
+        else {
+            final List<String> list = new ArrayList<>();
+            
+            boolean wsState = true;
+            
+            int lastNonWsIdx = -1;
+            
+            for (int i = 0; i < s.length(); ++ i) {
+                
+                final char c = s.charAt(i);
+                
+                final boolean ws = Character.isWhitespace(c);
+                
+                if (ws && !wsState) {
+                    list.add(s.substring(lastNonWsIdx, i));
+                }
+                else if (!ws && wsState) {
+                    lastNonWsIdx = i;
+                }
+                
+                wsState = ws;
+            }
+            
+            if (!wsState) {
+                list.add(s.substring(lastNonWsIdx, s.length()));
+            }
+            
+            result = list.toArray(new String[list.size()]);
+        }
+
+        return result;
+    }
 }
