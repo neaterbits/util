@@ -23,56 +23,50 @@
 		<dependency>
 
 			<groupId>org.eclipse.swt</groupId>
-
-			<artifactId>swt-win32-x86_64</artifactId>
-			<version>3.115.0.v20200831-1002</version>
-			
-
 <!--  
+			<artifactId>swt-win32-x86_64</artifactId>
+			<version>3.116.0.v20210302-1107</version>
+
 			<artifactId>org.eclipse.swt.cocoa.macosx.x86_64</artifactId>			
-			<version>3.105.3.v20170228-0512</version>
+			<version></version>
+-->
 
 			<artifactId>org.eclipse.swt.gtk.linux.x86_64</artifactId>
-			<version>v20181204-1801</version>
--->
+			<version>3.116.0.v20210302-1107</version>
 		</dependency>
 		
 		<dependency>
 			<groupId>org.eclipse.jface</groupId>
 			<artifactId>jface</artifactId>
-			<version>3.21.0.v20200821-1458</version>
-<!-- 
-			<artifactId>org.eclipse.jface</artifactId>
-			<version>3.12.2.v20170113-2113</version>
-			<version>3.8.0.v20120521-2329</version>
- -->
+			<version>3.22.100.v20210126-0831</version>
  		</dependency>
 
 		<dependency>
 			<groupId>org.eclipse.core</groupId>
 			<artifactId>commands</artifactId>
-			<version>3.9.700.v20191217-1850</version>
-<!-- 
-			<artifactId>org.eclipse.core.commands</artifactId>
-			<version>3.8.1.v20161221-1651</version>
- -->
+			<version>3.9.800.v20201021-1339</version>
 		</dependency>
  		<dependency>
 			<groupId>org.eclipse.equinox</groupId>
 			<artifactId>equinox-common</artifactId>
-			<version>3.13.0.v20200828-1034</version>
+			<version>3.14.100.v20210212-1143</version>
 		</dependency>
 	</dependencies>
 
-        <repositories>
-                <repository>
-                        <id>maven-eclipse-repo</id>
-                        <url>http://maven-eclipse.github.io/maven</url>
-                </repository>
-                <repository>
-                        <id>google-swt-repo</id>
-                        <url>https://swt-repo.googlecode.com/svn/repo</url>
-                </repository>
-        </repositories>
-
+	<repositories>
+	<!--
+		<repository>
+			<id>maven-eclipse-repo</id>
+			<url>http://maven-eclipse.github.io/maven</url>
+		</repository>
+		<repository>
+			<id>google-swt-repo</id>
+			<url>https://swt-repo.googlecode.com/svn/repo</url>
+		</repository>
+ 	-->		
+		<repository>
+			<id>s3-swt-repo</id>
+			<url>http://maven-swt.s3-website-eu-west-1.amazonaws.com/repositories/2021-03</url>
+		</repository>
+	</repositories>
 </project>
